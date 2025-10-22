@@ -1,0 +1,34 @@
+<?php
+// Copia este archivo como config.local.php en el servidor (public_html/api/config.local.php)
+// y rellena con tus credenciales reales. Este archivo NO debe subirse a Git.
+
+// Base de datos (Hostinger)
+// En hPanel > Bases de datos MySQL: crea la base de datos y el usuario, luego anota:
+// - DB_HOST: normalmente 'localhost' en hosting compartido; si te muestran un host distinto, úsalo.
+// - DB_PORT: normalmente 3306; si Hostinger indica otro puerto, cámbialo.
+// - DB_NAME: suele tener prefijo de tu cuenta, p.ej. u123456_atisbe
+// - DB_USER: también con prefijo, p.ej. u123456_user
+// - DB_PASS: la contraseña que creaste para ese usuario
+
+define('DB_HOST', 'localhost');
+define('DB_PORT', 3306);         // opcional, por defecto 3306
+define('DB_NAME', 'uXXXXXX_atisbe');
+define('DB_USER', 'uXXXXXX_user');
+define('DB_PASS', 'TU_PASSWORD_FUERTE');
+
+// Email destino para copias del formulario de contacto
+// Deja vacío para no enviar correo (sólo guardará en la BD)
+define('MAIL_TO', 'info@tudominio.com');
+
+// CORS (opcional): permite origenes externos si consumes la API desde otro dominio
+// define('ALLOW_ORIGIN', 'https://tu-frontend.com');
+
+// SMTP opcional (recomendado si quieres asegurar entrega de correos)
+// Si instalas PHPMailer (composer require phpmailer/phpmailer) se usará SMTP.
+// define('SMTP_HOST', 'smtp.tudominio.com');
+// define('SMTP_USER', 'no-reply@tudominio.com');
+// define('SMTP_PASS', '********');
+// define('SMTP_SECURE', 'tls');  // o 'ssl'
+// define('SMTP_PORT', 587);
+// define('SMTP_FROM', 'no-reply@tudominio.com');
+// define('SMTP_FROM_NAME', 'Atisbe Notificador');

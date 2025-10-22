@@ -178,3 +178,21 @@ export default defineConfig([
     - Implementar Login real y protección de rutas para Zona de estudiantes.
     - Añadir assets de marca (logo, mascota) y optimizar imágenes.
     - Completar tienda con pagos reales (pasarela o QR dinámico).
+
+  ## Conectar la base de datos en Hostinger
+
+  1) Crea tu BD y usuario en hPanel > Bases de datos MySQL. Anota host (normalmente `localhost`), puerto (3306), nombre de BD y usuario (suelen tener prefijo).
+  2) En el servidor, copia `public/api/config.local.php.example` a `public_html/api/config.local.php` y rellena:
+
+  ```php
+  <?php
+  define('DB_HOST', 'localhost');
+  define('DB_PORT', 3306);
+  define('DB_NAME', 'uXXXXXX_atisbe');
+  define('DB_USER', 'uXXXXXX_user');
+  define('DB_PASS', '********');
+  define('MAIL_TO', 'info@tudominio.com');
+  ```
+
+  3) Verifica conectividad abriendo en el navegador: `https://tu-dominio.com/api/health.php`. Debe responder `{ "ok": true, "db": "connected", ... }`.
+  4) Las tablas se crean automáticamente al primer uso (o desde `server/sql/*.sql` en phpMyAdmin). Al crear la tabla `users` por primera vez se autogenera el usuario demo: `demo` / `demo123`.
