@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
-import { me, getTeacherStudents, type TeacherGroupedStudents } from '../services/api'
+import { useNavigate } from 'react-router-dom'
+import { me, getTeacherStudents, type TeacherGroupedStudents, logout as apiLogout } from '../services/api'
 
 export default function Profesor() {
+  const navigate = useNavigate()
   const [auth, setAuth] = useState<{ username: string; name: string; role: string } | null>(null)
   const [loading, setLoading] = useState(true)
   const [groups, setGroups] = useState<TeacherGroupedStudents>({})
@@ -30,8 +32,13 @@ export default function Profesor() {
 
   return (
     <main className="container-padded py-12">
-      <h1 className="text-3xl font-extrabold">Panel de profesor</h1>
-      <p className="text-sm text-brand-black/70 mt-1">Sesión: {auth.name || auth.username}</p>
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold">Panel de profesor</h1>
+          <p className="text-sm text-brand-black/70 mt-1">Sesión: {auth.name || auth.username}</p>
+        </div>
+        <button className="btn-secondary" onClick={async () => { try { await apiLogout() } finally { navigate('/', { replace: true }) } }}>Salir</button>
+      </div>
 
       {levels.length === 0 ? (
         <p className="mt-6">Aún no tienes estudiantes asignados.</p>

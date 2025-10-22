@@ -1,6 +1,6 @@
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { me, logout } from '../services/api'
+import { me } from '../services/api'
 
 const navItems = [
   { to: '/', label: 'Inicio' },
@@ -14,12 +14,11 @@ const navItems = [
 ]
 
 export function Navbar() {
-  const navigate = useNavigate()
   const [isAdmin, setIsAdmin] = useState(false)
   const [isTeacher, setIsTeacher] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
   // For now, force light theme to avoid visibility issues reported by user
-  useEffect(() => { (async () => { try { const u = await me(); setIsLoggedIn(!!u); setIsAdmin(!!u && u.role === 'admin'); setIsTeacher(!!u && u.role === 'teacher') } catch { setIsLoggedIn(false) } })() }, [])
+  // Lightweight role check only
+  useEffect(() => { (async () => { try { const u = await me(); setIsAdmin(!!u && u.role === 'admin'); setIsTeacher(!!u && u.role === 'teacher') } catch {} })() }, [])
 
   useEffect(() => {
     const root = document.documentElement
@@ -27,13 +26,7 @@ export function Navbar() {
     localStorage.setItem('theme', 'light')
   }, [])
 
-  async function handleLogout() {
-    try { await logout() } catch {}
-    setIsLoggedIn(false)
-    setIsAdmin(false)
-    setIsTeacher(false)
-    navigate('/', { replace: true })
-  }
+  // No logout in navbar per request
   return (
   <header className="sticky top-0 z-50 bg-brand-surface/80 backdrop-blur border-b border-brand-pink/20">
       <div className="container-padded flex items-center justify-between h-16">
@@ -69,9 +62,6 @@ export function Navbar() {
                 `text-sm font-medium ${isActive ? 'text-brand-purple' : 'text-brand-black/80 hover:text-brand-purple'}`
               }
             >Profesor</NavLink>
-          )}
-          {isLoggedIn && (
-            <button onClick={handleLogout} className="text-sm font-medium text-brand-black/80 hover:text-brand-purple">Salir</button>
           )}
         </nav>
       </div>

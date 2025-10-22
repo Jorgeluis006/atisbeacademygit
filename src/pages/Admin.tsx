@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
-import { me, createUser, listUsers, type AdminUser, resetUserPassword, EXPORT_CONTACTS_URL, EXPORT_RESERVATIONS_URL, assignStudent } from '../services/api'
+import { useNavigate } from 'react-router-dom'
+import { me, createUser, listUsers, type AdminUser, resetUserPassword, EXPORT_CONTACTS_URL, EXPORT_RESERVATIONS_URL, assignStudent, logout as apiLogout } from '../services/api'
 
 export default function Admin() {
+  const navigate = useNavigate()
   const [auth, setAuth] = useState<{ username: string; name: string; role: string } | null>(null)
   const [loading, setLoading] = useState(true)
   const [msg, setMsg] = useState('')
@@ -26,7 +28,10 @@ export default function Admin() {
 
   return (
     <main className="container-padded py-12">
-      <h1 className="text-3xl font-extrabold">Panel de administración</h1>
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="text-3xl font-extrabold">Panel de administración</h1>
+        <button className="btn-secondary" onClick={async () => { try { await apiLogout() } finally { navigate('/', { replace: true }) } }}>Salir</button>
+      </div>
 
       <section className="card mt-6 max-w-xl">
         <h2 className="section-title">Crear usuario</h2>
