@@ -20,10 +20,12 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
     }
   }
   return (
-    <form onSubmit={onSubmit} className="bg-white rounded-2xl p-6 shadow-soft max-w-md">
+    <form onSubmit={onSubmit} className="card max-w-md">
       <h2 className="font-serif text-2xl mb-4">Ingreso de estudiantes</h2>
-      <input className="border rounded-md px-3 py-2 w-full mb-3" placeholder="Usuario" value={user} onChange={(e) => setUser(e.target.value)} />
-      <input className="border rounded-md px-3 py-2 w-full mb-2" type="password" placeholder="Contraseña" value={pass} onChange={(e) => setPass(e.target.value)} />
+      <label className="label">Usuario</label>
+      <input className="input-control mb-2" placeholder="Usuario" value={user} onChange={(e) => setUser(e.target.value)} />
+      <label className="label">Contraseña</label>
+      <input className="input-control mb-3" type="password" placeholder="Contraseña" value={pass} onChange={(e) => setPass(e.target.value)} />
       {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
       <button className="btn-primary w-full" type="submit" disabled={loading}>{loading ? 'Ingresando…' : 'Ingresar'}</button>
     </form>
@@ -81,8 +83,8 @@ export default function ZonaEstudiantes() {
         <>
           <div className="mt-2 text-sm text-brand-black/70">Sesión: {user.name || user.username} ({user.role}) <button className="underline ml-2" onClick={handleLogout}>Salir</button></div>
           <div className="mt-6 grid gap-6 md:grid-cols-3">
-            <section className="bg-white rounded-2xl p-6 shadow-soft">
-              <h2 className="font-serif text-xl">Progreso</h2>
+            <section className="card">
+              <h2 className="section-title">Progreso</h2>
               {!progress ? (
                 <p className="text-sm text-brand-black/70 mt-2">Cargando progreso…</p>
               ) : (
@@ -109,13 +111,13 @@ export default function ZonaEstudiantes() {
                 </div>
               )}
             </section>
-            <section className="bg-white rounded-2xl p-6 shadow-soft">
-              <h2 className="font-serif text-xl">Horarios / Agendar</h2>
+            <section className="card">
+              <h2 className="section-title">Horarios / Agendar</h2>
               <p className="text-sm text-brand-black/70">Agenda clases personalizadas y exámenes.</p>
               <ScheduleSection slots={slots} reservas={reservas} onBooked={async () => setReservas(await getMyReservations())} onCancel={async () => setReservas(await getMyReservations())} />
             </section>
-            <section className="bg-white rounded-2xl p-6 shadow-soft">
-              <h2 className="font-serif text-xl">Mascota MCER</h2>
+            <section className="card">
+              <h2 className="section-title">Mascota MCER</h2>
               <div className="mt-2 aspect-square rounded-xl bg-gradient-to-br from-brand-purple to-brand-amber" />
             </section>
           </div>
@@ -165,7 +167,7 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
   return (
     <div className="mt-3">
       <div className="grid md:grid-cols-2 gap-3">
-        <select className="border rounded-md px-3 py-2" value={selected} onChange={(e) => setSelected(e.target.value)}>
+        <select className="select-control" value={selected} onChange={(e) => setSelected(e.target.value)}>
           <option value="">Selecciona un horario</option>
           {slots.map((s) => (
             <option key={s.datetime} value={s.datetime}>
@@ -174,16 +176,16 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
           ))}
         </select>
         <div className="grid grid-cols-2 gap-3">
-          <select className="border rounded-md px-3 py-2" value={tipo} onChange={(e) => setTipo(e.target.value)}>
+          <select className="select-control" value={tipo} onChange={(e) => setTipo(e.target.value)}>
             <option value="clase">Clase</option>
             <option value="examen">Examen</option>
           </select>
-          <select className="border rounded-md px-3 py-2" value={modalidad} onChange={(e) => setModalidad(e.target.value)}>
+          <select className="select-control" value={modalidad} onChange={(e) => setModalidad(e.target.value)}>
             <option value="virtual">Virtual</option>
             <option value="presencial">Presencial</option>
           </select>
         </div>
-        <input className="border rounded-md px-3 py-2 md:col-span-2" placeholder="Notas (opcional)" value={notas} onChange={(e) => setNotas(e.target.value)} />
+        <input className="input-control md:col-span-2" placeholder="Notas (opcional)" value={notas} onChange={(e) => setNotas(e.target.value)} />
       </div>
       <div className="mt-3">
         <button className="btn-primary" disabled={loading} onClick={reservar}>{loading ? 'Procesando…' : 'Agendar'}</button>
@@ -198,12 +200,12 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
         ) : (
           <ul className="mt-2 space-y-2">
             {reservas.map((r) => (
-              <li key={r.id} className="flex items-center justify-between bg-brand-black/5 rounded-md p-2">
+              <li key={r.id} className="flex items-center justify-between rounded-xl p-3 bg-gradient-to-r from-brand-black/[0.05] to-transparent">
                 <div className="text-sm">
-                  <div><strong>{r.tipo}</strong> • {new Date(r.datetime).toLocaleString()} • {r.modalidad}</div>
-                  {r.notas && <div className="text-brand-black/70">{r.notas}</div>}
+                  <div className="flex items-center gap-2"><span className="badge-role-student">{r.tipo}</span> <span>{new Date(r.datetime).toLocaleString()}</span> <span className="badge-role-teacher">{r.modalidad}</span></div>
+                  {r.notas && <div className="text-brand-black/70 mt-1">{r.notas}</div>}
                 </div>
-                <button className="text-sm underline" disabled={loading} onClick={() => cancelar(r.id)}>Cancelar</button>
+                <button className="btn-ghost underline" disabled={loading} onClick={() => cancelar(r.id)}>Cancelar</button>
               </li>
             ))}
           </ul>

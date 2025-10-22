@@ -38,8 +38,8 @@ export default function Profesor() {
       ) : (
         <div className="mt-6 space-y-6">
           {levels.map(level => (
-            <section key={level} className="bg-white rounded-2xl p-6 shadow-soft">
-              <h2 className="font-serif text-xl mb-3">Nivel {level}</h2>
+            <section key={level} className="card">
+              <h2 className="section-title">Nivel {level}</h2>
               <div className="grid md:grid-cols-2 gap-6">
                 <StudentList title="Virtual" items={groups[level]?.virtual || []} />
                 <StudentList title="Presencial" items={groups[level]?.presencial || []} />
@@ -61,10 +61,15 @@ function StudentList({ title, items }: { title: string; items: any[] }) {
       ) : (
         <ul className="space-y-2">
           {items.map((s) => (
-            <li key={s.id} className="bg-brand-black/5 rounded-md p-2 flex items-center justify-between">
-              <div className="text-sm">
-                <div><strong>{s.name || s.username}</strong></div>
-                <div className="text-brand-black/70 text-xs">{s.username}</div>
+            <li key={s.id} className="rounded-xl p-3 flex items-center justify-between bg-gradient-to-r from-brand-black/[0.05] to-transparent">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-brand-purple/20 flex items-center justify-center text-brand-purple font-semibold">
+                  {(s.name || s.username).substring(0,1).toUpperCase()}
+                </div>
+                <div className="text-sm">
+                  <div className="font-semibold">{s.name || s.username}</div>
+                  <div className="text-brand-black/70 text-xs">{s.username}</div>
+                </div>
               </div>
               {/* acciones futuras: ver progreso, contactar, etc. */}
             </li>

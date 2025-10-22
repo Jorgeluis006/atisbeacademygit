@@ -28,23 +28,23 @@ export default function Admin() {
     <main className="container-padded py-12">
       <h1 className="text-3xl font-extrabold">Panel de administración</h1>
 
-      <section className="bg-white rounded-2xl p-6 shadow-soft mt-6 max-w-xl">
-        <h2 className="font-serif text-xl mb-4">Crear usuario</h2>
+      <section className="card mt-6 max-w-xl">
+        <h2 className="section-title">Crear usuario</h2>
         <CreateUserForm onDone={(m) => { setMsg(m); setErr('') }} onError={(e) => { setErr(e); setMsg('') }} />
       </section>
 
-      <section className="bg-white rounded-2xl p-6 shadow-soft mt-6 max-w-2xl">
-        <h2 className="font-serif text-xl mb-4">Asignar estudiante a profesor</h2>
+      <section className="card mt-6 max-w-2xl">
+        <h2 className="section-title">Asignar estudiante a profesor</h2>
         <AssignStudentForm onDone={(m) => { setMsg(m); setErr('') }} onError={(e) => { setErr(e); setMsg('') }} />
       </section>
 
       <UsersList />
 
-      <section className="bg-white rounded-2xl p-6 shadow-soft mt-6 max-w-xl">
-        <h2 className="font-serif text-xl mb-4">Exportar datos</h2>
-        <div className="flex gap-3">
-          <a className="btn-primary" href={EXPORT_CONTACTS_URL}>Descargar contactos CSV</a>
-          <a className="btn-primary" href={EXPORT_RESERVATIONS_URL}>Descargar reservas CSV</a>
+      <section className="card mt-6 max-w-xl">
+        <h2 className="section-title">Exportar datos</h2>
+        <div className="flex gap-3 flex-wrap">
+          <a className="btn-secondary" href={EXPORT_CONTACTS_URL}>Descargar contactos CSV</a>
+          <a className="btn-secondary" href={EXPORT_RESERVATIONS_URL}>Descargar reservas CSV</a>
         </div>
       </section>
 
@@ -81,10 +81,14 @@ function CreateUserForm({ onDone, onError }: { onDone: (msg: string) => void; on
 
   return (
     <form onSubmit={submit} className="space-y-3">
-      <input className="border rounded-md px-3 py-2 w-full" placeholder="Usuario" value={username} onChange={e => setUsername(e.target.value)} />
-      <input className="border rounded-md px-3 py-2 w-full" placeholder="Nombre (opcional)" value={name} onChange={e => setName(e.target.value)} />
-      <input className="border rounded-md px-3 py-2 w-full" type="password" placeholder="Contraseña" value={password} onChange={e => setPassword(e.target.value)} />
-      <select className="border rounded-md px-3 py-2" value={role} onChange={e => setRole(e.target.value as any)}>
+      <label className="label">Usuario</label>
+      <input className="input-control" placeholder="Usuario" value={username} onChange={e => setUsername(e.target.value)} />
+      <label className="label">Nombre (opcional)</label>
+      <input className="input-control" placeholder="Nombre (opcional)" value={name} onChange={e => setName(e.target.value)} />
+      <label className="label">Contraseña</label>
+      <input className="input-control" type="password" placeholder="Contraseña" value={password} onChange={e => setPassword(e.target.value)} />
+      <label className="label">Rol</label>
+      <select className="select-control max-w-xs" value={role} onChange={e => setRole(e.target.value as any)}>
         <option value="student">Estudiante</option>
         <option value="admin">Admin</option>
         <option value="teacher">Profesor</option>
@@ -149,8 +153,8 @@ function AssignStudentForm({ onDone, onError }: { onDone: (msg: string) => void;
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm mb-1">Estudiante</label>
-              <select className="border rounded-md px-3 py-2 w-full" value={student} onChange={e => setStudent(e.target.value)}>
+              <label className="label">Estudiante</label>
+              <select className="select-control" value={student} onChange={e => setStudent(e.target.value)}>
                 <option value="">Selecciona estudiante…</option>
                 {students.map(s => (
                   <option key={s.id} value={s.username}>{s.username}{s.name ? ` — ${s.name}` : ''}</option>
@@ -158,8 +162,8 @@ function AssignStudentForm({ onDone, onError }: { onDone: (msg: string) => void;
               </select>
             </div>
             <div>
-              <label className="block text-sm mb-1">Profesor</label>
-              <select className="border rounded-md px-3 py-2 w-full" value={teacher} onChange={e => setTeacher(e.target.value)}>
+              <label className="label">Profesor</label>
+              <select className="select-control" value={teacher} onChange={e => setTeacher(e.target.value)}>
                 <option value="">Selecciona profesor…</option>
                 {teachers.map(t => (
                   <option key={t.id} value={t.username}>{t.username}{t.name ? ` — ${t.name}` : ''}</option>
@@ -169,15 +173,15 @@ function AssignStudentForm({ onDone, onError }: { onDone: (msg: string) => void;
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm mb-1">Nivel (opcional)</label>
-              <select className="border rounded-md px-3 py-2 w-full" value={level} onChange={e => setLevel(e.target.value)}>
+              <label className="label">Nivel (opcional)</label>
+              <select className="select-control" value={level} onChange={e => setLevel(e.target.value)}>
                 <option value="">Sin definir</option>
                 {['A1','A2','B1','B2','C1','C2'].map(l => <option key={l} value={l}>{l}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm mb-1">Modalidad (opcional)</label>
-              <select className="border rounded-md px-3 py-2 w-full" value={modality} onChange={e => setModality(e.target.value)}>
+              <label className="label">Modalidad (opcional)</label>
+              <select className="select-control" value={modality} onChange={e => setModality(e.target.value)}>
                 <option value="">Sin definir</option>
                 <option value="virtual">Virtual</option>
                 <option value="presencial">Presencial</option>
@@ -220,33 +224,37 @@ function UsersList() {
   }
 
   return (
-    <section className="bg-white rounded-2xl p-6 shadow-soft mt-6">
-      <h2 className="font-serif text-xl mb-4">Usuarios</h2>
-      <div className="flex gap-3 items-center mb-3">
-        <input className="border rounded-md px-3 py-2 w-full max-w-sm" placeholder="Buscar por usuario o nombre" value={q} onChange={e => { setPage(1); setQ(e.target.value) }} />
-        <button className="btn-primary" onClick={load}>Buscar</button>
+    <section className="card mt-6">
+      <h2 className="section-title">Usuarios</h2>
+      <div className="flex gap-3 items-center mb-3 flex-wrap">
+        <input className="input-control w-full max-w-sm" placeholder="Buscar por usuario o nombre" value={q} onChange={e => { setPage(1); setQ(e.target.value) }} />
+        <button className="btn-secondary" onClick={load}>Buscar</button>
       </div>
       {loading ? <p>Cargando…</p> : (
         <div className="overflow-auto">
-          <table className="min-w-[600px] w-full text-sm">
+          <table className="table-clean">
             <thead>
-              <tr className="text-left border-b">
-                <th className="py-2 pr-2">Usuario</th>
-                <th className="py-2 pr-2">Nombre</th>
-                <th className="py-2 pr-2">Rol</th>
-                <th className="py-2 pr-2">Creado</th>
-                <th className="py-2">Acciones</th>
+              <tr>
+                <th>Usuario</th>
+                <th>Nombre</th>
+                <th>Rol</th>
+                <th>Creado</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
               {items.map(u => (
-                <tr key={u.id} className="border-b">
-                  <td className="py-2 pr-2">{u.username}</td>
-                  <td className="py-2 pr-2">{u.name || '-'}</td>
-                  <td className="py-2 pr-2">{u.role}</td>
-                  <td className="py-2 pr-2">{new Date(u.created_at).toLocaleString()}</td>
-                  <td className="py-2">
-                    <button className="text-brand-purple underline" onClick={() => doReset(u)}>Resetear contraseña</button>
+                <tr key={u.id}>
+                  <td>{u.username}</td>
+                  <td>{u.name || '-'}</td>
+                  <td>
+                    {u.role === 'admin' && <span className="badge-role-admin">Admin</span>}
+                    {u.role === 'teacher' && <span className="badge-role-teacher">Profesor</span>}
+                    {u.role === 'student' && <span className="badge-role-student">Estudiante</span>}
+                  </td>
+                  <td>{new Date(u.created_at).toLocaleString()}</td>
+                  <td>
+                    <button className="btn-ghost underline" onClick={() => doReset(u)}>Resetear contraseña</button>
                   </td>
                 </tr>
               ))}
@@ -255,9 +263,9 @@ function UsersList() {
         </div>
       )}
       <div className="flex items-center gap-3 mt-3">
-        <button className="btn-primary" disabled={page<=1} onClick={() => setPage(p => Math.max(1, p-1))}>Anterior</button>
-        <span>Página {page} de {pages}</span>
-        <button className="btn-primary" disabled={page>=pages} onClick={() => setPage(p => Math.min(pages, p+1))}>Siguiente</button>
+        <button className="btn-secondary" disabled={page<=1} onClick={() => setPage(p => Math.max(1, p-1))}>Anterior</button>
+        <span className="text-sm text-brand-black/70">Página {page} de {pages}</span>
+        <button className="btn-secondary" disabled={page>=pages} onClick={() => setPage(p => Math.min(pages, p+1))}>Siguiente</button>
       </div>
     </section>
   )

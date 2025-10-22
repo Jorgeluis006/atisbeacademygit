@@ -27,6 +27,51 @@
   .btn-primary {
     @apply inline-flex items-center justify-center rounded-full bg-brand-purple text-white px-6 py-3 font-semibold shadow-soft hover:bg-brand-amber hover:text-brand-black transition-all;
   }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-full border border-brand-purple text-brand-purple px-5 py-2.5 font-semibold hover:border-brand-amber hover:text-brand-black hover:bg-brand-amber/20 transition-colors;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center rounded-full text-brand-black/80 px-4 py-2 font-medium hover:text-brand-purple transition-colors;
+  }
+  .input-control {
+    @apply w-full rounded-lg border border-brand-black/10 bg-white px-3 py-2 shadow-inner placeholder-brand-black/40 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple/40;
+  }
+  .select-control {
+    @apply w-full rounded-lg border border-brand-black/10 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple/40;
+  }
+  .label {
+    @apply block text-sm text-brand-black/70 mb-1;
+  }
+  .card {
+    @apply bg-white rounded-2xl p-6 shadow-soft;
+  }
+  .section-title {
+    @apply font-serif text-xl mb-4;
+  }
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+  .badge-role-admin {
+    @apply badge bg-brand-amber/20 text-brand-black border border-brand-amber/40;
+  }
+  .badge-role-teacher {
+    @apply badge bg-brand-purple/15 text-brand-purple border border-brand-purple/30;
+  }
+  .badge-role-student {
+    @apply badge bg-emerald-100 text-emerald-700 border border-emerald-300;
+  }
+  .table-clean {
+    @apply min-w-[700px] w-full text-sm;
+  }
+  .table-clean thead th {
+    @apply text-left uppercase text-brand-black/60 text-xs tracking-wide border-b;
+  }
+  .table-clean tbody tr {
+    @apply border-b hover:bg-brand-black/[0.03];
+  }
+  .table-clean th, .table-clean td {
+    @apply py-2 pr-3 align-middle;
+  }
   .container-padded {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
