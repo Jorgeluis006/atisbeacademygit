@@ -136,3 +136,14 @@ function ensure_teacher_fields() {
     try { $pdo->exec("ALTER TABLE users ADD COLUMN teacher_id INT UNSIGNED NULL"); } catch (Throwable $e) {}
     try { $pdo->exec("CREATE INDEX IF NOT EXISTS idx_users_teacher ON users(teacher_id)"); } catch (Throwable $e) { try { $pdo->exec("CREATE INDEX idx_users_teacher ON users(teacher_id)"); } catch (Throwable $e2) {} }
 }
+
+// Tabla para progreso de estudiante editable por profesores
+function ensure_student_progress_schema() {
+    $sql = "CREATE TABLE IF NOT EXISTS student_progress (
+        user_id INT UNSIGNED PRIMARY KEY,
+        data JSON NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        CONSTRAINT fk_progress_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+    get_pdo()->exec($sql);
+}

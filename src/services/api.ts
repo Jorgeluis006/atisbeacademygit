@@ -48,6 +48,16 @@ export async function getStudentProgress(): Promise<StudentProgress> {
   return res.data?.progreso
 }
 
+// Teacher: progress management
+export async function getStudentProgressFor(studentUsername: string): Promise<{ student: { id: number; username: string; name: string|null }, progreso: StudentProgress }> {
+  const res = await api.get('/teacher/student_progress.php', { params: { student: studentUsername } })
+  return res.data
+}
+
+export async function saveStudentProgress(input: { student_username: string; progreso: StudentProgress }) {
+  return api.post('/teacher/save_progress.php', input)
+}
+
 // Scheduling
 export type ScheduleSlot = { datetime: string; tipo: string; modalidad: string }
 export type Reservation = { id: number; datetime: string; tipo: string; modalidad: string; notas?: string; created_at: string }

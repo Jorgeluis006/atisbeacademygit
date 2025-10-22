@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { me, getTeacherStudents, type TeacherGroupedStudents, logout as apiLogout } from '../services/api'
+import { me, getTeacherStudents, type TeacherGroupedStudents, logout as apiLogout, getStudentProgressFor, saveStudentProgress, type StudentProgress } from '../services/api'
 
 export default function Profesor() {
   const navigate = useNavigate()
   const [auth, setAuth] = useState<{ username: string; name: string; role: string } | null>(null)
   const [loading, setLoading] = useState(true)
   const [groups, setGroups] = useState<TeacherGroupedStudents>({})
+  const [allStudents, setAllStudents] = useState<{ username: string; name?: string }[]>([])
+  const [selStudent, setSelStudent] = useState<string>('')
+  const [prog, setProg] = useState<StudentProgress | null>(null)
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     (async () => {
@@ -14,7 +18,17 @@ export default function Profesor() {
         const u = await me()
         if (u && u.role === 'teacher') {
           setAuth({ username: u.username, name: u.name, role: u.role })
-          setGroups(await getTeacherStudents())
+          const gs = await getTeacherStudents()
+          setGroups(gs)
+          // aplanar lista de estudiantes
+          const flat: { username: string; name?: string }[] = []
+          Object.keys(gs).forEach(k => {
+            const g = gs[k] as { virtual: any[]; presencial: any[]; ['sin-definir']: any[] }
+            ;(['virtual','presencial','sin-definir'] as const).forEach(mod => {
+              (g?.[mod] || []).forEach((s: any) => flat.push({ username: s.username, name: s.name }))
+            })
+          })
+          setAllStudents(flat)
         }
       } finally { setLoading(false) }
     })()
@@ -32,6 +46,70 @@ export default function Profesor() {
 
   return (
     <main className="container-padded py-12">
+      <section className="card mt-6">
+        <h2 className="section-title">Editar progreso del estudiante</h2>
+        <div className="grid sm:grid-cols-3 gap-3 items-end">
+          <div className="sm:col-span-2">
+            <label className="label">Selecciona estudiante</label>
+            <select className="select-control" value={selStudent} onChange={async (e) => {
+              const u = e.target.value; setSelStudent(u); setProg(null)
+              if (u) {
+                try { const res = await getStudentProgressFor(u); setProg(res.progreso) } catch {}
+              }
+            }}>
+              <option value="">—</option>
+              {allStudents.map(s => <option key={s.username} value={s.username}>{s.username}{s.name ? ` — ${s.name}` : ''}</option>)}
+            </select>
+          </div>
+          <div>
+            <button className="btn-primary w-full" disabled={!selStudent || !prog || saving} onClick={async () => {
+              if (!selStudent || !prog) return; setSaving(true)
+              try { await saveStudentProgress({ student_username: selStudent, progreso: prog }); alert('Progreso actualizado'); }
+              catch { alert('No se pudo guardar'); }
+              finally { setSaving(false) }
+            }}>{saving ? 'Guardando…' : 'Guardar'}</button>
+          </div>
+        </div>
+
+        {prog && (
+          <div className="mt-4 grid md:grid-cols-2 gap-4">
+            <div>
+              <label className="label">Asistencia (%)</label>
+              <input type="number" min={0} max={100} className="input-control" value={prog.asistencia} onChange={e => setProg({ ...prog, asistencia: Math.max(0, Math.min(100, Number(e.target.value)||0)) })} />
+            </div>
+            <div>
+              <label className="label">Nivel (MCER)</label>
+              <select className="select-control" value={prog.nivel.mcer} onChange={e => setProg({ ...prog, nivel: { ...prog.nivel, mcer: e.target.value } })}>
+                <option value="">—</option>
+                {['A1','A2','B1','B2','C1','C2'].map(n => <option key={n} value={n}>{n}</option>)}
+              </select>
+            </div>
+            <div className="md:col-span-2">
+              <label className="label">Descripción nivel</label>
+              <textarea className="input-control" rows={3} value={prog.nivel.descripcion} onChange={e => setProg({ ...prog, nivel: { ...prog.nivel, descripcion: e.target.value } })} />
+            </div>
+            <div>
+              <label className="label">Notas (una por línea: Actividad|Nota|YYYY-MM-DD)</label>
+              <textarea className="input-control" rows={5} value={prog.notas.map(n => `${n.actividad}|${n.nota}|${n.fecha}`).join('\n')} onChange={e => {
+                const lines = e.target.value.split(/\n+/).filter(Boolean)
+                const notas = lines.map(l => {
+                  const [actividad='', nota='0', fecha=''] = l.split('|').map(s => s.trim())
+                  return { actividad, nota: Number(nota)||0, fecha }
+                })
+                setProg({ ...prog, notas })
+              }} />
+            </div>
+            <div>
+              <label className="label">Fortalezas (separadas por coma)</label>
+              <textarea className="input-control" rows={5} value={prog.fortalezas.join(', ')} onChange={e => setProg({ ...prog, fortalezas: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })} />
+            </div>
+            <div className="md:col-span-2">
+              <label className="label">Debilidades (separadas por coma)</label>
+              <textarea className="input-control" rows={3} value={prog.debilidades.join(', ')} onChange={e => setProg({ ...prog, debilidades: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })} />
+            </div>
+          </div>
+        )}
+      </section>
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-extrabold">Panel de profesor</h1>
