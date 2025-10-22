@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { me, createUser, disableDemoUser, listUsers, type AdminUser, resetUserPassword, EXPORT_CONTACTS_URL, EXPORT_RESERVATIONS_URL } from '../services/api'
+import { me, createUser, listUsers, type AdminUser, resetUserPassword, EXPORT_CONTACTS_URL, EXPORT_RESERVATIONS_URL } from '../services/api'
 
 export default function Admin() {
   const [auth, setAuth] = useState<{ username: string; name: string; role: string } | null>(null)
@@ -34,16 +34,6 @@ export default function Admin() {
       </section>
 
       <UsersList />
-
-      <section className="bg-white rounded-2xl p-6 shadow-soft mt-6 max-w-xl">
-        <h2 className="font-serif text-xl mb-4">Usuario demo</h2>
-        <p className="text-sm text-brand-black/70 mb-3">Eliminar el usuario demo y evitar que se vuelva a crear.</p>
-        <button className="btn-primary" onClick={async () => {
-          setMsg(''); setErr('')
-          try { await disableDemoUser(); setMsg('Usuario demo eliminado'); }
-          catch { setErr('No se pudo eliminar el demo'); }
-        }}>Eliminar demo</button>
-      </section>
 
       <section className="bg-white rounded-2xl p-6 shadow-soft mt-6 max-w-xl">
         <h2 className="font-serif text-xl mb-4">Exportar datos</h2>
