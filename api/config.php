@@ -7,6 +7,7 @@ if (!defined('DB_HOST')) define('DB_HOST', 'localhost');
 if (!defined('DB_NAME')) define('DB_NAME', 'TUNOMBRE_DB');
 if (!defined('DB_USER')) define('DB_USER', 'TUNOMBRE_USER');
 if (!defined('DB_PASS')) define('DB_PASS', 'TU_PASSWORD');
+if (!defined('DB_PORT')) define('DB_PORT', 3306);
 
 if (!defined('MAIL_TO')) define('MAIL_TO', '');
 if (!defined('ALLOW_ORIGIN')) define('ALLOW_ORIGIN', '');
