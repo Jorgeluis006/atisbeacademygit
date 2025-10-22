@@ -12,6 +12,21 @@ export default function Profesor() {
   const [prog, setProg] = useState<StudentProgress | null>(null)
   const [saving, setSaving] = useState(false)
 
+  function addNote() {
+    if (!prog) return
+    setProg({ ...prog, notas: [...prog.notas, { actividad: '', nota: 0, fecha: '' }] })
+  }
+  function updateNote(idx: number, patch: Partial<{ actividad: string; nota: number; fecha: string }>) {
+    if (!prog) return
+    const notas = prog.notas.map((n, i) => i === idx ? { ...n, ...patch } : n)
+    setProg({ ...prog, notas })
+  }
+  function removeNote(idx: number) {
+    if (!prog) return
+    const notas = prog.notas.filter((_, i) => i !== idx)
+    setProg({ ...prog, notas })
+  }
+
   useEffect(() => {
     (async () => {
       try {
@@ -88,16 +103,22 @@ export default function Profesor() {
               <label className="label">Descripción nivel</label>
               <textarea className="input-control" rows={3} value={prog.nivel.descripcion} onChange={e => setProg({ ...prog, nivel: { ...prog.nivel, descripcion: e.target.value } })} />
             </div>
-            <div>
-              <label className="label">Notas (una por línea: Actividad|Nota|YYYY-MM-DD)</label>
-              <textarea className="input-control" rows={5} value={prog.notas.map(n => `${n.actividad}|${n.nota}|${n.fecha}`).join('\n')} onChange={e => {
-                const lines = e.target.value.split(/\n+/).filter(Boolean)
-                const notas = lines.map(l => {
-                  const [actividad='', nota='0', fecha=''] = l.split('|').map(s => s.trim())
-                  return { actividad, nota: Number(nota)||0, fecha }
-                })
-                setProg({ ...prog, notas })
-              }} />
+            <div className="md:col-span-2">
+              <label className="label">Notas</label>
+              <div className="space-y-2">
+                {prog.notas.length === 0 && (
+                  <p className="text-sm text-brand-black/70">Aún no hay notas. Agrega la primera.</p>
+                )}
+                {prog.notas.map((n, idx) => (
+                  <div key={idx} className="grid sm:grid-cols-[1fr_110px_170px_auto] gap-2">
+                    <input className="input-control" placeholder="Actividad" value={n.actividad} onChange={e => updateNote(idx, { actividad: e.target.value })} />
+                    <input className="input-control" type="number" step={0.1} min={0} max={5} placeholder="Nota" value={Number.isFinite(n.nota) ? n.nota : 0} onChange={e => updateNote(idx, { nota: Math.max(0, Math.min(5, Number(e.target.value)||0)) })} />
+                    <input className="input-control" type="date" value={n.fecha || ''} onChange={e => updateNote(idx, { fecha: e.target.value })} />
+                    <button type="button" className="btn-secondary" onClick={() => removeNote(idx)}>Eliminar</button>
+                  </div>
+                ))}
+                <button type="button" className="btn-ghost" onClick={addNote}>+ Añadir nota</button>
+              </div>
             </div>
             <div>
               <label className="label">Fortalezas (separadas por coma)</label>
