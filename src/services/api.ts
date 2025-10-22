@@ -78,3 +78,16 @@ export async function createUser(input: { username: string; password: string; na
 export async function disableDemoUser() {
   return api.post('/auth/disable_demo.php')
 }
+
+export type AdminUser = { id: number; username: string; name: string | null; role: string; created_at: string }
+export async function listUsers(params: { q?: string; page?: number; limit?: number } = {}): Promise<{ items: AdminUser[]; total: number; page: number; limit: number }> {
+  const res = await api.get('/admin/users.php', { params })
+  return res.data
+}
+
+export async function resetUserPassword(input: { id?: number; username?: string; password: string }) {
+  return api.post('/admin/reset_password.php', input)
+}
+
+export const EXPORT_CONTACTS_URL = '/admin/contacts_export.php'
+export const EXPORT_RESERVATIONS_URL = '/admin/reservations_export.php'
