@@ -10,6 +10,7 @@
   body {
     @apply bg-brand-surface text-brand-black font-sans antialiased min-h-screen;
   }
+  .dark body { @apply bg-[#0b0b0b] text-white/90; }
   h1, h2, h3, h4, h5, h6 {
     @apply font-serif text-brand-black;
   }
@@ -26,24 +27,31 @@
 @layer components {
   .btn-primary {
     @apply inline-flex items-center justify-center rounded-full bg-brand-purple text-white px-6 py-3 font-semibold shadow-soft hover:bg-brand-amber hover:text-brand-black transition-all;
+    @apply dark:bg-brand-purple/80 dark:hover:bg-brand-amber dark:hover:text-black;
   }
   .btn-secondary {
     @apply inline-flex items-center justify-center rounded-full border border-brand-purple text-brand-purple px-5 py-2.5 font-semibold hover:border-brand-amber hover:text-brand-black hover:bg-brand-amber/20 transition-colors;
+    @apply dark:border-white/30 dark:text-white/90 dark:hover:bg-white/10 dark:hover:text-white;
   }
   .btn-ghost {
     @apply inline-flex items-center justify-center rounded-full text-brand-black/80 px-4 py-2 font-medium hover:text-brand-purple transition-colors;
+    @apply dark:text-white/80 dark:hover:text-white;
   }
   .input-control {
     @apply w-full rounded-lg border border-brand-black/10 bg-white px-3 py-2 shadow-inner placeholder-brand-black/40 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple/40;
+    @apply dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder-white/40 dark:shadow-none;
   }
   .select-control {
     @apply w-full rounded-lg border border-brand-black/10 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple/40;
+    @apply dark:bg-white/5 dark:border-white/10 dark:text-white;
   }
   .label {
     @apply block text-sm text-brand-black/70 mb-1;
+    @apply dark:text-white/70;
   }
   .card {
     @apply bg-white rounded-2xl p-6 shadow-soft;
+    @apply dark:bg-white/5 dark:border dark:border-white/10;
   }
   .section-title {
     @apply font-serif text-xl mb-4;
@@ -53,21 +61,26 @@
   }
   .badge-role-admin {
     @apply badge bg-brand-amber/20 text-brand-black border border-brand-amber/40;
+    @apply dark:bg-brand-amber/25 dark:text-white dark:border-brand-amber/40;
   }
   .badge-role-teacher {
     @apply badge bg-brand-purple/15 text-brand-purple border border-brand-purple/30;
+    @apply dark:bg-brand-purple/20 dark:text-white dark:border-brand-purple/40;
   }
   .badge-role-student {
     @apply badge bg-emerald-100 text-emerald-700 border border-emerald-300;
+    @apply dark:bg-emerald-500/20 dark:text-emerald-200 dark:border-emerald-400/40;
   }
   .table-clean {
     @apply min-w-[700px] w-full text-sm;
   }
   .table-clean thead th {
     @apply text-left uppercase text-brand-black/60 text-xs tracking-wide border-b;
+    @apply dark:text-white/60 dark:border-white/10;
   }
   .table-clean tbody tr {
     @apply border-b hover:bg-brand-black/[0.03];
+    @apply dark:border-white/10 dark:hover:bg-white/[0.03];
   }
   .table-clean th, .table-clean td {
     @apply py-2 pr-3 align-middle;
