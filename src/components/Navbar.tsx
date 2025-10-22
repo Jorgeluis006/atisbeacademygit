@@ -18,15 +18,14 @@ export function Navbar() {
   const [isAdmin, setIsAdmin] = useState(false)
   const [isTeacher, setIsTeacher] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => (localStorage.getItem('theme') as any) || 'light')
+  // For now, force light theme to avoid visibility issues reported by user
   useEffect(() => { (async () => { try { const u = await me(); setIsLoggedIn(!!u); setIsAdmin(!!u && u.role === 'admin'); setIsTeacher(!!u && u.role === 'teacher') } catch { setIsLoggedIn(false) } })() }, [])
 
   useEffect(() => {
     const root = document.documentElement
-    if (theme === 'dark') root.classList.add('dark')
-    else root.classList.remove('dark')
-    localStorage.setItem('theme', theme)
-  }, [theme])
+    root.classList.remove('dark')
+    localStorage.setItem('theme', 'light')
+  }, [])
 
   async function handleLogout() {
     try { await logout() } catch {}
@@ -36,7 +35,7 @@ export function Navbar() {
     navigate('/', { replace: true })
   }
   return (
-  <header className="sticky top-0 z-50 bg-brand-surface/80 dark:bg-black/40 backdrop-blur border-b border-brand-pink/20 dark:border-white/10">
+  <header className="sticky top-0 z-50 bg-brand-surface/80 backdrop-blur border-b border-brand-pink/20">
       <div className="container-padded flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-2">
           <div className="w-9 h-9 rounded-full bg-brand-purple" aria-hidden />
@@ -48,7 +47,7 @@ export function Navbar() {
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                `text-sm font-medium ${isActive ? 'text-brand-purple' : 'text-brand-black/80 hover:text-brand-purple'}`
+                `text-sm font-medium ${isActive ? 'text-brand-purple' : 'text-brand-black/80 hover:text-brand-purple dark:text-white/80 dark:hover:text-white'}`
               }
             >
               {item.label}
@@ -71,7 +70,6 @@ export function Navbar() {
               }
             >Profesor</NavLink>
           )}
-          <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="text-sm font-medium text-brand-black/80 hover:text-brand-purple dark:text-white/80 dark:hover:text-white">{theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}</button>
           {isLoggedIn && (
             <button onClick={handleLogout} className="text-sm font-medium text-brand-black/80 hover:text-brand-purple">Salir</button>
           )}
