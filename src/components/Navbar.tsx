@@ -29,7 +29,7 @@ export function Navbar() {
 
   // No logout in navbar per request
   return (
-  <header className="sticky top-0 z-50 bg-brand-surface/80 backdrop-blur border-b border-brand-pink/20">
+  <header className="sticky top-0 z-50 bg-brand-surface border-b border-brand-pink/20">
       <div className="container-padded flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-2">
           <div className="w-9 h-9 rounded-full bg-brand-purple" aria-hidden />
@@ -124,7 +124,7 @@ function MobileDrawer({ children, onClose }: { children: React.ReactNode; onClos
   return (
     <div className="md:hidden">
       {/* overlay */}
-      <div className="fixed inset-0 bg-black/40 z-[70]" onClick={onClose} />
+  <div className="fixed inset-0 bg-brand-surface z-[70]" onClick={onClose} />
       {/* drawer */}
       <div className="fixed top-0 right-0 h-full w-80 max-w-[90%] bg-white z-[80] shadow-soft border-l border-brand-black/10 transform transition-transform duration-300 ease-out translate-x-0">
         <div className="p-3 border-b border-brand-black/10 flex items-center justify-between">
