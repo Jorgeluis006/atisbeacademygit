@@ -25,3 +25,6 @@ if (!defined('SMTP_SECURE')) define('SMTP_SECURE', 'tls');
 if (!defined('SMTP_PORT')) define('SMTP_PORT', 587);
 if (!defined('SMTP_FROM')) define('SMTP_FROM', '');
 if (!defined('SMTP_FROM_NAME')) define('SMTP_FROM_NAME', 'Atisbe Notificador');
+
+// Controla si se siembra el usuario demo al iniciar (por defecto: permitir)
+if (!defined('DISABLE_DEMO_SEED')) define('DISABLE_DEMO_SEED', false);
