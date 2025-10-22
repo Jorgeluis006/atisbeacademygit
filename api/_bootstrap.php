@@ -87,6 +87,9 @@ function ensure_users_schema() {
 }
 
 function seed_demo_user_if_empty() {
+    if (defined('DISABLE_DEMO_SEED') && DISABLE_DEMO_SEED === true) {
+        return;
+    }
     $pdo = get_pdo();
     $count = (int)$pdo->query('SELECT COUNT(*) AS c FROM users')->fetchColumn();
     if ($count === 0) {
@@ -115,4 +118,12 @@ function ensure_schedule_schema() {
         CONSTRAINT fk_res_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
     get_pdo()->exec($sql);
+}
+
+function require_admin() {
+    require_auth();
+    $role = isset($_SESSION['role']) ? (string)$_SESSION['role'] : '';
+    if ($role !== 'admin') {
+        json_error('No autorizado', 403);
+    }
 }
