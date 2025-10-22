@@ -26,7 +26,6 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
       <input className="border rounded-md px-3 py-2 w-full mb-2" type="password" placeholder="Contraseña" value={pass} onChange={(e) => setPass(e.target.value)} />
       {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
       <button className="btn-primary w-full" type="submit" disabled={loading}>{loading ? 'Ingresando…' : 'Ingresar'}</button>
-      <p className="text-xs text-brand-black/60 mt-2">Usuario demo: demo / demo123</p>
     </form>
   )
 }
