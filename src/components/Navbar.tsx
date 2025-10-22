@@ -82,10 +82,11 @@ export function Navbar() {
         </button>
       </div>
 
-      {/* Mobile panel */}
+      {/* Mobile drawer + overlay */}
+      {/* Lock scroll and handle Escape */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-brand-black/10 bg-white/95 backdrop-blur">
-          <div className="container-padded py-3 space-y-1">
+        <MobileDrawer onClose={() => setMobileOpen(false)}>
+          <div className="py-4 space-y-1">
             {navItems.map((item) => (
               <NavLink
                 key={item.to}
@@ -106,9 +107,37 @@ export function Navbar() {
               <NavLink to="/profesor" onClick={() => setMobileOpen(false)} className={({ isActive }) => `block px-2 py-2 rounded-md ${isActive ? 'text-brand-purple' : 'text-brand-black/80 hover:text-brand-purple'}`}>Profesor</NavLink>
             )}
           </div>
-        </div>
+        </MobileDrawer>
       )}
     </header>
+  )
+}
+
+function MobileDrawer({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', onKey)
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = prev }
+  }, [onClose])
+  return (
+    <div className="md:hidden">
+      {/* overlay */}
+      <div className="fixed inset-0 bg-black/40 z-[70]" onClick={onClose} />
+      {/* drawer */}
+      <div className="fixed top-0 right-0 h-full w-80 max-w-[90%] bg-white z-[80] shadow-soft border-l border-brand-black/10 transform transition-transform duration-300 ease-out translate-x-0">
+        <div className="p-3 border-b border-brand-black/10 flex items-center justify-between">
+          <span className="font-serif text-lg">Menú</span>
+          <button className="rounded-md w-8 h-8 inline-flex items-center justify-center hover:text-brand-purple" onClick={onClose} aria-label="Cerrar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <div className="px-4">
+          {children}
+        </div>
+      </div>
+    </div>
   )
 }
 
