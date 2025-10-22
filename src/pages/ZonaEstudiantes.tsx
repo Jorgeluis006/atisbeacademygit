@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { login as apiLogin, logout as apiLogout, me as apiMe, getStudentProgress, type StudentProgress, getScheduleSlots, createReservation, getMyReservations, cancelReservation, type ScheduleSlot, type Reservation } from '../services/api'
 
 function Login({ onSuccess }: { onSuccess: () => void }) {
@@ -31,6 +32,7 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
 }
 
 export default function ZonaEstudiantes() {
+  const navigate = useNavigate()
   const [user, setUser] = useState<{ username: string; name: string; role: string } | null>(null)
   const [progress, setProgress] = useState<StudentProgress | null>(null)
   const [slots, setSlots] = useState<ScheduleSlot[]>([])
@@ -40,8 +42,10 @@ export default function ZonaEstudiantes() {
     (async () => {
       try {
         const u = await apiMe()
+        if (u && u.role === 'admin') { navigate('/admin', { replace: true }); return }
+        if (u && u.role === 'teacher') { navigate('/profesor', { replace: true }); return }
         setUser(u ? { username: u.username, name: u.name, role: u.role } : null)
-        if (u) {
+        if (u && u.role === 'student') {
           try {
             setProgress(await getStudentProgress())
             setSlots(await getScheduleSlots())
@@ -67,7 +71,12 @@ export default function ZonaEstudiantes() {
         <p className="mt-6">Cargando…</p>
       ) : !user ? (
         <div className="mt-6">
-          <Login onSuccess={async () => { const u = await apiMe(); setUser(u ? { username: u.username, name: u.name, role: u.role } : null) }} />
+          <Login onSuccess={async () => {
+            const u = await apiMe();
+            if (u && u.role === 'admin') { navigate('/admin', { replace: true }); return }
+            if (u && u.role === 'teacher') { navigate('/profesor', { replace: true }); return }
+            setUser(u ? { username: u.username, name: u.name, role: u.role } : null)
+          }} />
         </div>
       ) : (
         <>
