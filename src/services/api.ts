@@ -69,3 +69,12 @@ export async function createReservation(input: { datetime: string; tipo: string;
 export async function cancelReservation(id: number) {
   return api.post('/schedule/cancel.php', { id })
 }
+
+// Admin: users
+export async function createUser(input: { username: string; password: string; name?: string; role?: 'student' | 'admin' }) {
+  return api.post('/auth/create_user.php', input)
+}
+
+export async function disableDemoUser() {
+  return api.post('/auth/disable_demo.php')
+}
