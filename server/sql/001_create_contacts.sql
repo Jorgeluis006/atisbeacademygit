@@ -1,0 +1,13 @@
+-- Crear tabla de contactos (si no existe)
+CREATE TABLE IF NOT EXISTS contacts (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(150) NOT NULL,
+  edad VARCHAR(10) NOT NULL,
+  nacionalidad VARCHAR(120) NOT NULL,
+  email VARCHAR(180) NOT NULL,
+  telefono VARCHAR(60) NOT NULL,
+  idioma VARCHAR(120) NOT NULL,
+  modalidad VARCHAR(60) NOT NULL,
+  franja VARCHAR(120) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

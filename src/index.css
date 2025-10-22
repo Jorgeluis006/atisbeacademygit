@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-brand-surface text-brand-black font-sans antialiased min-h-screen;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif text-brand-black;
+  }
+  a {
+    @apply text-brand-purple hover:text-brand-amber transition-colors;
+  }
+  ::selection {
+    background: theme('colors.brand.yellow');
+    color: theme('colors.brand.black');
+  }
+}
+
+/* Reusable components */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-full bg-brand-purple text-white px-6 py-3 font-semibold shadow-soft hover:bg-brand-amber hover:text-brand-black transition-all;
+  }
+  .container-padded {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
