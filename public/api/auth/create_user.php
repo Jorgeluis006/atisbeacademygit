@@ -22,9 +22,10 @@ if ($username === '' || $password === '') {
 if (!preg_match('/^[a-zA-Z0-9_.-]{3,50}$/', $username)) {
     json_error('username inválido', 422);
 }
-if (!in_array($role, ['student','admin'], true)) { $role = 'student'; }
+if (!in_array($role, ['student','admin','teacher'], true)) { $role = 'student'; }
 
 ensure_users_schema();
+ensure_teacher_fields();
 
 try {
     $pdo = get_pdo();

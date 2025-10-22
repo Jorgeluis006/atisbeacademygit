@@ -71,7 +71,7 @@ export async function cancelReservation(id: number) {
 }
 
 // Admin: users
-export async function createUser(input: { username: string; password: string; name?: string; role?: 'student' | 'admin' }) {
+export async function createUser(input: { username: string; password: string; name?: string; role?: 'student' | 'admin' | 'teacher' }) {
   return api.post('/auth/create_user.php', input)
 }
 
@@ -91,3 +91,15 @@ export async function resetUserPassword(input: { id?: number; username?: string;
 
 export const EXPORT_CONTACTS_URL = '/admin/contacts_export.php'
 export const EXPORT_RESERVATIONS_URL = '/admin/reservations_export.php'
+
+// Admin: assign student to teacher
+export async function assignStudent(input: { student_username: string; teacher_username: string; level?: string; modality?: 'virtual' | 'presencial' }) {
+  return api.post('/admin/assign_student.php', input)
+}
+
+// Teacher: list students grouped
+export type TeacherGroupedStudents = Record<string, { virtual: any[]; presencial: any[]; ['sin-definir']: any[] }>
+export async function getTeacherStudents(): Promise<TeacherGroupedStudents> {
+  const res = await api.get('/teacher/students.php')
+  return res.data?.students ?? {}
+}

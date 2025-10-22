@@ -15,7 +15,8 @@ const navItems = [
 
 export function Navbar() {
   const [isAdmin, setIsAdmin] = useState(false)
-  useEffect(() => { (async () => { try { const u = await me(); setIsAdmin(!!u && u.role === 'admin') } catch {} })() }, [])
+  const [isTeacher, setIsTeacher] = useState(false)
+  useEffect(() => { (async () => { try { const u = await me(); setIsAdmin(!!u && u.role === 'admin'); setIsTeacher(!!u && u.role === 'teacher') } catch {} })() }, [])
   return (
     <header className="sticky top-0 z-50 bg-brand-surface/80 backdrop-blur border-b border-brand-pink/20">
       <div className="container-padded flex items-center justify-between h-16">
@@ -43,6 +44,14 @@ export function Navbar() {
                 `text-sm font-medium ${isActive ? 'text-brand-purple' : 'text-brand-black/80 hover:text-brand-purple'}`
               }
             >Admin</NavLink>
+          )}
+          {isTeacher && (
+            <NavLink
+              to="/profesor"
+              className={({ isActive }) =>
+                `text-sm font-medium ${isActive ? 'text-brand-purple' : 'text-brand-black/80 hover:text-brand-purple'}`
+              }
+            >Profesor</NavLink>
           )}
         </nav>
       </div>

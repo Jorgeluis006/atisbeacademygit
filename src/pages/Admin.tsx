@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { me, createUser, listUsers, type AdminUser, resetUserPassword, EXPORT_CONTACTS_URL, EXPORT_RESERVATIONS_URL } from '../services/api'
+import { me, createUser, listUsers, type AdminUser, resetUserPassword, EXPORT_CONTACTS_URL, EXPORT_RESERVATIONS_URL, assignStudent } from '../services/api'
 
 export default function Admin() {
   const [auth, setAuth] = useState<{ username: string; name: string; role: string } | null>(null)
@@ -33,6 +33,11 @@ export default function Admin() {
         <CreateUserForm onDone={(m) => { setMsg(m); setErr('') }} onError={(e) => { setErr(e); setMsg('') }} />
       </section>
 
+      <section className="bg-white rounded-2xl p-6 shadow-soft mt-6 max-w-2xl">
+        <h2 className="font-serif text-xl mb-4">Asignar estudiante a profesor</h2>
+        <AssignStudentForm onDone={(m) => { setMsg(m); setErr('') }} onError={(e) => { setErr(e); setMsg('') }} />
+      </section>
+
       <UsersList />
 
       <section className="bg-white rounded-2xl p-6 shadow-soft mt-6 max-w-xl">
@@ -57,7 +62,7 @@ function CreateUserForm({ onDone, onError }: { onDone: (msg: string) => void; on
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
-  const [role, setRole] = useState<'student' | 'admin'>('student')
+  const [role, setRole] = useState<'student' | 'admin' | 'teacher'>('student')
   const [loading, setLoading] = useState(false)
 
   async function submit(e: React.FormEvent) {
@@ -82,10 +87,108 @@ function CreateUserForm({ onDone, onError }: { onDone: (msg: string) => void; on
       <select className="border rounded-md px-3 py-2" value={role} onChange={e => setRole(e.target.value as any)}>
         <option value="student">Estudiante</option>
         <option value="admin">Admin</option>
+        <option value="teacher">Profesor</option>
       </select>
       <div>
         <button className="btn-primary" type="submit" disabled={loading}>{loading ? 'Creando…' : 'Crear'}</button>
       </div>
+    </form>
+  )
+}
+
+function AssignStudentForm({ onDone, onError }: { onDone: (msg: string) => void; onError: (err: string) => void }) {
+  const [students, setStudents] = useState<AdminUser[]>([])
+  const [teachers, setTeachers] = useState<AdminUser[]>([])
+  const [student, setStudent] = useState('')
+  const [teacher, setTeacher] = useState('')
+  const [level, setLevel] = useState('')
+  const [modality, setModality] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
+
+  useEffect(() => {
+    // Cargar todos los usuarios y filtrar por rol
+    (async () => {
+      try {
+        let page = 1
+        const limit = 50
+        let total = 0
+        let acc: AdminUser[] = []
+        do {
+          const res = await listUsers({ page, limit })
+          acc = acc.concat(res.items)
+          total = res.total
+          page += 1
+        } while (acc.length < total)
+        setStudents(acc.filter(u => u.role === 'student'))
+        setTeachers(acc.filter(u => u.role === 'teacher'))
+      } catch (e) {
+        // Ignorar
+      } finally {
+        setLoading(false)
+      }
+    })()
+  }, [])
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!student || !teacher) { onError('Selecciona estudiante y profesor'); return }
+    setSubmitting(true)
+    try {
+      await assignStudent({ student_username: student, teacher_username: teacher, level: level || undefined, modality: (modality as any) || undefined })
+      setStudent(''); setTeacher(''); setLevel(''); setModality('')
+      onDone('Asignación guardada')
+    } catch (e) {
+      onError('No se pudo asignar')
+    } finally { setSubmitting(false) }
+  }
+
+  return (
+    <form onSubmit={submit} className="space-y-3">
+      {loading ? <p>Cargando usuarios…</p> : (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm mb-1">Estudiante</label>
+              <select className="border rounded-md px-3 py-2 w-full" value={student} onChange={e => setStudent(e.target.value)}>
+                <option value="">Selecciona estudiante…</option>
+                {students.map(s => (
+                  <option key={s.id} value={s.username}>{s.username}{s.name ? ` — ${s.name}` : ''}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm mb-1">Profesor</label>
+              <select className="border rounded-md px-3 py-2 w-full" value={teacher} onChange={e => setTeacher(e.target.value)}>
+                <option value="">Selecciona profesor…</option>
+                {teachers.map(t => (
+                  <option key={t.id} value={t.username}>{t.username}{t.name ? ` — ${t.name}` : ''}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm mb-1">Nivel (opcional)</label>
+              <select className="border rounded-md px-3 py-2 w-full" value={level} onChange={e => setLevel(e.target.value)}>
+                <option value="">Sin definir</option>
+                {['A1','A2','B1','B2','C1','C2'].map(l => <option key={l} value={l}>{l}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm mb-1">Modalidad (opcional)</label>
+              <select className="border rounded-md px-3 py-2 w-full" value={modality} onChange={e => setModality(e.target.value)}>
+                <option value="">Sin definir</option>
+                <option value="virtual">Virtual</option>
+                <option value="presencial">Presencial</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <button className="btn-primary" type="submit" disabled={submitting}>{submitting ? 'Guardando…' : 'Guardar asignación'}</button>
+          </div>
+        </>
+      )}
     </form>
   )
 }

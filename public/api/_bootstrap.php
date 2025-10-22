@@ -127,3 +127,12 @@ function require_admin() {
         json_error('No autorizado', 403);
     }
 }
+
+// Extiende la tabla users con campos para profesores/estudiantes si faltan
+function ensure_teacher_fields() {
+    $pdo = get_pdo();
+    try { $pdo->exec("ALTER TABLE users ADD COLUMN level VARCHAR(10) NULL"); } catch (Throwable $e) {}
+    try { $pdo->exec("ALTER TABLE users ADD COLUMN modality VARCHAR(20) NULL"); } catch (Throwable $e) {}
+    try { $pdo->exec("ALTER TABLE users ADD COLUMN teacher_id INT UNSIGNED NULL"); } catch (Throwable $e) {}
+    try { $pdo->exec("CREATE INDEX IF NOT EXISTS idx_users_teacher ON users(teacher_id)"); } catch (Throwable $e) { try { $pdo->exec("CREATE INDEX idx_users_teacher ON users(teacher_id)"); } catch (Throwable $e2) {} }
+}

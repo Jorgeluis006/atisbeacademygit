@@ -13,6 +13,7 @@ import ZonaEstudiantes from './pages/ZonaEstudiantes'
 import Tienda from './pages/Tienda'
 import Influencers from './pages/Influencers'
 import Admin from './pages/Admin'
+import Profesor from './pages/Profesor'
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/tienda" element={<Tienda />} />
           <Route path="/influencers" element={<Influencers />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/profesor" element={<Profesor />} />
         </Routes>
       </div>
       <Footer />
