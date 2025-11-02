@@ -39,6 +39,26 @@ export default function ZonaEstudiantes() {
   const [slots, setSlots] = useState<ScheduleSlot[]>([])
   const [reservas, setReservas] = useState<Reservation[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadingData, setLoadingData] = useState(false)
+
+  async function loadStudentData() {
+    setLoadingData(true)
+    try {
+      const [prog, slotsData, reservasData] = await Promise.all([
+        getStudentProgress(),
+        getScheduleSlots(),
+        getMyReservations()
+      ])
+      setProgress(prog)
+      setSlots(slotsData)
+      setReservas(reservasData)
+    } catch (err) {
+      console.error('Error loading student data:', err)
+    } finally {
+      setLoadingData(false)
+    }
+  }
+
   useEffect(() => {
     (async () => {
       try {
@@ -47,11 +67,7 @@ export default function ZonaEstudiantes() {
         if (u && u.role === 'teacher') { navigate('/profesor', { replace: true }); return }
         setUser(u ? { username: u.username, name: u.name, role: u.role } : null)
         if (u && u.role === 'student') {
-          try {
-            setProgress(await getStudentProgress())
-            setSlots(await getScheduleSlots())
-            setReservas(await getMyReservations())
-          } catch {}
+          await loadStudentData()
         }
       } finally {
         setLoading(false)
@@ -61,8 +77,10 @@ export default function ZonaEstudiantes() {
 
   async function handleLogout() {
     await apiLogout()
-  setUser(null)
-  setProgress(null)
+    setUser(null)
+    setProgress(null)
+    setSlots([])
+    setReservas([])
   }
 
   return (
@@ -77,12 +95,20 @@ export default function ZonaEstudiantes() {
             if (u && u.role === 'admin') { navigate('/admin', { replace: true }); return }
             if (u && u.role === 'teacher') { navigate('/profesor', { replace: true }); return }
             setUser(u ? { username: u.username, name: u.name, role: u.role } : null)
+            if (u && u.role === 'student') {
+              await loadStudentData()
+            }
           }} />
         </div>
       ) : (
         <>
           <div className="mt-2 text-sm text-brand-black/70">Sesión: {user.name || user.username} ({user.role}) <button className="underline ml-2" onClick={handleLogout}>Salir</button></div>
-          <div className="mt-6 grid gap-6 md:grid-cols-3">
+          {loadingData ? (
+            <div className="mt-6">
+              <p>Cargando datos del estudiante…</p>
+            </div>
+          ) : (
+            <div className="mt-6 grid gap-6 md:grid-cols-3">
             <section className="card">
               <h2 className="section-title">Progreso</h2>
               {!progress ? (
@@ -121,6 +147,7 @@ export default function ZonaEstudiantes() {
               <div className="mt-2 aspect-square rounded-xl bg-gradient-to-br from-brand-purple to-brand-amber" />
             </section>
           </div>
+          )}
         </>
       )}
     </main>
