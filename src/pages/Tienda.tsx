@@ -55,7 +55,8 @@ export default function Tienda() {
     : products.filter(p => p.category === selectedCategory)
 
   const handleWhatsAppContact = (product: Product) => {
-    const message = `Hola! Me interesa el producto: ${product.name} - $${product.price.toFixed(2)}`
+    const price = typeof product.price === 'number' ? product.price : parseFloat(product.price as any)
+    const message = `Hola! Me interesa el producto: ${product.name} - $${price.toFixed(2)}`
     const whatsappUrl = `https://wa.me/51923906862?text=${encodeURIComponent(message)}`
     window.open(whatsappUrl, '_blank')
   }
@@ -184,7 +185,7 @@ export default function Tienda() {
                       <div>
                         <p className="text-xs text-gray-500 mb-1">Precio</p>
                         <p className="text-3xl font-bold text-brand-purple">
-                          ${product.price.toFixed(2)}
+                          ${typeof product.price === 'number' ? product.price.toFixed(2) : parseFloat(product.price as any).toFixed(2)}
                         </p>
                       </div>
                       <button 
