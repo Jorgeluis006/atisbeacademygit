@@ -245,4 +245,19 @@ function ensure_cms_schema() {
         CONSTRAINT fk_blog_author FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
     $pdo->exec($sql);
+    
+    // Tabla de videos de testimonios
+    $sql = "CREATE TABLE IF NOT EXISTS testimonial_videos (
+        id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        title VARCHAR(200) DEFAULT NULL,
+        video_url VARCHAR(255) NOT NULL,
+        thumbnail_url VARCHAR(255) DEFAULT NULL,
+        is_published BOOLEAN DEFAULT TRUE,
+        display_order INT DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX (is_published),
+        INDEX (display_order)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+    $pdo->exec($sql);
 }
