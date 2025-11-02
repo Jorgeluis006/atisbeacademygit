@@ -4,16 +4,7 @@ ensure_cms_schema();
 
 $pdo = get_pdo();
 
-try {
-    // Solo productos activos para el público
-    $stmt = $pdo->query("
-        SELECT id, name, description, price, image_url, category, stock
-        FROM products 
-        WHERE is_active = TRUE 
-        ORDER BY category, name
-    ");
-    
-    json_ok(['items' => $stmt->fetchAll()]);
-} catch (PDOException $e) {
-    json_error($e->getMessage(), 500);
-}
+$stmt = $pdo->query('SELECT * FROM products WHERE is_active = 1 ORDER BY created_at DESC');
+$items = $stmt->fetchAll();
+
+json_ok(['items' => $items]);
