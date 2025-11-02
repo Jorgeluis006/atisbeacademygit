@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../_bootstrap.php';
 require_auth();
+ensure_schedule_schema();
 
 $role = $_SESSION['role'] ?? '';
 if ($role !== 'teacher') {
