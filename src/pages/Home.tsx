@@ -34,6 +34,7 @@ export default function Home() {
       <Hero />
       <CoursesCarousel />
 
+      {/* Testimonios preview */}
       <section className="container-padded py-16">
         <h2 className="text-3xl font-extrabold">Testimonios reales</h2>
         <p className="mt-2 text-brand-black/70">Opiniones auténticas de nuestros estudiantes.</p>
@@ -54,7 +55,7 @@ export default function Home() {
                 )}
                 <div className="flex items-center gap-1 mb-2">
                   {Array.from({ length: t.rating || 5 }).map((_, i) => (
-                    <span key={i} className="text-brand-amber"></span>
+                    <span key={i} className="text-brand-amber">★</span>
                   ))}
                 </div>
                 <p className="text-sm text-brand-black/80">"{t.content.substring(0, 100)}{t.content.length > 100 ? '...' : ''}"</p>
@@ -69,40 +70,7 @@ export default function Home() {
         <Link className="btn-primary mt-8 inline-flex" to="/testimonios">Ver más testimonios</Link>
       </section>
 
-      <section className="container-padded py-12">
-        <h2 className="text-3xl font-extrabold">Blog</h2>
-        {loading ? (
-          <p className="mt-6 text-brand-black/70">Cargando artículos...</p>
-        ) : blogPosts.length === 0 ? (
-          <p className="mt-6 text-brand-black/70">No hay artículos publicados aún.</p>
-        ) : (
-          <div className="mt-6 grid gap-6 md:grid-cols-3">
-            {blogPosts.map((post) => (
-              <Link 
-                key={post.id} 
-                to="/blog" 
-                className="block bg-white rounded-2xl p-6 shadow-soft hover:shadow-lg transition-shadow"
-              >
-                {post.image_url && (
-                  <img src={post.image_url} alt={post.title} className="w-full h-40 object-cover rounded-lg mb-4" />
-                )}
-                <h3 className="font-serif text-xl">{post.title}</h3>
-                {post.excerpt && (
-                  <p className="text-sm text-brand-black/70 mt-2">{post.excerpt.substring(0, 80)}...</p>
-                )}
-                {post.category && (
-                  <span className="inline-block mt-2 px-2 py-1 text-xs bg-brand-purple/10 text-brand-purple rounded">
-                    {post.category}
-                  </span>
-                )}
-                <p className="text-sm text-brand-purple mt-2">Leer más </p>
-              </Link>
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* Videos section */}
+      {/* Videos de testimonios */}
       <section className="container-padded py-12">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-3xl font-extrabold">Videos de testimonios</h2>
@@ -142,6 +110,41 @@ export default function Home() {
         )}
       </section>
 
+      {/* Blog teaser */}
+      <section className="container-padded py-12">
+        <h2 className="text-3xl font-extrabold">Blog</h2>
+        {loading ? (
+          <p className="mt-6 text-brand-black/70">Cargando artículos...</p>
+        ) : blogPosts.length === 0 ? (
+          <p className="mt-6 text-brand-black/70">No hay artículos publicados aún.</p>
+        ) : (
+          <div className="mt-6 grid gap-6 md:grid-cols-3">
+            {blogPosts.map((post) => (
+              <Link 
+                key={post.id} 
+                to="/blog" 
+                className="block bg-white rounded-2xl p-6 shadow-soft hover:shadow-lg transition-shadow"
+              >
+                {post.image_url && (
+                  <img src={post.image_url} alt={post.title} className="w-full h-40 object-cover rounded-lg mb-4" />
+                )}
+                <h3 className="font-serif text-xl">{post.title}</h3>
+                {post.excerpt && (
+                  <p className="text-sm text-brand-black/70 mt-2">{post.excerpt.substring(0, 80)}...</p>
+                )}
+                {post.category && (
+                  <span className="inline-block mt-2 px-2 py-1 text-xs bg-brand-purple/10 text-brand-purple rounded">
+                    {post.category}
+                  </span>
+                )}
+                <p className="text-sm text-brand-purple mt-2">Leer más →</p>
+              </Link>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Pago QR */}
       <section className="container-padded py-12">
         <h2 className="text-3xl font-extrabold">Pago</h2>
         <div className="mt-4 bg-white rounded-2xl p-6 shadow-soft grid md:grid-cols-2 gap-6 items-center">
