@@ -99,7 +99,7 @@ export default function ZonaEstudiantes() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-white to-gray-50">
+    <main className="bg-gradient-to-b from-white to-gray-50">
       <div className="container-padded py-12">
         <h1 className="text-4xl font-extrabold text-center mb-8">Zona de estudiantes</h1>
         {loading ? (
@@ -107,7 +107,7 @@ export default function ZonaEstudiantes() {
             <p className="text-xl text-gray-500">Cargando…</p>
           </div>
         ) : !user ? (
-          <div className="flex justify-center items-center py-12">
+          <div className="flex justify-center items-center py-8">
             <Login onSuccess={async () => {
               const u = await apiMe();
               if (u && u.role === 'admin') { navigate('/admin', { replace: true }); return }

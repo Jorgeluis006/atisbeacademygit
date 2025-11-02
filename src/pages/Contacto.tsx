@@ -25,7 +25,7 @@ export default function Contacto() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-white to-gray-50 py-12 flex items-center justify-center">
+    <main className="bg-gradient-to-b from-white to-gray-50 py-12">
       <div className="container-padded w-full">
         <div className="max-w-3xl mx-auto">
           <h1 className="text-4xl font-extrabold text-center mb-8">Contacto</h1>
