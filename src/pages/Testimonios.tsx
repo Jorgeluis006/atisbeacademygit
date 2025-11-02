@@ -24,67 +24,170 @@ export default function Testimonios() {
   }, [])
 
   return (
-    <main className="container-padded py-12">
-      <h1 className="text-4xl font-extrabold">Testimonios reales</h1>
-      {loading ? (
-        <p className="mt-6">Cargando testimonios...</p>
-      ) : items.length === 0 ? (
-        <p className="mt-6 text-brand-black/70">Aún no hay testimonios publicados.</p>
-      ) : (
-        <div className="mt-6 grid gap-6 md:grid-cols-2">
-          {items.map((t) => (
-            <article key={t.id} className="bg-white rounded-2xl p-6 shadow-soft">
-              {t.image_url ? (
-                <img src={t.image_url} alt={t.author_name} className="w-12 h-12 rounded-full object-cover mb-3" />
-              ) : (
-                <div className="w-12 h-12 rounded-full bg-brand-pink/60 mb-3 flex items-center justify-center text-white font-bold">
-                  {t.author_name.charAt(0).toUpperCase()}
-                </div>
-              )}
-              <div className="flex items-center gap-1 mb-2">
-                {Array.from({ length: t.rating || 5 }).map((_, i) => (
-                  <span key={i} className="text-brand-amber">★</span>
-                ))}
-              </div>
-              <p className="text-brand-black/80">"{t.content}"</p>
-              <div className="mt-3">
-                <div className="font-semibold text-brand-black">{t.author_name}</div>
-                {t.author_role && <div className="text-sm text-brand-black/60">{t.author_role}</div>}
-              </div>
-            </article>
-          ))}
+    <main className="min-h-screen bg-gradient-to-b from-white via-purple-50/30 to-white">
+      {/* Hero Header */}
+      <div className="bg-gradient-to-r from-brand-purple to-purple-600 text-white py-20">
+        <div className="container-padded text-center">
+          <h1 className="text-5xl md:text-6xl font-extrabold mb-4">
+            Lo que dicen nuestros estudiantes
+          </h1>
+          <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto">
+            Historias reales de personas que han transformado su inglés con nosotros
+          </p>
         </div>
-      )}
-      <div className="mt-10">
-        <h2 className="font-serif text-2xl">Videos</h2>
-        {videos.length === 0 ? (
-          <p className="mt-4 text-brand-black/70">Aún no hay videos publicados.</p>
+      </div>
+
+      {/* Testimonials Section */}
+      <div className="container-padded py-16">
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <p className="text-xl text-gray-500">Cargando testimonios...</p>
+          </div>
+        ) : items.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-xl text-gray-500">Aún no hay testimonios publicados.</p>
+          </div>
         ) : (
-          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {videos.map((video) => (
-              <div key={video.id} className="aspect-video rounded-xl overflow-hidden bg-brand-black/10 shadow-soft">
-                {video.video_url.includes('youtube') || video.video_url.includes('vimeo') ? (
-                  <iframe
-                    src={video.video_url}
-                    title={video.title || 'Video'}
-                    className="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                ) : (
-                  <video
-                    src={video.video_url}
-                    controls
-                    className="w-full h-full object-cover"
-                    poster={video.thumbnail_url}
-                  >
-                    Tu navegador no soporta el elemento de video.
-                  </video>
-                )}
+          <div className="max-w-6xl mx-auto">
+            {/* Stats Bar */}
+            <div className="grid grid-cols-3 gap-4 mb-12 bg-white rounded-2xl p-8 shadow-lg">
+              <div className="text-center">
+                <div className="text-4xl font-bold text-brand-purple mb-2">{items.length}+</div>
+                <div className="text-gray-600">Testimonios</div>
               </div>
-            ))}
+              <div className="text-center border-x border-gray-200">
+                <div className="text-4xl font-bold text-brand-purple mb-2">5.0</div>
+                <div className="text-gray-600 flex items-center justify-center gap-1">
+                  <span className="text-brand-amber">★★★★★</span>
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-bold text-brand-purple mb-2">98%</div>
+                <div className="text-gray-600">Satisfacción</div>
+              </div>
+            </div>
+
+            {/* Testimonials Grid - Masonry Style */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {items.map((t, index) => (
+                <article 
+                  key={t.id} 
+                  className={`bg-white rounded-2xl p-8 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 ${
+                    index % 3 === 0 ? 'lg:col-span-2' : ''
+                  }`}
+                  style={{
+                    borderTop: '4px solid',
+                    borderColor: index % 3 === 0 ? '#8B5CF6' : index % 3 === 1 ? '#EC4899' : '#F59E0B'
+                  }}
+                >
+                  {/* Quote Icon */}
+                  <div className="text-6xl text-brand-purple/20 leading-none mb-4">"</div>
+                  
+                  {/* Rating */}
+                  <div className="flex items-center gap-1 mb-4">
+                    {Array.from({ length: t.rating || 5 }).map((_, i) => (
+                      <span key={i} className="text-brand-amber text-xl">★</span>
+                    ))}
+                  </div>
+
+                  {/* Content */}
+                  <p className="text-gray-700 text-lg leading-relaxed mb-6 italic">
+                    {t.content}
+                  </p>
+
+                  {/* Author */}
+                  <div className="flex items-center gap-4 pt-4 border-t border-gray-100">
+                    {t.image_url ? (
+                      <img 
+                        src={t.image_url} 
+                        alt={t.author_name} 
+                        className="w-14 h-14 rounded-full object-cover ring-2 ring-brand-purple/20" 
+                      />
+                    ) : (
+                      <div className="w-14 h-14 rounded-full bg-gradient-to-br from-brand-purple to-brand-pink flex items-center justify-center text-white font-bold text-xl shadow-md">
+                        {t.author_name.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <div>
+                      <div className="font-bold text-gray-900 text-lg">{t.author_name}</div>
+                      {t.author_role && (
+                        <div className="text-sm text-gray-500">{t.author_role}</div>
+                      )}
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         )}
+      </div>
+
+      {/* Videos Section */}
+      {videos.length > 0 && (
+        <div className="bg-gradient-to-b from-gray-50 to-white py-16">
+          <div className="container-padded">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-12">
+                <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                  Testimonios en video
+                </h2>
+                <p className="text-xl text-gray-600">
+                  Escucha directamente de nuestros estudiantes
+                </p>
+              </div>
+
+              <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                {videos.map((video) => (
+                  <div 
+                    key={video.id} 
+                    className="group relative rounded-2xl overflow-hidden bg-gray-900 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+                  >
+                    <div className="aspect-video">
+                      {video.video_url.includes('youtube') || video.video_url.includes('vimeo') ? (
+                        <iframe
+                          src={video.video_url}
+                          title={video.title || 'Video testimonio'}
+                          className="w-full h-full"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      ) : (
+                        <video
+                          src={video.video_url}
+                          controls
+                          className="w-full h-full object-cover"
+                          poster={video.thumbnail_url}
+                        >
+                          Tu navegador no soporta el elemento de video.
+                        </video>
+                      )}
+                    </div>
+                    {video.title && (
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                        <h3 className="text-white font-semibold">{video.title}</h3>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* CTA Section */}
+      <div className="bg-brand-purple text-white py-16">
+        <div className="container-padded text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            ¿Listo para ser nuestro próximo testimonio de éxito?
+          </h2>
+          <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
+            Únete a cientos de estudiantes que han alcanzado sus metas en inglés
+          </p>
+          <button className="bg-white text-brand-purple px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all hover:scale-105 shadow-lg">
+            Comienza ahora
+          </button>
+        </div>
       </div>
     </main>
   )
