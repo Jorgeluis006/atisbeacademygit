@@ -133,3 +133,113 @@ export async function getTeacherReservations(): Promise<Reservation[]> {
   const res = await api.get('/teacher/reservations.php')
   return res.data?.reservations ?? []
 }
+
+// CMS: Testimonials
+export type Testimonial = {
+  id?: number
+  author_name: string
+  author_role?: string
+  content: string
+  rating?: number
+  image_url?: string
+  is_published?: boolean
+  display_order?: number
+}
+
+export async function getTestimonials(): Promise<Testimonial[]> {
+  const res = await api.get('/public/testimonials.php')
+  return res.data?.items ?? []
+}
+
+export async function getAdminTestimonials(): Promise<Testimonial[]> {
+  const res = await api.get('/admin/testimonials.php')
+  return res.data?.items ?? []
+}
+
+export async function createTestimonial(input: Testimonial) {
+  return api.post('/admin/testimonials.php', input)
+}
+
+export async function updateTestimonial(input: Testimonial) {
+  return api.put('/admin/testimonials.php', input)
+}
+
+export async function deleteTestimonial(id: number) {
+  return api.delete('/admin/testimonials.php', { data: { id } })
+}
+
+// CMS: Courses
+export type Course = {
+  id?: number
+  title: string
+  description: string
+  price?: number
+  duration?: string
+  level?: string
+  modality?: string
+  image_url?: string
+  syllabus?: string
+  is_published?: boolean
+  display_order?: number
+}
+
+export async function getCourses(): Promise<Course[]> {
+  const res = await api.get('/public/courses.php')
+  return res.data?.items ?? []
+}
+
+export async function getAdminCourses(): Promise<Course[]> {
+  const res = await api.get('/admin/courses.php')
+  return res.data?.items ?? []
+}
+
+export async function createCourse(input: Course) {
+  return api.post('/admin/courses.php', input)
+}
+
+export async function updateCourse(input: Course) {
+  return api.put('/admin/courses.php', input)
+}
+
+export async function deleteCourse(id: number) {
+  return api.delete('/admin/courses.php', { data: { id } })
+}
+
+// CMS: Blog
+export type BlogPost = {
+  id?: number
+  title: string
+  slug?: string
+  excerpt?: string
+  content: string
+  author_id?: number
+  author_name?: string
+  author_username?: string
+  image_url?: string
+  category?: string
+  tags?: string
+  is_published?: boolean
+  published_at?: string
+}
+
+export async function getBlogPosts(): Promise<BlogPost[]> {
+  const res = await api.get('/public/blog.php')
+  return res.data?.items ?? []
+}
+
+export async function getAdminBlogPosts(): Promise<BlogPost[]> {
+  const res = await api.get('/admin/blog.php')
+  return res.data?.items ?? []
+}
+
+export async function createBlogPost(input: BlogPost) {
+  return api.post('/admin/blog.php', input)
+}
+
+export async function updateBlogPost(input: BlogPost) {
+  return api.put('/admin/blog.php', input)
+}
+
+export async function deleteBlogPost(id: number) {
+  return api.delete('/admin/blog.php', { data: { id } })
+}

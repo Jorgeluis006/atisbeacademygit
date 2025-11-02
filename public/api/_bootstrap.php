@@ -182,3 +182,67 @@ function ensure_student_progress_schema() {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
     get_pdo()->exec($sql);
 }
+
+// Tablas para CMS: testimonios, cursos, blog
+function ensure_cms_schema() {
+    $pdo = get_pdo();
+    
+    // Tabla de testimonios
+    $sql = "CREATE TABLE IF NOT EXISTS testimonials (
+        id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        author_name VARCHAR(150) NOT NULL,
+        author_role VARCHAR(100) DEFAULT NULL,
+        content TEXT NOT NULL,
+        rating INT DEFAULT 5,
+        image_url VARCHAR(255) DEFAULT NULL,
+        is_published BOOLEAN DEFAULT TRUE,
+        display_order INT DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX (is_published),
+        INDEX (display_order)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+    $pdo->exec($sql);
+    
+    // Tabla de cursos
+    $sql = "CREATE TABLE IF NOT EXISTS courses (
+        id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        title VARCHAR(200) NOT NULL,
+        description TEXT NOT NULL,
+        price DECIMAL(10,2) DEFAULT NULL,
+        duration VARCHAR(100) DEFAULT NULL,
+        level VARCHAR(50) DEFAULT NULL,
+        modality VARCHAR(50) DEFAULT 'virtual',
+        image_url VARCHAR(255) DEFAULT NULL,
+        syllabus TEXT DEFAULT NULL,
+        is_published BOOLEAN DEFAULT TRUE,
+        display_order INT DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX (is_published),
+        INDEX (display_order)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+    $pdo->exec($sql);
+    
+    // Tabla de posts de blog
+    $sql = "CREATE TABLE IF NOT EXISTS blog_posts (
+        id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        title VARCHAR(200) NOT NULL,
+        slug VARCHAR(220) UNIQUE NOT NULL,
+        excerpt TEXT DEFAULT NULL,
+        content TEXT NOT NULL,
+        author_id INT UNSIGNED DEFAULT NULL,
+        image_url VARCHAR(255) DEFAULT NULL,
+        category VARCHAR(100) DEFAULT NULL,
+        tags TEXT DEFAULT NULL,
+        is_published BOOLEAN DEFAULT TRUE,
+        published_at TIMESTAMP NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX (slug),
+        INDEX (is_published),
+        INDEX (category),
+        CONSTRAINT fk_blog_author FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+    $pdo->exec($sql);
+}
