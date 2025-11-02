@@ -2,23 +2,44 @@
 require_once __DIR__ . '/../_bootstrap.php';
 require_auth();
 
-// Genera slots para los próximos 14 días (ejemplo simple)
-$now = new DateTime('now');
-$slots = [];
-for ($d = 0; $d < 14; $d++) {
-    $date = (clone $now)->modify("+{$d} day");
-    // Evitar domingos (opcional)
-    $dow = (int)$date->format('N'); // 1..7
-    if ($dow === 7) continue;
-    foreach (['10:00','16:00','19:00'] as $t) {
-        $dt = DateTime::createFromFormat('Y-m-d H:i', $date->format('Y-m-d') . ' ' . $t);
-        if ($dt < $now) continue;
-        $slots[] = [
-            'datetime' => $dt->format(DateTime::ATOM),
-            'tipo' => 'clase',
-            'modalidad' => 'virtual',
-        ];
-    }
+$user_id = (int)$_SESSION['user_id'];
+
+// Obtener el profesor asignado al estudiante
+$pdo = get_pdo();
+$stmt = $pdo->prepare('SELECT teacher_id FROM users WHERE id = ?');
+$stmt->execute([$user_id]);
+$user = $stmt->fetch();
+
+if (!$user || !$user['teacher_id']) {
+    // Si no tiene profesor asignado, retornar slots vacíos o un mensaje
+    json_ok(['slots' => [], 'message' => 'No tienes un profesor asignado aún']);
+}
+
+$teacher_id = (int)$user['teacher_id'];
+
+// Obtener los slots disponibles del profesor
+$stmt = $pdo->prepare('
+    SELECT 
+        id,
+        datetime,
+        tipo,
+        modalidad,
+        duration_minutes,
+        is_available
+    FROM teacher_slots
+    WHERE teacher_id = ? 
+      AND is_available = TRUE
+      AND datetime > NOW()
+    ORDER BY datetime ASC
+');
+$stmt->execute([$teacher_id]);
+$slots = $stmt->fetchAll();
+
+// Formatear para el frontend
+foreach ($slots as &$slot) {
+    $dt = new DateTime($slot['datetime']);
+    $slot['datetime'] = $dt->format(DateTime::ATOM);
 }
 
 json_ok(['slots' => $slots]);
+

@@ -128,9 +128,7 @@ export default function ZonaEstudiantes() {
 }
 
 function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: ScheduleSlot[]; reservas: Reservation[]; onBooked: () => void; onCancel: () => void }) {
-  const [selected, setSelected] = useState<string>('')
-  const [tipo, setTipo] = useState<string>('clase')
-  const [modalidad, setModalidad] = useState<string>('virtual')
+  const [selected, setSelected] = useState<ScheduleSlot | null>(null)
   const [notas, setNotas] = useState<string>('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -140,12 +138,18 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
     if (!selected) { setError('Selecciona un horario'); return }
     setLoading(true); setError(''); setOk('')
     try {
-      await createReservation({ datetime: selected, tipo, modalidad, notas: notas || undefined })
+      await createReservation({ 
+        datetime: selected.datetime, 
+        tipo: selected.tipo, 
+        modalidad: selected.modalidad, 
+        notas: notas || undefined,
+        slot_id: selected.id
+      })
       setOk('Reserva creada')
-      setSelected(''); setNotas('')
+      setSelected(null); setNotas('')
       await onBooked()
     } catch (e: any) {
-      setError('No se pudo crear la reserva')
+      setError(e?.response?.data?.error || 'No se pudo crear la reserva')
     } finally {
       setLoading(false)
     }
@@ -166,26 +170,23 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
 
   return (
     <div className="mt-3">
-      <div className="grid md:grid-cols-2 gap-3">
-        <select className="select-control" value={selected} onChange={(e) => setSelected(e.target.value)}>
+      <div className="grid gap-3">
+        <select 
+          className="select-control" 
+          value={selected?.id || ''} 
+          onChange={(e) => {
+            const slot = slots.find(s => s.id === Number(e.target.value))
+            setSelected(slot || null)
+          }}
+        >
           <option value="">Selecciona un horario</option>
           {slots.map((s) => (
-            <option key={s.datetime} value={s.datetime}>
-              {new Date(s.datetime).toLocaleString()} ({s.modalidad})
+            <option key={s.id} value={s.id}>
+              {new Date(s.datetime).toLocaleString()} - {s.tipo} ({s.modalidad})
             </option>
           ))}
         </select>
-        <div className="grid grid-cols-2 gap-3">
-          <select className="select-control" value={tipo} onChange={(e) => setTipo(e.target.value)}>
-            <option value="clase">Clase</option>
-            <option value="examen">Examen</option>
-          </select>
-          <select className="select-control" value={modalidad} onChange={(e) => setModalidad(e.target.value)}>
-            <option value="virtual">Virtual</option>
-            <option value="presencial">Presencial</option>
-          </select>
-        </div>
-        <input className="input-control md:col-span-2" placeholder="Notas (opcional)" value={notas} onChange={(e) => setNotas(e.target.value)} />
+        <input className="input-control" placeholder="Notas (opcional)" value={notas} onChange={(e) => setNotas(e.target.value)} />
       </div>
       <div className="mt-3">
         <button className="btn-primary" disabled={loading} onClick={reservar}>{loading ? 'Procesando…' : 'Agendar'}</button>

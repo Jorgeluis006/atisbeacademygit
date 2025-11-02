@@ -1,6 +1,20 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { me, getTeacherStudents, type TeacherGroupedStudents, logout as apiLogout, getStudentProgressFor, saveStudentProgress, type StudentProgress } from '../services/api'
+import { 
+  me, 
+  getTeacherStudents, 
+  type TeacherGroupedStudents, 
+  logout as apiLogout, 
+  getStudentProgressFor, 
+  saveStudentProgress, 
+  type StudentProgress,
+  getTeacherSlots,
+  createTeacherSlot,
+  deleteTeacherSlot,
+  getTeacherReservations,
+  type ScheduleSlot,
+  type Reservation
+} from '../services/api'
 
 export default function Profesor() {
   const navigate = useNavigate()
@@ -11,6 +25,43 @@ export default function Profesor() {
   const [selStudent, setSelStudent] = useState<string>('')
   const [prog, setProg] = useState<StudentProgress | null>(null)
   const [saving, setSaving] = useState(false)
+
+  // Slots y reservas
+  const [slots, setSlots] = useState<ScheduleSlot[]>([])
+  const [reservations, setReservations] = useState<Reservation[]>([])
+  const [newSlot, setNewSlot] = useState({ datetime: '', tipo: 'clase', modalidad: 'virtual', duration_minutes: 60 })
+  const [creatingSlot, setCreatingSlot] = useState(false)
+
+  async function handleCreateSlot() {
+    if (!newSlot.datetime) {
+      alert('Por favor selecciona una fecha y hora')
+      return
+    }
+    setCreatingSlot(true)
+    try {
+      await createTeacherSlot(newSlot)
+      const updated = await getTeacherSlots()
+      setSlots(updated)
+      setNewSlot({ datetime: '', tipo: 'clase', modalidad: 'virtual', duration_minutes: 60 })
+      alert('Horario creado exitosamente')
+    } catch (err: any) {
+      alert(err?.response?.data?.error || 'No se pudo crear el horario')
+    } finally {
+      setCreatingSlot(false)
+    }
+  }
+
+  async function handleDeleteSlot(id: number) {
+    if (!confirm('¿Eliminar este horario?')) return
+    try {
+      await deleteTeacherSlot(id)
+      const updated = await getTeacherSlots()
+      setSlots(updated)
+    } catch (err: any) {
+      alert(err?.response?.data?.error || 'No se pudo eliminar')
+    }
+  }
+
 
   function addNote() {
     if (!prog) return
@@ -44,6 +95,13 @@ export default function Profesor() {
             })
           })
           setAllStudents(flat)
+          // Cargar slots y reservas del profesor
+          const [slotsRes, reservationsRes] = await Promise.all([
+            getTeacherSlots(),
+            getTeacherReservations()
+          ])
+          setSlots(slotsRes)
+          setReservations(reservationsRes)
         }
       } finally { setLoading(false) }
     })()
@@ -61,6 +119,131 @@ export default function Profesor() {
 
   return (
     <main className="container-padded py-12">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold">Panel de profesor</h1>
+          <p className="text-sm text-brand-black/70 mt-1">Sesión: {auth.name || auth.username}</p>
+        </div>
+        <button className="btn-secondary" onClick={async () => { try { await apiLogout() } finally { navigate('/', { replace: true }) } }}>Salir</button>
+      </div>
+
+      {/* Gestión de horarios */}
+      <section className="card mt-6">
+        <h2 className="section-title">Gestión de horarios</h2>
+        <p className="text-sm text-brand-black/70 mb-4">Crea horarios disponibles para que tus estudiantes los reserven.</p>
+        
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end mb-6">
+          <div className="lg:col-span-2">
+            <label className="label">Fecha y hora</label>
+            <input 
+              type="datetime-local" 
+              className="input-control" 
+              value={newSlot.datetime} 
+              onChange={e => setNewSlot({ ...newSlot, datetime: e.target.value })} 
+            />
+          </div>
+          <div>
+            <label className="label">Tipo</label>
+            <select className="select-control" value={newSlot.tipo} onChange={e => setNewSlot({ ...newSlot, tipo: e.target.value })}>
+              <option value="clase">Clase</option>
+              <option value="examen">Examen</option>
+            </select>
+          </div>
+          <div>
+            <label className="label">Modalidad</label>
+            <select className="select-control" value={newSlot.modalidad} onChange={e => setNewSlot({ ...newSlot, modalidad: e.target.value })}>
+              <option value="virtual">Virtual</option>
+              <option value="presencial">Presencial</option>
+            </select>
+          </div>
+          <div>
+            <button 
+              className="btn-primary w-full" 
+              disabled={creatingSlot || !newSlot.datetime} 
+              onClick={handleCreateSlot}
+            >
+              {creatingSlot ? 'Creando...' : 'Crear horario'}
+            </button>
+          </div>
+        </div>
+
+        {slots.length === 0 ? (
+          <p className="text-sm text-brand-black/70">No tienes horarios creados aún.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="table-clean">
+              <thead>
+                <tr>
+                  <th>Fecha y hora</th>
+                  <th>Tipo</th>
+                  <th>Modalidad</th>
+                  <th>Duración</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {slots.map(slot => {
+                  const dt = new Date(slot.datetime)
+                  return (
+                    <tr key={slot.id}>
+                      <td>{dt.toLocaleString('es-ES')}</td>
+                      <td><span className={`inline-block px-2 py-1 rounded text-xs font-semibold ${slot.tipo === 'examen' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'}`}>{slot.tipo}</span></td>
+                      <td>{slot.modalidad}</td>
+                      <td>{slot.duration_minutes || 60} min</td>
+                      <td><span className="inline-block px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-700">Disponible</span></td>
+                      <td>
+                        <button className="btn-ghost text-sm" onClick={() => handleDeleteSlot(slot.id!)}>Eliminar</button>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      {/* Reservas de estudiantes */}
+      <section className="card mt-6">
+        <h2 className="section-title">Reservas de estudiantes</h2>
+        {reservations.length === 0 ? (
+          <p className="text-sm text-brand-black/70">Aún no hay reservas.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="table-clean">
+              <thead>
+                <tr>
+                  <th>Estudiante</th>
+                  <th>Fecha y hora</th>
+                  <th>Tipo</th>
+                  <th>Modalidad</th>
+                  <th>Notas</th>
+                </tr>
+              </thead>
+              <tbody>
+                {reservations.map(res => {
+                  const dt = new Date(res.datetime)
+                  return (
+                    <tr key={res.id}>
+                      <td>
+                        <div className="font-semibold">{res.student_name || res.student_username}</div>
+                        <div className="text-xs text-brand-black/70">{res.student_username}</div>
+                      </td>
+                      <td>{dt.toLocaleString('es-ES')}</td>
+                      <td><span className={`inline-block px-2 py-1 rounded text-xs font-semibold ${res.tipo === 'examen' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'}`}>{res.tipo}</span></td>
+                      <td>{res.modalidad}</td>
+                      <td className="text-sm text-brand-black/70">{res.notas || '—'}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      {/* Editor de progreso */}
       <section className="card mt-6">
         <h2 className="section-title">Editar progreso del estudiante</h2>
         <div className="grid sm:grid-cols-3 gap-3 items-end">
@@ -131,14 +314,8 @@ export default function Profesor() {
           </div>
         )}
       </section>
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold">Panel de profesor</h1>
-          <p className="text-sm text-brand-black/70 mt-1">Sesión: {auth.name || auth.username}</p>
-        </div>
-        <button className="btn-secondary" onClick={async () => { try { await apiLogout() } finally { navigate('/', { replace: true }) } }}>Salir</button>
-      </div>
 
+      {/* Lista de estudiantes agrupados */}
       {levels.length === 0 ? (
         <p className="mt-6">Aún no tienes estudiantes asignados.</p>
       ) : (

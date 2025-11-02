@@ -59,8 +59,8 @@ export async function saveStudentProgress(input: { student_username: string; pro
 }
 
 // Scheduling
-export type ScheduleSlot = { datetime: string; tipo: string; modalidad: string }
-export type Reservation = { id: number; datetime: string; tipo: string; modalidad: string; notas?: string; created_at: string }
+export type ScheduleSlot = { id?: number; datetime: string; tipo: string; modalidad: string; duration_minutes?: number }
+export type Reservation = { id: number; datetime: string; tipo: string; modalidad: string; notas?: string; created_at: string; student_id?: number; student_name?: string; student_username?: string }
 
 export async function getScheduleSlots(): Promise<ScheduleSlot[]> {
   const res = await api.get('/schedule/slots.php')
@@ -72,7 +72,7 @@ export async function getMyReservations(): Promise<Reservation[]> {
   return res.data?.reservas ?? []
 }
 
-export async function createReservation(input: { datetime: string; tipo: string; modalidad: string; notas?: string }) {
+export async function createReservation(input: { datetime: string; tipo: string; modalidad: string; notas?: string; slot_id?: number }) {
   return api.post('/schedule/reserve.php', input)
 }
 
@@ -112,4 +112,24 @@ export type TeacherGroupedStudents = Record<string, { virtual: any[]; presencial
 export async function getTeacherStudents(): Promise<TeacherGroupedStudents> {
   const res = await api.get('/teacher/students.php')
   return res.data?.students ?? {}
+}
+
+// Teacher: manage slots
+export async function getTeacherSlots(): Promise<ScheduleSlot[]> {
+  const res = await api.get('/teacher/slots.php')
+  return res.data?.slots ?? []
+}
+
+export async function createTeacherSlot(input: { datetime: string; tipo: string; modalidad: string; duration_minutes?: number }) {
+  return api.post('/teacher/slots.php', input)
+}
+
+export async function deleteTeacherSlot(id: number) {
+  return api.delete('/teacher/slots.php', { data: { id } })
+}
+
+// Teacher: view student reservations
+export async function getTeacherReservations(): Promise<Reservation[]> {
+  const res = await api.get('/teacher/reservations.php')
+  return res.data?.reservations ?? []
 }
