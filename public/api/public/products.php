@@ -14,7 +14,7 @@ try {
             image_url VARCHAR(500),
             category VARCHAR(100),
             stock INT DEFAULT 0,
-            is_active BOOLEAN DEFAULT TRUE,
+            is_active TINYINT(1) DEFAULT 1,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         )
