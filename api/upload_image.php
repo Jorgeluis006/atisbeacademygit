@@ -1,4 +1,12 @@
 <?php
+/**
+ * Endpoint para subir imágenes
+ * Límite: 20MB por archivo
+ * Tipos permitidos: JPG, PNG, GIF, WEBP
+ * Nota: Si necesitas subir archivos más grandes, ajusta también:
+ * - upload_max_filesize en .htaccess o php.ini
+ * - post_max_size en .htaccess o php.ini
+ */
 require_once __DIR__ . '/_bootstrap.php';
 require_auth();
 require_admin();
@@ -6,15 +14,32 @@ require_admin();
 header('Content-Type: application/json');
 
 // Verificar que se subió un archivo
-if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+if (!isset($_FILES['image'])) {
     http_response_code(400);
-    echo json_encode(['error' => 'No se recibió ninguna imagen válida']);
+    echo json_encode(['error' => 'No se recibió ningún archivo']);
+    exit;
+}
+
+// Manejar errores de PHP
+if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+    $error_message = 'Error al subir el archivo';
+    switch ($_FILES['image']['error']) {
+        case UPLOAD_ERR_INI_SIZE:
+        case UPLOAD_ERR_FORM_SIZE:
+            $error_message = 'El archivo es demasiado grande. Verifica la configuración del servidor (upload_max_filesize y post_max_size en PHP)';
+            break;
+        case UPLOAD_ERR_NO_FILE:
+            $error_message = 'No se seleccionó ningún archivo';
+            break;
+    }
+    http_response_code(400);
+    echo json_encode(['error' => $error_message]);
     exit;
 }
 
 $file = $_FILES['image'];
 $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-$max_size = 5 * 1024 * 1024; // 5MB
+$max_size = 20 * 1024 * 1024; // 20MB
 
 // Validar tipo de archivo
 if (!in_array($file['type'], $allowed_types)) {
@@ -26,7 +51,7 @@ if (!in_array($file['type'], $allowed_types)) {
 // Validar tamaño
 if ($file['size'] > $max_size) {
     http_response_code(400);
-    echo json_encode(['error' => 'El archivo es demasiado grande. Máximo 5MB']);
+    echo json_encode(['error' => 'El archivo es demasiado grande. Máximo 20MB']);
     exit;
 }
 
