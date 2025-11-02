@@ -215,22 +215,22 @@ export default function Home() {
       </section>
 
       {/* Blog teaser */}
-      <section className="bg-brand-beige py-20">
+      <section className="bg-brand-purple py-20">
         <div className="container-padded">
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4">
               Blog
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-white/90 max-w-2xl mx-auto">
               Artículos, consejos y recursos para aprender inglés
             </p>
           </div>
           {loading ? (
             <div className="flex justify-center py-12">
-              <p className="text-xl text-gray-500">Cargando artículos...</p>
+              <p className="text-xl text-white/70">Cargando artículos...</p>
             </div>
           ) : blogPosts.length === 0 ? (
-            <p className="text-center text-xl text-gray-500 py-12">No hay artículos publicados aún.</p>
+            <p className="text-center text-xl text-white/70 py-12">No hay artículos publicados aún.</p>
           ) : (
             <>
               <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
@@ -259,7 +259,7 @@ export default function Home() {
             ))}
           </div>
           <div className="text-center mt-12">
-            <Link className="bg-brand-purple text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-brand-purple/90 transition-all hover:scale-105 shadow-lg inline-flex" to="/blog">Ver todos los artículos</Link>
+            <Link className="bg-white text-brand-purple px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all hover:scale-105 shadow-lg inline-flex" to="/blog">Ver todos los artículos</Link>
           </div>
           </>
         )}
