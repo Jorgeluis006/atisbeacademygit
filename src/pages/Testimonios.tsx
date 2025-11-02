@@ -67,22 +67,13 @@ export default function Testimonios() {
               </div>
             </div>
 
-            {/* Testimonials Grid - Masonry Style */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {items.map((t, index) => (
+            {/* Testimonials Grid - Equal Size */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {items.map((t) => (
                 <article 
                   key={t.id} 
-                  className={`bg-white rounded-2xl p-8 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 ${
-                    index % 3 === 0 ? 'lg:col-span-2' : ''
-                  }`}
-                  style={{
-                    borderTop: '4px solid',
-                    borderColor: index % 3 === 0 ? '#8B5CF6' : index % 3 === 1 ? '#EC4899' : '#F59E0B'
-                  }}
+                  className="bg-white rounded-2xl p-8 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100"
                 >
-                  {/* Quote Icon */}
-                  <div className="text-6xl text-brand-purple/20 leading-none mb-4">"</div>
-                  
                   {/* Rating */}
                   <div className="flex items-center gap-1 mb-4">
                     {Array.from({ length: t.rating || 5 }).map((_, i) => (
@@ -91,25 +82,25 @@ export default function Testimonios() {
                   </div>
 
                   {/* Content */}
-                  <p className="text-gray-700 text-lg leading-relaxed mb-6 italic">
-                    {t.content}
+                  <p className="text-gray-700 text-base leading-relaxed mb-6">
+                    "{t.content}"
                   </p>
 
                   {/* Author */}
-                  <div className="flex items-center gap-4 pt-4 border-t border-gray-100">
+                  <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
                     {t.image_url ? (
                       <img 
                         src={t.image_url} 
                         alt={t.author_name} 
-                        className="w-14 h-14 rounded-full object-cover ring-2 ring-brand-purple/20" 
+                        className="w-12 h-12 rounded-full object-cover" 
                       />
                     ) : (
-                      <div className="w-14 h-14 rounded-full bg-gradient-to-br from-brand-purple to-brand-pink flex items-center justify-center text-white font-bold text-xl shadow-md">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-purple to-brand-pink flex items-center justify-center text-white font-bold">
                         {t.author_name.charAt(0).toUpperCase()}
                       </div>
                     )}
                     <div>
-                      <div className="font-bold text-gray-900 text-lg">{t.author_name}</div>
+                      <div className="font-bold text-gray-900">{t.author_name}</div>
                       {t.author_role && (
                         <div className="text-sm text-gray-500">{t.author_role}</div>
                       )}
@@ -125,7 +116,7 @@ export default function Testimonios() {
       {/* Videos Section */}
       <div className="bg-gradient-to-b from-gray-50 to-white py-16">
         <div className="container-padded">
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
                 Testimonios en video
@@ -140,37 +131,41 @@ export default function Testimonios() {
                 <p className="text-xl text-gray-500">Próximamente videos de testimonios...</p>
               </div>
             ) : (
-              <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-10 md:grid-cols-2">
                 {videos.map((video) => (
                   <div 
                     key={video.id} 
-                    className="group relative rounded-2xl overflow-hidden bg-gray-900 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+                    className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
                   >
-                    <div className="aspect-video">
+                    {/* Video Title */}
+                    {video.title && (
+                      <div className="p-6 pb-4">
+                        <h3 className="text-2xl font-bold text-gray-900">{video.title}</h3>
+                      </div>
+                    )}
+                    
+                    {/* Video Player - Large */}
+                    <div className="aspect-video bg-gray-900">
                       {video.video_url.includes('youtube') || video.video_url.includes('vimeo') ? (
                         <iframe
                           src={video.video_url}
                           title={video.title || 'Video testimonio'}
                           className="w-full h-full"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                           allowFullScreen
                         />
                       ) : (
                         <video
                           src={video.video_url}
                           controls
-                          className="w-full h-full object-cover"
+                          controlsList="nodownload"
+                          className="w-full h-full object-contain bg-black"
                           poster={video.thumbnail_url}
                         >
                           Tu navegador no soporta el elemento de video.
                         </video>
                       )}
                     </div>
-                    {video.title && (
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                        <h3 className="text-white font-semibold">{video.title}</h3>
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
