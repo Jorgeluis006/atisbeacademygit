@@ -1110,7 +1110,6 @@ function ProductsManager() {
   const [items, setItems] = useState<Product[]>([])
   const [editing, setEditing] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
-  const [setupMessage, setSetupMessage] = useState('')
 
   useEffect(() => { fetchItems() }, [])
 
@@ -1122,34 +1121,6 @@ function ProductsManager() {
       console.error('Error fetching products:', error)
     } finally {
       setLoading(false)
-    }
-  }
-
-  const runSetup = async () => {
-    setSetupMessage('Configurando tabla de productos...')
-    try {
-      const res = await fetch('/api/admin/setup_products.php')
-      
-      if (!res.ok) {
-        const text = await res.text()
-        console.error('Setup error response:', text)
-        setSetupMessage(`Error HTTP ${res.status}: ${text.substring(0, 100)}`)
-        return
-      }
-      
-      const data = await res.json()
-      console.log('Setup response:', data)
-      
-      if (data.success) {
-        setSetupMessage(`✓ ${data.message} (${data.products_count} productos)`)
-        await fetchItems()
-        setTimeout(() => setSetupMessage(''), 5000)
-      } else {
-        setSetupMessage(`Error: ${data.error || 'Error desconocido'}`)
-      }
-    } catch (error) {
-      console.error('Setup error:', error)
-      setSetupMessage(`Error al configurar la tabla: ${error}`)
     }
   }
 
@@ -1187,18 +1158,14 @@ function ProductsManager() {
   return (
     <>
       {items.length === 0 && !loading && (
-        <section className="card mt-6 bg-yellow-50 border-2 border-yellow-400">
-          <h2 className="section-title text-yellow-800">⚠️ Configuración inicial requerida</h2>
-          <p className="mb-4 text-gray-700">
-            Parece que la tabla de productos no existe o está vacía. 
-            Haz clic en el botón para crear la tabla e insertar productos de ejemplo.
+        <section className="card mt-6 bg-blue-50 border-2 border-blue-400">
+          <h2 className="section-title text-blue-800">ℹ️ Sin productos aún</h2>
+          <p className="mb-2 text-gray-700">
+            No hay productos creados. Usa el formulario de abajo para crear tu primer producto.
           </p>
-          <button onClick={runSetup} className="btn-primary">
-            Configurar tabla de productos
-          </button>
-          {setupMessage && (
-            <p className="mt-3 text-sm font-semibold text-gray-700">{setupMessage}</p>
-          )}
+          <p className="text-sm text-gray-600">
+            <strong>Nota:</strong> La tabla de productos se crea automáticamente al crear el primer producto.
+          </p>
         </section>
       )}
 
