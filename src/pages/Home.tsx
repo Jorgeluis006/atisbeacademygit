@@ -34,7 +34,7 @@ export default function Home() {
       <Hero />
       
       {/* Cursos Section */}
-      <section className="bg-gradient-to-b from-white to-purple-50/30 py-20">
+      <section className="bg-brand-beige py-20">
         <div className="container-padded">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
@@ -49,13 +49,13 @@ export default function Home() {
       </section>
 
       {/* Testimonios preview */}
-      <section className="bg-brand-beige py-20">
+      <section className="bg-brand-purple py-20">
         <div className="container-padded">
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4">
               Testimonios reales
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-white/90 max-w-2xl mx-auto">
               Opiniones auténticas de nuestros estudiantes
             </p>
           </div>
@@ -99,7 +99,7 @@ export default function Home() {
       </section>
 
       {/* Videos de testimonios */}
-      <section className="bg-gradient-to-b from-gray-50 to-white py-20">
+      <section className="bg-brand-beige py-20">
         <div className="container-padded">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
@@ -150,13 +150,13 @@ export default function Home() {
       </section>
 
       {/* Blog teaser */}
-      <section className="bg-brand-beige py-20">
+      <section className="bg-brand-purple py-20">
         <div className="container-padded">
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4">
               Blog
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-white/90 max-w-2xl mx-auto">
               Artículos, consejos y recursos para aprender inglés
             </p>
           </div>
@@ -202,7 +202,7 @@ export default function Home() {
       </section>
 
       {/* Pago QR */}
-      <section className="bg-gradient-to-b from-purple-50/30 to-white py-20">
+      <section className="bg-brand-beige py-20">
         <div className="container-padded">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
