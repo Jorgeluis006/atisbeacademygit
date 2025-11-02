@@ -33,6 +33,48 @@ export default function Home() {
     <main>
       <Hero />
       
+      {/* Quiénes Somos Section */}
+      <section className="bg-brand-purple py-20">
+        <div className="container-padded">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4">
+              Quiénes somos
+            </h2>
+            <p className="text-xl text-white/90 max-w-3xl mx-auto">
+              Una academia cercana que transforma vidas a través del aprendizaje de idiomas
+            </p>
+          </div>
+          
+          <div className="max-w-5xl mx-auto">
+            {/* Introduction */}
+            <div className="bg-white rounded-2xl p-8 md:p-12 shadow-lg mb-8">
+              <p className="text-xl md:text-2xl leading-relaxed text-gray-700 text-center">
+                Atisbe es una academia <span className="font-bold text-brand-purple">cercana, alegre, disciplinada, motivadora y flexible</span>. 
+                Aplicamos el método ATIKA para lograr avances sostenibles paso a paso.
+              </p>
+            </div>
+
+            {/* Values */}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
+              {[
+                { icon: '🤝', title: 'Cercana', color: 'from-purple-500 to-purple-600' },
+                { icon: '😊', title: 'Alegre', color: 'from-pink-500 to-pink-600' },
+                { icon: '🎯', title: 'Disciplinada', color: 'from-amber-500 to-amber-600' },
+                { icon: '💪', title: 'Motivadora', color: 'from-blue-500 to-blue-600' },
+                { icon: '🌟', title: 'Flexible', color: 'from-green-500 to-green-600' }
+              ].map((value, index) => (
+                <div key={index} className="text-center bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                  <div className={`w-16 h-16 mx-auto mb-3 bg-gradient-to-br ${value.color} rounded-full flex items-center justify-center text-3xl shadow-md`}>
+                    {value.icon}
+                  </div>
+                  <h3 className="font-bold text-white">{value.title}</h3>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+      
       {/* Cursos Section */}
       <section className="bg-brand-beige py-20">
         <div className="container-padded">
@@ -41,10 +83,13 @@ export default function Home() {
               Nuestros Cursos
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Programas diseñados para todos los niveles
+              Encuentra el curso perfecto para ti
             </p>
           </div>
           <CoursesCarousel />
+          <div className="text-center mt-12">
+            <Link className="btn-primary inline-flex" to="/cursos">Ver todos los cursos</Link>
+          </div>
         </div>
       </section>
 
@@ -150,13 +195,13 @@ export default function Home() {
       </section>
 
       {/* Blog teaser */}
-      <section className="bg-brand-purple py-20">
+      <section className="bg-brand-beige py-20">
         <div className="container-padded">
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
               Blog
             </h2>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Artículos, consejos y recursos para aprender inglés
             </p>
           </div>
@@ -194,7 +239,7 @@ export default function Home() {
             ))}
           </div>
           <div className="text-center mt-12">
-            <Link className="bg-white text-brand-purple px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all hover:scale-105 shadow-lg inline-flex" to="/blog">Ver todos los artículos</Link>
+            <Link className="bg-brand-purple text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-brand-purple/90 transition-all hover:scale-105 shadow-lg inline-flex" to="/blog">Ver todos los artículos</Link>
           </div>
           </>
         )}
