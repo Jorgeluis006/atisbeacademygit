@@ -1,8 +1,9 @@
 <?php
 require_once __DIR__ . '/../_bootstrap.php';
-requireAdmin();
+require_admin();
+ensure_cms_schema();
 
-header('Content-Type: application/json');
+$pdo = get_pdo();
 
 // Crear la tabla si no existe
 try {
@@ -21,104 +22,94 @@ try {
         )
     ");
 } catch (PDOException $e) {
-    // Ignorar si la tabla ya existe
     error_log("Error creando tabla products: " . $e->getMessage());
 }
 
-$method = $_SERVER['REQUEST_METHOD'];
+// GET: Listar todos los productos
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (isset($_GET['id'])) {
+        $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
+        $stmt->execute([$_GET['id']]);
+        $product = $stmt->fetch();
+        json_ok(['item' => $product]);
+    } else {
+        $stmt = $pdo->query("SELECT * FROM products ORDER BY created_at DESC");
+        $items = $stmt->fetchAll();
+        json_ok(['items' => $items]);
+    }
+}
 
-try {
-    switch ($method) {
-        case 'GET':
-            // Listar productos (admin ve todos, incluidos inactivos)
-            if (isset($_GET['id'])) {
-                $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
-                $stmt->execute([$_GET['id']]);
-                $product = $stmt->fetch();
-                echo json_encode($product ?: ['error' => 'Producto no encontrado']);
-            } else {
-                $stmt = $pdo->query("SELECT * FROM products ORDER BY created_at DESC");
-                echo json_encode($stmt->fetchAll());
-            }
-            break;
+// POST: Crear nuevo producto
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input = json_decode(file_get_contents('php://input'), true);
+    
+    $name = trim($input['name'] ?? '');
+    $description = trim($input['description'] ?? '');
+    $price = isset($input['price']) ? (float)$input['price'] : 0;
+    $image_url = trim($input['image_url'] ?? '');
+    $category = trim($input['category'] ?? 'general');
+    $stock = (int)($input['stock'] ?? 0);
+    $is_active = isset($input['is_active']) ? (bool)$input['is_active'] : true;
+    
+    if (!$name || $price <= 0) {
+        json_error('Nombre y precio son requeridos');
+    }
+    
+    $stmt = $pdo->prepare("
+        INSERT INTO products (name, description, price, image_url, category, stock, is_active)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    ");
+    $stmt->execute([$name, $description, $price, $image_url, $category, $stock, $is_active]);
+    
+    json_ok(['id' => (int)$pdo->lastInsertId()]);
+}
 
-        case 'POST':
-            // Crear producto
-            $data = json_decode(file_get_contents('php://input'), true);
-            
-            $stmt = $pdo->prepare("
-                INSERT INTO products (name, description, price, image_url, category, stock, is_active)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            ");
-            
-            $stmt->execute([
-                $data['name'],
-                $data['description'] ?? '',
-                $data['price'],
-                $data['image_url'] ?? null,
-                $data['category'] ?? 'general',
-                $data['stock'] ?? 0,
-                $data['is_active'] ?? true
-            ]);
-            
-            echo json_encode([
-                'success' => true,
-                'id' => $pdo->lastInsertId(),
-                'message' => 'Producto creado exitosamente'
-            ]);
-            break;
+// PUT: Actualizar producto
+if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+    $input = json_decode(file_get_contents('php://input'), true);
+    
+    $id = (int)($input['id'] ?? 0);
+    if (!$id) {
+        json_error('ID requerido');
+    }
+    
+    $name = trim($input['name'] ?? '');
+    $description = trim($input['description'] ?? '');
+    $price = isset($input['price']) ? (float)$input['price'] : 0;
+    $image_url = trim($input['image_url'] ?? '');
+    $category = trim($input['category'] ?? 'general');
+    $stock = (int)($input['stock'] ?? 0);
+    $is_active = isset($input['is_active']) ? (bool)$input['is_active'] : true;
+    
+    if (!$name || $price <= 0) {
+        json_error('Nombre y precio son requeridos');
+    }
+    
+    $stmt = $pdo->prepare("
+        UPDATE products 
+        SET name = ?, description = ?, price = ?, image_url = ?, 
+            category = ?, stock = ?, is_active = ?
+        WHERE id = ?
+    ");
+    $stmt->execute([$name, $description, $price, $image_url, $category, $stock, $is_active, $id]);
+    
+    json_ok(['message' => 'Producto actualizado']);
+}
 
-        case 'PUT':
-            // Actualizar producto
-            $data = json_decode(file_get_contents('php://input'), true);
-            
-            if (!isset($data['id'])) {
-                http_response_code(400);
-                echo json_encode(['error' => 'ID requerido']);
-                exit;
-            }
-            
-            $stmt = $pdo->prepare("
-                UPDATE products 
-                SET name = ?, description = ?, price = ?, image_url = ?, 
-                    category = ?, stock = ?, is_active = ?
-                WHERE id = ?
-            ");
-            
-            $stmt->execute([
-                $data['name'],
-                $data['description'] ?? '',
-                $data['price'],
-                $data['image_url'] ?? null,
-                $data['category'] ?? 'general',
-                $data['stock'] ?? 0,
-                $data['is_active'] ?? true,
-                $data['id']
-            ]);
-            
-            echo json_encode([
-                'success' => true,
-                'message' => 'Producto actualizado exitosamente'
-            ]);
-            break;
-
-        case 'DELETE':
-            // Eliminar producto
-            $data = json_decode(file_get_contents('php://input'), true);
-            
-            if (!isset($data['id'])) {
-                http_response_code(400);
-                echo json_encode(['error' => 'ID requerido']);
-                exit;
-            }
-            
-            $stmt = $pdo->prepare("DELETE FROM products WHERE id = ?");
-            $stmt->execute([$data['id']]);
-            
-            echo json_encode([
-                'success' => true,
-                'message' => 'Producto eliminado exitosamente'
-            ]);
+// DELETE: Eliminar producto
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    $input = json_decode(file_get_contents('php://input'), true);
+    
+    $id = (int)($input['id'] ?? 0);
+    if (!$id) {
+        json_error('ID requerido');
+    }
+    
+    $stmt = $pdo->prepare("DELETE FROM products WHERE id = ?");
+    $stmt->execute([$id]);
+    
+    json_ok(['message' => 'Producto eliminado']);
+}
             break;
 
         default:
