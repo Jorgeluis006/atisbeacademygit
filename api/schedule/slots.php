@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../_bootstrap.php';
 require_auth();
+ensure_schedule_schema();
 
 $user_id = (int)$_SESSION['user_id'];
 
@@ -11,8 +12,8 @@ $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 
 if (!$user || !$user['teacher_id']) {
-    // Si no tiene profesor asignado, retornar slots vacíos o un mensaje
-    json_ok(['slots' => [], 'message' => 'No tienes un profesor asignado aún']);
+    // Si no tiene profesor asignado, retornar slots vacíos
+    json_ok(['slots' => []]);
 }
 
 $teacher_id = (int)$user['teacher_id'];
@@ -42,4 +43,3 @@ foreach ($slots as &$slot) {
 }
 
 json_ok(['slots' => $slots]);
-
