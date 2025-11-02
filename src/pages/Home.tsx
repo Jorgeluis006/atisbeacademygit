@@ -49,7 +49,7 @@ export default function Home() {
       </section>
 
       {/* Testimonios preview */}
-      <section className="bg-white py-20">
+      <section className="bg-brand-beige py-20">
         <div className="container-padded">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
@@ -150,7 +150,7 @@ export default function Home() {
       </section>
 
       {/* Blog teaser */}
-      <section className="bg-white py-20">
+      <section className="bg-brand-beige py-20">
         <div className="container-padded">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
