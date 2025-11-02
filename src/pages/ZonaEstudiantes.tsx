@@ -20,14 +20,29 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
     }
   }
   return (
-    <form onSubmit={onSubmit} className="card max-w-md">
-      <h2 className="font-serif text-2xl mb-4">Ingreso de estudiantes</h2>
-      <label className="label">Usuario</label>
-      <input className="input-control mb-2" placeholder="Usuario" value={user} onChange={(e) => setUser(e.target.value)} />
-      <label className="label">Contraseña</label>
-      <input className="input-control mb-3" type="password" placeholder="Contraseña" value={pass} onChange={(e) => setPass(e.target.value)} />
-      {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
-      <button className="btn-primary w-full" type="submit" disabled={loading}>{loading ? 'Ingresando…' : 'Ingresar'}</button>
+    <form onSubmit={onSubmit} className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 w-full max-w-md">
+      <h2 className="text-2xl font-bold mb-6 text-center">Ingreso de estudiantes</h2>
+      <label className="block text-sm font-semibold text-gray-700 mb-2">Usuario</label>
+      <input 
+        className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
+        placeholder="admin123" 
+        value={user} 
+        onChange={(e) => setUser(e.target.value)} 
+        required
+      />
+      <label className="block text-sm font-semibold text-gray-700 mb-2">Contraseña</label>
+      <input 
+        className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
+        type="password" 
+        placeholder="••••••••" 
+        value={pass} 
+        onChange={(e) => setPass(e.target.value)} 
+        required
+      />
+      {error && <p className="text-red-600 text-sm mb-4 text-center font-semibold">{error}</p>}
+      <button className="btn-primary w-full" type="submit" disabled={loading}>
+        {loading ? 'Ingresando…' : 'Ingresar'}
+      </button>
     </form>
   )
 }
@@ -84,22 +99,25 @@ export default function ZonaEstudiantes() {
   }
 
   return (
-    <main className="container-padded py-12">
-      <h1 className="text-4xl font-extrabold">Zona de estudiantes</h1>
-      {loading ? (
-        <p className="mt-6">Cargando…</p>
-      ) : !user ? (
-        <div className="mt-6">
-          <Login onSuccess={async () => {
-            const u = await apiMe();
-            if (u && u.role === 'admin') { navigate('/admin', { replace: true }); return }
-            if (u && u.role === 'teacher') { navigate('/profesor', { replace: true }); return }
-            setUser(u ? { username: u.username, name: u.name, role: u.role } : null)
-            if (u && u.role === 'student') {
-              await loadStudentData()
-            }
-          }} />
-        </div>
+    <main className="min-h-screen bg-gradient-to-b from-white to-gray-50">
+      <div className="container-padded py-12">
+        <h1 className="text-4xl font-extrabold text-center mb-8">Zona de estudiantes</h1>
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <p className="text-xl text-gray-500">Cargando…</p>
+          </div>
+        ) : !user ? (
+          <div className="flex justify-center items-center py-12">
+            <Login onSuccess={async () => {
+              const u = await apiMe();
+              if (u && u.role === 'admin') { navigate('/admin', { replace: true }); return }
+              if (u && u.role === 'teacher') { navigate('/profesor', { replace: true }); return }
+              setUser(u ? { username: u.username, name: u.name, role: u.role } : null)
+              if (u && u.role === 'student') {
+                await loadStudentData()
+              }
+            }} />
+          </div>
       ) : (
         <>
           <div className="mt-2 text-sm text-brand-black/70">Sesión: {user.name || user.username} ({user.role}) <button className="underline ml-2" onClick={handleLogout}>Salir</button></div>
@@ -150,6 +168,7 @@ export default function ZonaEstudiantes() {
           )}
         </>
       )}
+      </div>
     </main>
   )
 }
