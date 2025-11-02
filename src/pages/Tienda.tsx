@@ -19,7 +19,7 @@ export default function Tienda() {
     const fetchProducts = async () => {
       try {
         const res = await axios.get('/api/public/products.php')
-        setProducts(res.data)
+        setProducts(res.data.items || res.data || [])
       } catch (error) {
         console.error('Error loading products:', error)
       } finally {
