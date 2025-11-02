@@ -105,6 +105,25 @@ function require_auth() {
 }
 
 function ensure_schedule_schema() {
+    $pdo = get_pdo();
+    
+    // Tabla de slots/horarios disponibles creados por profesores
+    $sql = "CREATE TABLE IF NOT EXISTS teacher_slots (
+        id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        teacher_id INT UNSIGNED NOT NULL,
+        datetime DATETIME NOT NULL,
+        tipo VARCHAR(40) DEFAULT 'clase',
+        modalidad VARCHAR(40) DEFAULT 'virtual',
+        duration_minutes INT DEFAULT 60,
+        is_available BOOLEAN DEFAULT TRUE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX (teacher_id),
+        INDEX (datetime),
+        CONSTRAINT fk_slot_teacher FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+    $pdo->exec($sql);
+    
+    // Tabla de reservas de estudiantes
     $sql = "CREATE TABLE IF NOT EXISTS schedule_reservations (
         id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
         user_id INT UNSIGNED NOT NULL,
@@ -117,7 +136,23 @@ function ensure_schedule_schema() {
         INDEX (datetime),
         CONSTRAINT fk_res_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
-    get_pdo()->exec($sql);
+    $pdo->exec($sql);
+    
+    // Agregar teacher_id a reservations si no existe
+    try { 
+        $pdo->exec("ALTER TABLE schedule_reservations ADD COLUMN teacher_id INT UNSIGNED NULL AFTER user_id"); 
+    } catch (Throwable $e) {}
+    try { 
+        $pdo->exec("CREATE INDEX idx_res_teacher ON schedule_reservations(teacher_id)"); 
+    } catch (Throwable $e) {}
+    
+    // Agregar slot_id para referenciar el slot reservado
+    try { 
+        $pdo->exec("ALTER TABLE schedule_reservations ADD COLUMN slot_id INT UNSIGNED NULL AFTER teacher_id"); 
+    } catch (Throwable $e) {}
+    try { 
+        $pdo->exec("CREATE INDEX idx_res_slot ON schedule_reservations(slot_id)"); 
+    } catch (Throwable $e) {}
 }
 
 function require_admin() {
