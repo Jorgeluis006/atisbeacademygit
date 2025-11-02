@@ -72,39 +72,41 @@ export default function Testimonios() {
               {items.map((t) => (
                 <article 
                   key={t.id} 
-                  className="bg-white rounded-2xl p-8 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100"
+                  className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-brand-purple flex flex-col h-full"
                 >
-                  {/* Rating */}
-                  <div className="flex items-center gap-1 mb-4">
-                    {Array.from({ length: t.rating || 5 }).map((_, i) => (
-                      <span key={i} className="text-brand-amber text-xl">★</span>
-                    ))}
-                  </div>
-
-                  {/* Content */}
-                  <p className="text-gray-700 text-base leading-relaxed mb-6">
-                    "{t.content}"
-                  </p>
-
-                  {/* Author */}
-                  <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
+                  {/* Author at top */}
+                  <div className="flex items-center gap-3 mb-4">
                     {t.image_url ? (
                       <img 
                         src={t.image_url} 
                         alt={t.author_name} 
-                        className="w-12 h-12 rounded-full object-cover" 
+                        className="w-14 h-14 rounded-full object-cover ring-2 ring-brand-purple/20" 
                       />
                     ) : (
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-purple to-brand-pink flex items-center justify-center text-white font-bold">
+                      <div className="w-14 h-14 rounded-full bg-gradient-to-br from-brand-purple to-brand-pink flex items-center justify-center text-white font-bold text-lg shadow-md">
                         {t.author_name.charAt(0).toUpperCase()}
                       </div>
                     )}
-                    <div>
-                      <div className="font-bold text-gray-900">{t.author_name}</div>
+                    <div className="flex-1">
+                      <div className="font-bold text-gray-900 text-lg">{t.author_name}</div>
                       {t.author_role && (
                         <div className="text-sm text-gray-500">{t.author_role}</div>
                       )}
                     </div>
+                  </div>
+
+                  {/* Rating */}
+                  <div className="flex items-center gap-1 mb-3">
+                    {Array.from({ length: t.rating || 5 }).map((_, i) => (
+                      <span key={i} className="text-brand-amber text-lg">★</span>
+                    ))}
+                  </div>
+
+                  {/* Content - Limited height with scrollable or truncated */}
+                  <div className="flex-1 relative">
+                    <p className="text-gray-700 leading-relaxed italic line-clamp-6">
+                      "{t.content}"
+                    </p>
                   </div>
                 </article>
               ))}
