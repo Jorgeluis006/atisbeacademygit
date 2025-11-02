@@ -123,19 +123,23 @@ export default function Testimonios() {
       </div>
 
       {/* Videos Section */}
-      {videos.length > 0 && (
-        <div className="bg-gradient-to-b from-gray-50 to-white py-16">
-          <div className="container-padded">
-            <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-12">
-                <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                  Testimonios en video
-                </h2>
-                <p className="text-xl text-gray-600">
-                  Escucha directamente de nuestros estudiantes
-                </p>
-              </div>
+      <div className="bg-gradient-to-b from-gray-50 to-white py-16">
+        <div className="container-padded">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                Testimonios en video
+              </h2>
+              <p className="text-xl text-gray-600">
+                Escucha directamente de nuestros estudiantes
+              </p>
+            </div>
 
+            {videos.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-xl text-gray-500">Próximamente videos de testimonios...</p>
+              </div>
+            ) : (
               <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
                 {videos.map((video) => (
                   <div 
@@ -170,10 +174,10 @@ export default function Testimonios() {
                   </div>
                 ))}
               </div>
-            </div>
+            )}
           </div>
         </div>
-      )}
+      </div>
 
       {/* CTA Section */}
       <div className="bg-brand-purple text-white py-16">
