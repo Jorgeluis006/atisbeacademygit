@@ -1,12 +1,101 @@
 export default function QuienesSomos() {
   return (
-    <main className="container-padded py-12">
-      <h1 className="text-4xl font-extrabold">Quiénes somos</h1>
-      <section className="mt-6 space-y-5 max-w-3xl">
-        <p>Atisbe es una academia cercana, alegre, disciplinada, motivadora y flexible. Aplicamos el método ATIKA para lograr avances sostenibles paso a paso.</p>
-        <p><strong>Origen del nombre:</strong> proviene de “atisbar”, observar con atención; término común en Boyacá. Conecta con nuestra misión de guiar y acompañar procesos de aprendizaje.</p>
-        <p><strong>Método ATIKA:</strong> enfoque progresivo, activo y personalizado. Beneficios: aprendizaje práctico, confianza comunicativa y acompañamiento continuo sin sensación de necesidad.</p>
-      </section>
+    <main className="bg-gradient-to-b from-white via-purple-50/20 to-white">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-r from-brand-purple to-purple-600 text-white py-20">
+        <div className="container-padded text-center">
+          <h1 className="text-5xl md:text-6xl font-extrabold mb-4">
+            Quiénes somos
+          </h1>
+          <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto">
+            Una academia cercana que transforma vidas a través del aprendizaje de idiomas
+          </p>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="container-padded py-16">
+        <div className="max-w-5xl mx-auto">
+          
+          {/* Introduction Card */}
+          <div className="bg-white rounded-2xl p-8 md:p-12 shadow-lg mb-12 border-l-4 border-brand-purple">
+            <p className="text-xl md:text-2xl leading-relaxed text-gray-700">
+              Atisbe es una academia <span className="font-bold text-brand-purple">cercana, alegre, disciplinada, motivadora y flexible</span>. 
+              Aplicamos el método ATIKA para lograr avances sostenibles paso a paso.
+            </p>
+          </div>
+
+          {/* Two Column Section */}
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
+            
+            {/* Origen del nombre */}
+            <div className="bg-gradient-to-br from-brand-purple/5 to-purple-100/30 rounded-2xl p-8 shadow-md hover:shadow-xl transition-shadow">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-brand-purple rounded-full flex items-center justify-center text-white text-2xl">
+                  📖
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900">Origen del nombre</h2>
+              </div>
+              <p className="text-gray-700 leading-relaxed">
+                Proviene de <span className="font-semibold text-brand-purple">"atisbar"</span>, 
+                observar con atención; término común en Boyacá. 
+                Conecta con nuestra misión de guiar y acompañar procesos de aprendizaje.
+              </p>
+            </div>
+
+            {/* Método ATIKA */}
+            <div className="bg-gradient-to-br from-pink-50 to-purple-100/30 rounded-2xl p-8 shadow-md hover:shadow-xl transition-shadow">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-brand-pink rounded-full flex items-center justify-center text-white text-2xl">
+                  ⭐
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900">Método ATIKA</h2>
+              </div>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                Enfoque <span className="font-semibold text-brand-purple">progresivo, activo y personalizado</span>.
+              </p>
+              <div className="space-y-2">
+                <div className="flex items-start gap-2">
+                  <span className="text-brand-purple text-xl">✓</span>
+                  <span className="text-gray-700">Aprendizaje práctico</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-brand-purple text-xl">✓</span>
+                  <span className="text-gray-700">Confianza comunicativa</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-brand-purple text-xl">✓</span>
+                  <span className="text-gray-700">Acompañamiento continuo</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Values Section */}
+          <div className="bg-white rounded-2xl p-8 md:p-12 shadow-lg">
+            <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
+              Nuestros valores
+            </h2>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
+              {[
+                { icon: '🤝', title: 'Cercana', color: 'from-purple-500 to-purple-600' },
+                { icon: '😊', title: 'Alegre', color: 'from-pink-500 to-pink-600' },
+                { icon: '🎯', title: 'Disciplinada', color: 'from-amber-500 to-amber-600' },
+                { icon: '💪', title: 'Motivadora', color: 'from-blue-500 to-blue-600' },
+                { icon: '🌟', title: 'Flexible', color: 'from-green-500 to-green-600' }
+              ].map((value, index) => (
+                <div key={index} className="text-center">
+                  <div className={`w-16 h-16 mx-auto mb-3 bg-gradient-to-br ${value.color} rounded-full flex items-center justify-center text-3xl shadow-md`}>
+                    {value.icon}
+                  </div>
+                  <h3 className="font-bold text-gray-900">{value.title}</h3>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </div>
     </main>
   )
 }
