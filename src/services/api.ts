@@ -275,3 +275,13 @@ export async function updateVideo(input: Video) {
 export async function deleteVideo(id: number) {
   return api.delete('/admin/videos.php', { data: { id } })
 }
+
+// Upload image
+export async function uploadImage(file: File): Promise<string> {
+  const formData = new FormData()
+  formData.append('image', file)
+  const res = await api.post('/upload_image.php', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  })
+  return res.data?.url
+}

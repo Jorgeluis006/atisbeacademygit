@@ -15,6 +15,10 @@ dist-ssr
 # Never commit server secrets
 public/api/config.local.php
 
+# Uploaded images
+public/uploads/*
+!public/uploads/.gitkeep
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

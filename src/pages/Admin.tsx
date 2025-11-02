@@ -29,7 +29,8 @@ import {
   createVideo,
   updateVideo,
   deleteVideo,
-  type Video
+  type Video,
+  uploadImage
 } from '../services/api'
 
 export default function Admin() {
@@ -356,6 +357,7 @@ function TestimonialsManager() {
   const [items, setItems] = useState<Testimonial[]>([])
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState<Testimonial | null>(null)
+  const [uploading, setUploading] = useState(false)
 
   async function load() {
     setLoading(true)
@@ -366,6 +368,23 @@ function TestimonialsManager() {
   }
 
   useEffect(() => { load() }, [])
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file || !editing) return
+    
+    setUploading(true)
+    try {
+      const url = await uploadImage(file)
+      setEditing({ ...editing, image_url: url })
+      alert('Imagen subida exitosamente')
+    } catch (err) {
+      alert('Error al subir la imagen')
+      console.error(err)
+    } finally {
+      setUploading(false)
+    }
+  }
 
   async function handleSave(item: Testimonial) {
     try {
@@ -434,8 +453,29 @@ function TestimonialsManager() {
               </div>
             </div>
             <div>
-              <label className="label">URL de imagen (opcional)</label>
-              <input className="input-control" value={editing.image_url || ''} onChange={e => setEditing({ ...editing, image_url: e.target.value })} />
+              <label className="label">Imagen del autor</label>
+              <div className="grid gap-2">
+                <input 
+                  className="input-control" 
+                  placeholder="URL de la imagen (opcional)" 
+                  value={editing.image_url || ''} 
+                  onChange={e => setEditing({ ...editing, image_url: e.target.value })} 
+                />
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-brand-black/60">o subir:</span>
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={handleImageUpload}
+                    disabled={uploading}
+                    className="text-sm"
+                  />
+                  {uploading && <span className="text-sm text-brand-purple">Subiendo...</span>}
+                </div>
+                {editing.image_url && (
+                  <img src={editing.image_url} alt="Preview" className="w-16 h-16 object-cover rounded-full mt-2" />
+                )}
+              </div>
             </div>
             <div className="flex gap-2">
               <button className="btn-primary" onClick={() => handleSave(editing)}>Guardar</button>
@@ -488,6 +528,7 @@ function CoursesManager() {
   const [items, setItems] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState<Course | null>(null)
+  const [uploading, setUploading] = useState(false)
 
   async function load() {
     setLoading(true)
@@ -498,6 +539,23 @@ function CoursesManager() {
   }
 
   useEffect(() => { load() }, [])
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file || !editing) return
+    
+    setUploading(true)
+    try {
+      const url = await uploadImage(file)
+      setEditing({ ...editing, image_url: url })
+      alert('Imagen subida exitosamente')
+    } catch (err) {
+      alert('Error al subir la imagen')
+      console.error(err)
+    } finally {
+      setUploading(false)
+    }
+  }
 
   async function handleSave(item: Course) {
     try {
@@ -582,8 +640,29 @@ function CoursesManager() {
               </div>
             </div>
             <div>
-              <label className="label">URL de imagen (opcional)</label>
-              <input className="input-control" value={editing.image_url || ''} onChange={e => setEditing({ ...editing, image_url: e.target.value })} />
+              <label className="label">Imagen del curso</label>
+              <div className="grid gap-2">
+                <input 
+                  className="input-control" 
+                  placeholder="URL de la imagen (opcional)" 
+                  value={editing.image_url || ''} 
+                  onChange={e => setEditing({ ...editing, image_url: e.target.value })} 
+                />
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-brand-black/60">o subir:</span>
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={handleImageUpload}
+                    disabled={uploading}
+                    className="text-sm"
+                  />
+                  {uploading && <span className="text-sm text-brand-purple">Subiendo...</span>}
+                </div>
+                {editing.image_url && (
+                  <img src={editing.image_url} alt="Preview" className="w-32 h-32 object-cover rounded-lg mt-2" />
+                )}
+              </div>
             </div>
             <div>
               <label className="label">Programa / Syllabus (opcional)</label>
@@ -645,6 +724,7 @@ function BlogManager() {
   const [items, setItems] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState<BlogPost | null>(null)
+  const [uploading, setUploading] = useState(false)
 
   async function load() {
     setLoading(true)
@@ -655,6 +735,23 @@ function BlogManager() {
   }
 
   useEffect(() => { load() }, [])
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file || !editing) return
+    
+    setUploading(true)
+    try {
+      const url = await uploadImage(file)
+      setEditing({ ...editing, image_url: url })
+      alert('Imagen subida exitosamente')
+    } catch (err) {
+      alert('Error al subir la imagen')
+      console.error(err)
+    } finally {
+      setUploading(false)
+    }
+  }
 
   async function handleSave(item: BlogPost) {
     try {
@@ -721,8 +818,29 @@ function BlogManager() {
               </div>
             </div>
             <div>
-              <label className="label">URL de imagen destacada (opcional)</label>
-              <input className="input-control" value={editing.image_url || ''} onChange={e => setEditing({ ...editing, image_url: e.target.value })} />
+              <label className="label">Imagen destacada</label>
+              <div className="grid gap-2">
+                <input 
+                  className="input-control" 
+                  placeholder="URL de la imagen (opcional)" 
+                  value={editing.image_url || ''} 
+                  onChange={e => setEditing({ ...editing, image_url: e.target.value })} 
+                />
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-brand-black/60">o subir:</span>
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={handleImageUpload}
+                    disabled={uploading}
+                    className="text-sm"
+                  />
+                  {uploading && <span className="text-sm text-brand-purple">Subiendo...</span>}
+                </div>
+                {editing.image_url && (
+                  <img src={editing.image_url} alt="Preview" className="w-32 h-32 object-cover rounded-lg mt-2" />
+                )}
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <label className="flex items-center gap-2">
@@ -777,6 +895,7 @@ function VideosManager() {
   const [items, setItems] = useState<Video[]>([])
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState<Video | null>(null)
+  const [uploading, setUploading] = useState(false)
 
   async function load() {
     setLoading(true)
@@ -787,6 +906,23 @@ function VideosManager() {
   }
 
   useEffect(() => { load() }, [])
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file || !editing) return
+    
+    setUploading(true)
+    try {
+      const url = await uploadImage(file)
+      setEditing({ ...editing, thumbnail_url: url })
+      alert('Miniatura subida exitosamente')
+    } catch (err) {
+      alert('Error al subir la imagen')
+      console.error(err)
+    } finally {
+      setUploading(false)
+    }
+  }
 
   async function handleSave(item: Video) {
     try {
@@ -835,8 +971,29 @@ function VideosManager() {
               <input className="input-control" value={editing.title || ''} onChange={e => setEditing({ ...editing, title: e.target.value })} />
             </div>
             <div>
-              <label className="label">URL de miniatura (opcional)</label>
-              <input className="input-control" value={editing.thumbnail_url || ''} onChange={e => setEditing({ ...editing, thumbnail_url: e.target.value })} />
+              <label className="label">Miniatura del video</label>
+              <div className="grid gap-2">
+                <input 
+                  className="input-control" 
+                  placeholder="URL de la miniatura (opcional)" 
+                  value={editing.thumbnail_url || ''} 
+                  onChange={e => setEditing({ ...editing, thumbnail_url: e.target.value })} 
+                />
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-brand-black/60">o subir:</span>
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={handleImageUpload}
+                    disabled={uploading}
+                    className="text-sm"
+                  />
+                  {uploading && <span className="text-sm text-brand-purple">Subiendo...</span>}
+                </div>
+                {editing.thumbnail_url && (
+                  <img src={editing.thumbnail_url} alt="Preview" className="w-32 h-24 object-cover rounded-lg mt-2" />
+                )}
+              </div>
             </div>
             <div className="grid sm:grid-cols-2 gap-3">
               <div>
