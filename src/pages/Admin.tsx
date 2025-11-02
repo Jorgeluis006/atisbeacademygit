@@ -1116,7 +1116,10 @@ function ProductsManager() {
   const fetchItems = async () => {
     try {
       const res = await fetch('/api/admin/products.php')
-      if (res.ok) setItems(await res.json())
+      if (res.ok) {
+        const data = await res.json()
+        setItems(data.items || data || [])
+      }
     } catch (error) {
       console.error('Error fetching products:', error)
     } finally {
