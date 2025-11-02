@@ -7,16 +7,9 @@ $pdo = get_pdo();
 
 // GET: Listar todos los productos
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    if (isset($_GET['id'])) {
-        $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
-        $stmt->execute([$_GET['id']]);
-        $product = $stmt->fetch();
-        json_ok(['item' => $product]);
-    } else {
-        $stmt = $pdo->query("SELECT * FROM products ORDER BY created_at DESC");
-        $items = $stmt->fetchAll();
-        json_ok(['items' => $items]);
-    }
+    $stmt = $pdo->query('SELECT * FROM products ORDER BY created_at DESC');
+    $items = $stmt->fetchAll();
+    json_ok(['items' => $items]);
 }
 
 // POST: Crear nuevo producto
@@ -31,20 +24,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stock = (int)($input['stock'] ?? 0);
     $is_active = isset($input['is_active']) ? (bool)$input['is_active'] : true;
     
-    if (!$name || $price <= 0) {
-        json_error('Nombre y precio son requeridos');
+    if (!$name) {
+        json_error('Nombre es requerido');
     }
     
-    $stmt = $pdo->prepare("
+    $stmt = $pdo->prepare('
         INSERT INTO products (name, description, price, image_url, category, stock, is_active)
         VALUES (?, ?, ?, ?, ?, ?, ?)
-    ");
+    ');
     $stmt->execute([$name, $description, $price, $image_url, $category, $stock, $is_active]);
     
     json_ok(['id' => (int)$pdo->lastInsertId()]);
 }
 
-// PUT: Actualizar producto
+// PUT: Actualizar producto existente
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     $input = json_decode(file_get_contents('php://input'), true);
     
@@ -61,19 +54,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     $stock = (int)($input['stock'] ?? 0);
     $is_active = isset($input['is_active']) ? (bool)$input['is_active'] : true;
     
-    if (!$name || $price <= 0) {
-        json_error('Nombre y precio son requeridos');
+    if (!$name) {
+        json_error('Nombre es requerido');
     }
     
-    $stmt = $pdo->prepare("
+    $stmt = $pdo->prepare('
         UPDATE products 
-        SET name = ?, description = ?, price = ?, image_url = ?, 
-            category = ?, stock = ?, is_active = ?
+        SET name = ?, description = ?, price = ?, image_url = ?, category = ?, stock = ?, is_active = ?
         WHERE id = ?
-    ");
+    ');
     $stmt->execute([$name, $description, $price, $image_url, $category, $stock, $is_active, $id]);
     
-    json_ok(['message' => 'Producto actualizado']);
+    json_ok(['updated' => true]);
 }
 
 // DELETE: Eliminar producto
@@ -85,18 +77,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         json_error('ID requerido');
     }
     
-    $stmt = $pdo->prepare("DELETE FROM products WHERE id = ?");
+    $stmt = $pdo->prepare('DELETE FROM products WHERE id = ?');
     $stmt->execute([$id]);
     
-    json_ok(['message' => 'Producto eliminado']);
-}
-            break;
-
-        default:
-            http_response_code(405);
-            echo json_encode(['error' => 'Método no permitido']);
-    }
-} catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(['error' => $e->getMessage()]);
+    json_ok(['deleted' => true]);
 }
