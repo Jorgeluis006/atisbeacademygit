@@ -4,6 +4,26 @@ requireAdmin();
 
 header('Content-Type: application/json');
 
+// Crear la tabla si no existe
+try {
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS products (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            description TEXT,
+            price DECIMAL(10, 2) NOT NULL,
+            image_url VARCHAR(500),
+            category VARCHAR(100),
+            stock INT DEFAULT 0,
+            is_active BOOLEAN DEFAULT TRUE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        )
+    ");
+} catch (PDOException $e) {
+    // Ignorar si la tabla ya existe
+}
+
 $method = $_SERVER['REQUEST_METHOD'];
 
 try {
