@@ -48,15 +48,20 @@ export default function CoursesCarousel() {
         <Swiper slidesPerView={1.1} spaceBetween={16} breakpoints={{ 640: { slidesPerView: 2.2 }, 1024: { slidesPerView: 3.2 } }}>
           {courses.map((c) => (
             <SwiperSlide key={c.id}>
-              <article className="bg-white rounded-2xl p-5 shadow-soft h-48 flex flex-col justify-between">
-                <div>
-                  <h3 className="font-serif text-xl">{c.title}</h3>
-                  <p className="text-sm text-brand-black/70">{c.description}</p>
-                  {c.level && <p className="text-xs text-brand-purple/70 mt-1">Nivel: {c.level}</p>}
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="text-xs text-brand-black/60">{c.modality || '24/7'} • Método ATIKA</div>
-                  {c.price && <div className="text-sm font-semibold text-brand-purple">${c.price}</div>}
+              <article className="bg-white rounded-2xl overflow-hidden shadow-soft hover:shadow-lg transition-shadow">
+                {c.image_url && (
+                  <img src={c.image_url} alt={c.title} className="w-full h-32 object-cover" />
+                )}
+                <div className="p-5 flex flex-col justify-between" style={{ minHeight: c.image_url ? '10rem' : '12rem' }}>
+                  <div>
+                    <h3 className="font-serif text-xl">{c.title}</h3>
+                    <p className="text-sm text-brand-black/70 line-clamp-2">{c.description}</p>
+                    {c.level && <p className="text-xs text-brand-purple/70 mt-1">Nivel: {c.level}</p>}
+                  </div>
+                  <div className="flex items-center justify-between mt-3">
+                    <div className="text-xs text-brand-black/60">{c.modality || '24/7'} • Método ATIKA</div>
+                    {c.price && <div className="text-sm font-semibold text-brand-purple">${c.price}</div>}
+                  </div>
                 </div>
               </article>
             </SwiperSlide>
