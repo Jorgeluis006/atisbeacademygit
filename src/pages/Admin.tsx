@@ -40,7 +40,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true)
   const [msg, setMsg] = useState('')
   const [err, setErr] = useState('')
-  const [activeTab, setActiveTab] = useState<'users' | 'testimonials' | 'courses' | 'blog' | 'videos'>('users')
+  const [activeTab, setActiveTab] = useState<'users' | 'testimonials' | 'courses' | 'blog' | 'videos' | 'products'>('users')
 
   useEffect(() => {
     (async () => {
@@ -98,6 +98,12 @@ export default function Admin() {
         >
           Videos
         </button>
+        <button 
+          className={`px-4 py-2 font-semibold transition-colors ${activeTab === 'products' ? 'border-b-2 border-brand-purple text-brand-purple' : 'text-brand-black/60 hover:text-brand-black'}`}
+          onClick={() => setActiveTab('products')}
+        >
+          Productos
+        </button>
       </div>
 
       {/* Tab Content */}
@@ -129,6 +135,7 @@ export default function Admin() {
       {activeTab === 'courses' && <CoursesManager />}
       {activeTab === 'blog' && <BlogManager />}
       {activeTab === 'videos' && <VideosManager />}
+      {activeTab === 'products' && <ProductsManager />}
 
       {(msg || err) && (
         <div className="mt-4">
@@ -1084,5 +1091,318 @@ function VideosManager() {
         </div>
       )}
     </div>
+  )
+}
+
+// ============ PRODUCTS MANAGER ============
+interface Product {
+  id?: number
+  name: string
+  description: string
+  price: number
+  image_url: string
+  category: string
+  stock: number
+  is_active: boolean
+}
+
+function ProductsManager() {
+  const [items, setItems] = useState<Product[]>([])
+  const [editing, setEditing] = useState<Product | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => { fetchItems() }, [])
+
+  const fetchItems = async () => {
+    try {
+      const res = await fetch('/api/admin/products.php')
+      if (res.ok) setItems(await res.json())
+    } catch (error) {
+      console.error('Error fetching products:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSubmit = async (product: Product) => {
+    try {
+      const method = product.id ? 'PUT' : 'POST'
+      const res = await fetch('/api/admin/products.php', {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(product)
+      })
+      if (res.ok) {
+        await fetchItems()
+        setEditing(null)
+      }
+    } catch (error) {
+      console.error('Error saving product:', error)
+    }
+  }
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('¿Eliminar este producto?')) return
+    try {
+      const res = await fetch('/api/admin/products.php', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      })
+      if (res.ok) await fetchItems()
+    } catch (error) {
+      console.error('Error deleting product:', error)
+    }
+  }
+
+  return (
+    <>
+      <section className="card mt-6">
+        <h2 className="section-title">{editing ? 'Editar producto' : 'Crear producto'}</h2>
+        <ProductForm 
+          initial={editing || undefined} 
+          onSubmit={handleSubmit} 
+          onCancel={() => setEditing(null)} 
+        />
+      </section>
+
+      <section className="card mt-6">
+        <h2 className="section-title">Lista de productos</h2>
+        {loading ? (
+          <p>Cargando...</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b">
+                  <th className="p-2">Nombre</th>
+                  <th className="p-2">Categoría</th>
+                  <th className="p-2">Precio</th>
+                  <th className="p-2">Stock</th>
+                  <th className="p-2">Estado</th>
+                  <th className="p-2">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map(item => (
+                  <tr key={item.id} className="border-b hover:bg-gray-50">
+                    <td className="p-2 max-w-xs truncate">{item.name}</td>
+                    <td className="p-2 text-sm">{item.category}</td>
+                    <td className="p-2 text-sm">${item.price}</td>
+                    <td className="p-2 text-sm">{item.stock}</td>
+                    <td className="p-2">{item.is_active ? <span className="text-green-600">✓ Activo</span> : <span className="text-gray-400">Inactivo</span>}</td>
+                    <td className="p-2 flex gap-2">
+                      <button className="btn-ghost text-sm" onClick={() => setEditing(item)}>Editar</button>
+                      <button className="btn-ghost text-sm text-red-600" onClick={() => handleDelete(item.id!)}>Eliminar</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+    </>
+  )
+}
+
+function ProductForm({ 
+  initial, 
+  onSubmit, 
+  onCancel 
+}: { 
+  initial?: Product
+  onSubmit: (product: Product) => void
+  onCancel: () => void
+}) {
+  const [name, setName] = useState(initial?.name || '')
+  const [description, setDescription] = useState(initial?.description || '')
+  const [price, setPrice] = useState(initial?.price || 0)
+  const [imageUrl, setImageUrl] = useState(initial?.image_url || '')
+  const [category, setCategory] = useState(initial?.category || 'general')
+  const [stock, setStock] = useState(initial?.stock || 0)
+  const [isActive, setIsActive] = useState(initial?.is_active ?? true)
+  const [uploadMethod, setUploadMethod] = useState<'url' | 'file'>('url')
+  const [uploading, setUploading] = useState(false)
+
+  useEffect(() => {
+    if (initial) {
+      setName(initial.name)
+      setDescription(initial.description)
+      setPrice(initial.price)
+      setImageUrl(initial.image_url)
+      setCategory(initial.category)
+      setStock(initial.stock)
+      setIsActive(initial.is_active)
+    }
+  }, [initial])
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploading(true)
+    try {
+      const url = await uploadImage(file)
+      setImageUrl(url)
+    } catch (error) {
+      alert('Error al subir la imagen')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    onSubmit({
+      ...(initial?.id && { id: initial.id }),
+      name,
+      description,
+      price,
+      image_url: imageUrl,
+      category,
+      stock,
+      is_active: isActive
+    })
+    if (!initial) {
+      setName('')
+      setDescription('')
+      setPrice(0)
+      setImageUrl('')
+      setCategory('general')
+      setStock(0)
+      setIsActive(true)
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="block mb-1 font-semibold">Nombre *</label>
+        <input 
+          type="text" 
+          className="input w-full" 
+          value={name} 
+          onChange={(e) => setName(e.target.value)} 
+          required 
+        />
+      </div>
+
+      <div>
+        <label className="block mb-1 font-semibold">Descripción</label>
+        <textarea 
+          className="input w-full" 
+          rows={3}
+          value={description} 
+          onChange={(e) => setDescription(e.target.value)} 
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block mb-1 font-semibold">Precio *</label>
+          <input 
+            type="number" 
+            step="0.01"
+            className="input w-full" 
+            value={price} 
+            onChange={(e) => setPrice(parseFloat(e.target.value))} 
+            required 
+          />
+        </div>
+
+        <div>
+          <label className="block mb-1 font-semibold">Stock</label>
+          <input 
+            type="number" 
+            className="input w-full" 
+            value={stock} 
+            onChange={(e) => setStock(parseInt(e.target.value))} 
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="block mb-1 font-semibold">Categoría</label>
+        <select 
+          className="input w-full" 
+          value={category} 
+          onChange={(e) => setCategory(e.target.value)}
+        >
+          <option value="general">General</option>
+          <option value="curso">Curso</option>
+          <option value="material">Material</option>
+          <option value="club">Club</option>
+          <option value="taller">Taller</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block mb-1 font-semibold">Imagen del producto</label>
+        <div className="flex gap-2 mb-2">
+          <button
+            type="button"
+            className={`px-3 py-1 rounded ${uploadMethod === 'url' ? 'bg-brand-purple text-white' : 'bg-gray-200'}`}
+            onClick={() => setUploadMethod('url')}
+          >
+            URL
+          </button>
+          <button
+            type="button"
+            className={`px-3 py-1 rounded ${uploadMethod === 'file' ? 'bg-brand-purple text-white' : 'bg-gray-200'}`}
+            onClick={() => setUploadMethod('file')}
+          >
+            Subir desde PC
+          </button>
+        </div>
+
+        {uploadMethod === 'url' ? (
+          <input 
+            type="url" 
+            className="input w-full" 
+            placeholder="https://ejemplo.com/imagen.jpg"
+            value={imageUrl} 
+            onChange={(e) => setImageUrl(e.target.value)} 
+          />
+        ) : (
+          <div>
+            <input 
+              type="file" 
+              accept="image/*"
+              className="input w-full" 
+              onChange={handleFileUpload}
+              disabled={uploading}
+            />
+            {uploading && <p className="text-sm text-gray-500 mt-1">Subiendo imagen...</p>}
+            {imageUrl && <p className="text-sm text-green-600 mt-1">✓ Imagen cargada</p>}
+          </div>
+        )}
+        
+        {imageUrl && (
+          <img src={imageUrl} alt="Preview" className="mt-2 h-32 object-cover rounded" />
+        )}
+      </div>
+
+      <div className="flex items-center gap-2">
+        <input 
+          type="checkbox" 
+          id="is_active" 
+          checked={isActive} 
+          onChange={(e) => setIsActive(e.target.checked)} 
+        />
+        <label htmlFor="is_active">Producto activo (visible en la tienda)</label>
+      </div>
+
+      <div className="flex gap-2">
+        <button type="submit" className="btn-primary">
+          {initial ? 'Actualizar' : 'Crear'} producto
+        </button>
+        {initial && (
+          <button type="button" className="btn-ghost" onClick={onCancel}>
+            Cancelar
+          </button>
+        )}
+      </div>
+    </form>
   )
 }
