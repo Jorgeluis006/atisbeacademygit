@@ -22,9 +22,9 @@ export default function Blog() {
     <main className="min-h-screen bg-gradient-to-b from-white to-gray-50">
       {/* Header Section */}
       <div className="bg-brand-purple text-white py-16">
-        <div className="container-padded">
+        <div className="container-padded text-center">
           <h1 className="text-5xl md:text-6xl font-extrabold mb-4">Blog</h1>
-          <p className="text-lg md:text-xl text-white/90 max-w-2xl">
+          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
             Artículos, consejos y recursos para aprender inglés
           </p>
         </div>
