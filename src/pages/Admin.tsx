@@ -1110,6 +1110,7 @@ function ProductsManager() {
   const [items, setItems] = useState<Product[]>([])
   const [editing, setEditing] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
+  const [setupMessage, setSetupMessage] = useState('')
 
   useEffect(() => { fetchItems() }, [])
 
@@ -1121,6 +1122,23 @@ function ProductsManager() {
       console.error('Error fetching products:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const runSetup = async () => {
+    setSetupMessage('Configurando tabla de productos...')
+    try {
+      const res = await fetch('/api/admin/setup_products.php')
+      const data = await res.json()
+      if (data.success) {
+        setSetupMessage(`✓ ${data.message} (${data.products_count} productos)`)
+        await fetchItems()
+        setTimeout(() => setSetupMessage(''), 5000)
+      } else {
+        setSetupMessage(`Error: ${data.error}`)
+      }
+    } catch (error) {
+      setSetupMessage('Error al configurar la tabla')
     }
   }
 
@@ -1157,6 +1175,22 @@ function ProductsManager() {
 
   return (
     <>
+      {items.length === 0 && !loading && (
+        <section className="card mt-6 bg-yellow-50 border-2 border-yellow-400">
+          <h2 className="section-title text-yellow-800">⚠️ Configuración inicial requerida</h2>
+          <p className="mb-4 text-gray-700">
+            Parece que la tabla de productos no existe o está vacía. 
+            Haz clic en el botón para crear la tabla e insertar productos de ejemplo.
+          </p>
+          <button onClick={runSetup} className="btn-primary">
+            Configurar tabla de productos
+          </button>
+          {setupMessage && (
+            <p className="mt-3 text-sm font-semibold text-gray-700">{setupMessage}</p>
+          )}
+        </section>
+      )}
+
       <section className="card mt-6">
         <h2 className="section-title">{editing ? 'Editar producto' : 'Crear producto'}</h2>
         <ProductForm 
