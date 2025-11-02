@@ -5,6 +5,19 @@ export default function Testimonios() {
   const [items, setItems] = useState<Testimonial[]>([])
   const [videos, setVideos] = useState<Video[]>([])
   const [loading, setLoading] = useState(true)
+  const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set())
+
+  const toggleExpanded = (id: number) => {
+    setExpandedItems(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(id)) {
+        newSet.delete(id)
+      } else {
+        newSet.add(id)
+      }
+      return newSet
+    })
+  }
 
   useEffect(() => {
     (async () => {
@@ -69,47 +82,63 @@ export default function Testimonios() {
 
             {/* Testimonials Grid - Equal Size */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {items.map((t) => (
-                <article 
-                  key={t.id} 
-                  className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-brand-purple flex flex-col h-full"
-                >
-                  {/* Author at top */}
-                  <div className="flex items-center gap-3 mb-4">
-                    {t.image_url ? (
-                      <img 
-                        src={t.image_url} 
-                        alt={t.author_name} 
-                        className="w-14 h-14 rounded-full object-cover ring-2 ring-brand-purple/20" 
-                      />
-                    ) : (
-                      <div className="w-14 h-14 rounded-full bg-gradient-to-br from-brand-purple to-brand-pink flex items-center justify-center text-white font-bold text-lg shadow-md">
-                        {t.author_name.charAt(0).toUpperCase()}
-                      </div>
-                    )}
-                    <div className="flex-1">
-                      <div className="font-bold text-gray-900 text-lg">{t.author_name}</div>
-                      {t.author_role && (
-                        <div className="text-sm text-gray-500">{t.author_role}</div>
+              {items.map((t) => {
+                const testimonialId = t.id || 0
+                const isExpanded = expandedItems.has(testimonialId)
+                const isLongText = t.content.length > 200
+                
+                return (
+                  <article 
+                    key={t.id} 
+                    className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-brand-purple flex flex-col"
+                  >
+                    {/* Author at top */}
+                    <div className="flex items-center gap-3 mb-4">
+                      {t.image_url ? (
+                        <img 
+                          src={t.image_url} 
+                          alt={t.author_name} 
+                          className="w-14 h-14 rounded-full object-cover ring-2 ring-brand-purple/20" 
+                        />
+                      ) : (
+                        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-brand-purple to-brand-pink flex items-center justify-center text-white font-bold text-lg shadow-md">
+                          {t.author_name.charAt(0).toUpperCase()}
+                        </div>
                       )}
+                      <div className="flex-1">
+                        <div className="font-bold text-gray-900 text-lg">{t.author_name}</div>
+                        {t.author_role && (
+                          <div className="text-sm text-gray-500">{t.author_role}</div>
+                        )}
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Rating */}
-                  <div className="flex items-center gap-1 mb-3">
-                    {Array.from({ length: t.rating || 5 }).map((_, i) => (
-                      <span key={i} className="text-brand-amber text-lg">★</span>
-                    ))}
-                  </div>
+                    {/* Rating */}
+                    <div className="flex items-center gap-1 mb-3">
+                      {Array.from({ length: t.rating || 5 }).map((_, i) => (
+                        <span key={i} className="text-brand-amber text-lg">★</span>
+                      ))}
+                    </div>
 
-                  {/* Content - Limited height with scrollable or truncated */}
-                  <div className="flex-1 relative">
-                    <p className="text-gray-700 leading-relaxed italic line-clamp-6">
-                      "{t.content}"
-                    </p>
-                  </div>
-                </article>
-              ))}
+                    {/* Content - Expandable */}
+                    <div className="flex-1 mb-3">
+                      <p className={`text-gray-700 leading-relaxed italic ${!isExpanded && isLongText ? 'line-clamp-6' : ''}`}>
+                        "{t.content}"
+                      </p>
+                    </div>
+
+                    {/* Ver más button */}
+                    {isLongText && (
+                      <button
+                        onClick={() => toggleExpanded(testimonialId)}
+                        className="text-brand-purple font-semibold hover:text-brand-purple/80 transition-colors text-sm self-start"
+                      >
+                        {isExpanded ? 'Ver menos ↑' : 'Ver más ↓'}
+                      </button>
+                    )}
+                  </article>
+                )
+              })}
             </div>
           </div>
         )}
