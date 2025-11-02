@@ -91,7 +91,7 @@ export default function Home() {
             ))}
           </div>
           <div className="text-center mt-12">
-            <Link className="btn-primary inline-flex" to="/testimonios">Ver todos los testimonios</Link>
+            <Link className="bg-white text-brand-purple px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all hover:scale-105 shadow-lg inline-flex" to="/testimonios">Ver todos los testimonios</Link>
           </div>
           </>
         )}
@@ -194,7 +194,7 @@ export default function Home() {
             ))}
           </div>
           <div className="text-center mt-12">
-            <Link className="btn-primary inline-flex" to="/blog">Ver todos los artículos</Link>
+            <Link className="bg-white text-brand-purple px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all hover:scale-105 shadow-lg inline-flex" to="/blog">Ver todos los artículos</Link>
           </div>
           </>
         )}
