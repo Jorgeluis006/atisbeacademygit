@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { getTestimonials, type Testimonial, getVideos, type Video } from '../services/api'
 
 export default function Testimonios() {
+  const navigate = useNavigate()
   const [items, setItems] = useState<Testimonial[]>([])
   const [videos, setVideos] = useState<Video[]>([])
   const [loading, setLoading] = useState(true)
@@ -214,7 +216,10 @@ export default function Testimonios() {
           <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
             Únete a cientos de estudiantes que han alcanzado sus metas en inglés
           </p>
-          <button className="bg-white text-brand-purple px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all hover:scale-105 shadow-lg">
+          <button 
+            onClick={() => navigate('/contacto')}
+            className="bg-white text-brand-purple px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all hover:scale-105 shadow-lg cursor-pointer"
+          >
             Comienza ahora
           </button>
         </div>
