@@ -1129,16 +1129,27 @@ function ProductsManager() {
     setSetupMessage('Configurando tabla de productos...')
     try {
       const res = await fetch('/api/admin/setup_products.php')
+      
+      if (!res.ok) {
+        const text = await res.text()
+        console.error('Setup error response:', text)
+        setSetupMessage(`Error HTTP ${res.status}: ${text.substring(0, 100)}`)
+        return
+      }
+      
       const data = await res.json()
+      console.log('Setup response:', data)
+      
       if (data.success) {
         setSetupMessage(`✓ ${data.message} (${data.products_count} productos)`)
         await fetchItems()
         setTimeout(() => setSetupMessage(''), 5000)
       } else {
-        setSetupMessage(`Error: ${data.error}`)
+        setSetupMessage(`Error: ${data.error || 'Error desconocido'}`)
       }
     } catch (error) {
-      setSetupMessage('Error al configurar la tabla')
+      console.error('Setup error:', error)
+      setSetupMessage(`Error al configurar la tabla: ${error}`)
     }
   }
 

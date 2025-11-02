@@ -5,6 +5,7 @@
  */
 
 require_once __DIR__ . '/../_bootstrap.php';
+requireAdmin();
 
 header('Content-Type: application/json');
 
