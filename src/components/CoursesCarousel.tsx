@@ -50,7 +50,9 @@ export default function CoursesCarousel() {
             <SwiperSlide key={c.id}>
               <article className="bg-white rounded-2xl overflow-hidden shadow-soft hover:shadow-lg transition-shadow">
                 {c.image_url && (
-                  <img src={c.image_url} alt={c.title} className="w-full h-32 object-cover" />
+                  <div className="w-full h-40 bg-gray-50 flex items-center justify-center p-4">
+                    <img src={c.image_url} alt={c.title} className="w-full h-full object-contain" />
+                  </div>
                 )}
                 <div className="p-5 flex flex-col justify-between" style={{ minHeight: c.image_url ? '10rem' : '12rem' }}>
                   <div>
