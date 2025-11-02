@@ -62,14 +62,25 @@ export default function Testimonios() {
         ) : (
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {videos.map((video) => (
-              <div key={video.id} className="aspect-video rounded-xl overflow-hidden bg-brand-black/10">
-                <iframe
-                  src={video.video_url}
-                  title={video.title || 'Video'}
-                  className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
+              <div key={video.id} className="aspect-video rounded-xl overflow-hidden bg-brand-black/10 shadow-soft">
+                {video.video_url.includes('youtube') || video.video_url.includes('vimeo') ? (
+                  <iframe
+                    src={video.video_url}
+                    title={video.title || 'Video'}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : (
+                  <video
+                    src={video.video_url}
+                    controls
+                    className="w-full h-full object-cover"
+                    poster={video.thumbnail_url}
+                  >
+                    Tu navegador no soporta el elemento de video.
+                  </video>
+                )}
               </div>
             ))}
           </div>

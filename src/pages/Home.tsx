@@ -2,22 +2,25 @@
 import Hero from '../components/Hero'
 import CoursesCarousel from '../components/CoursesCarousel'
 import { Link } from 'react-router-dom'
-import { getTestimonials, type Testimonial, getBlogPosts, type BlogPost } from '../services/api'
+import { getTestimonials, type Testimonial, getBlogPosts, type BlogPost, getVideos, type Video } from '../services/api'
 
 export default function Home() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([])
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
+  const [videos, setVideos] = useState<Video[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     (async () => {
       try {
-        const [testimonialsData, blogData] = await Promise.all([
+        const [testimonialsData, blogData, videosData] = await Promise.all([
           getTestimonials(),
-          getBlogPosts()
+          getBlogPosts(),
+          getVideos()
         ])
         setTestimonials(testimonialsData.slice(0, 3))
         setBlogPosts(blogData.slice(0, 3))
+        setVideos(videosData.slice(0, 3))
       } catch (err) {
         console.error('Error loading data:', err)
       } finally {
@@ -94,6 +97,46 @@ export default function Home() {
                 )}
                 <p className="text-sm text-brand-purple mt-2">Leer más </p>
               </Link>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Videos section */}
+      <section className="container-padded py-12">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-3xl font-extrabold">Videos de testimonios</h2>
+          <Link className="text-sm font-semibold text-brand-purple hover:text-brand-amber" to="/testimonios">
+            Ver todos →
+          </Link>
+        </div>
+        {loading ? (
+          <p className="text-brand-black/70">Cargando videos...</p>
+        ) : videos.length === 0 ? (
+          <p className="text-brand-black/70">No hay videos disponibles aún.</p>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {videos.map((video) => (
+              <div key={video.id} className="aspect-video rounded-xl overflow-hidden bg-brand-black/10 shadow-soft">
+                {video.video_url.includes('youtube') || video.video_url.includes('vimeo') ? (
+                  <iframe
+                    src={video.video_url}
+                    title={video.title || 'Video'}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : (
+                  <video
+                    src={video.video_url}
+                    controls
+                    className="w-full h-full object-cover"
+                    poster={video.thumbnail_url}
+                  >
+                    Tu navegador no soporta el elemento de video.
+                  </video>
+                )}
+              </div>
             ))}
           </div>
         )}

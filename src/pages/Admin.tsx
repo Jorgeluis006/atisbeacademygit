@@ -30,7 +30,8 @@ import {
   updateVideo,
   deleteVideo,
   type Video,
-  uploadImage
+  uploadImage,
+  uploadVideo
 } from '../services/api'
 
 export default function Admin() {
@@ -924,6 +925,23 @@ function VideosManager() {
     }
   }
 
+  async function handleVideoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file || !editing) return
+    
+    setUploading(true)
+    try {
+      const url = await uploadVideo(file)
+      setEditing({ ...editing, video_url: url })
+      alert('Video subido exitosamente. Puede tardar unos momentos en procesarse.')
+    } catch (err) {
+      alert('Error al subir el video. Verifica que sea menor a 100MB')
+      console.error(err)
+    } finally {
+      setUploading(false)
+    }
+  }
+
   async function handleSave(item: Video) {
     try {
       if (item.id) {
@@ -963,8 +981,29 @@ function VideosManager() {
           <h3 className="font-serif text-lg mb-3">{editing.id ? 'Editar' : 'Nuevo'} Video</h3>
           <div className="grid gap-3">
             <div>
-              <label className="label">URL del video (YouTube/Vimeo) *</label>
-              <input className="input-control" value={editing.video_url} onChange={e => setEditing({ ...editing, video_url: e.target.value })} placeholder="https://www.youtube.com/embed/..." />
+              <label className="label">Video</label>
+              <div className="grid gap-2">
+                <input 
+                  className="input-control" 
+                  placeholder="URL del video (YouTube/Vimeo embed)" 
+                  value={editing.video_url} 
+                  onChange={e => setEditing({ ...editing, video_url: e.target.value })} 
+                />
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-brand-black/60">o subir video:</span>
+                  <input 
+                    type="file" 
+                    accept="video/*" 
+                    onChange={handleVideoUpload}
+                    disabled={uploading}
+                    className="text-sm"
+                  />
+                  {uploading && <span className="text-sm text-brand-purple">Subiendo video... (puede tardar varios minutos)</span>}
+                </div>
+                {editing.video_url && !editing.video_url.includes('youtube') && !editing.video_url.includes('vimeo') && (
+                  <video src={editing.video_url} controls className="w-full h-48 rounded-lg mt-2" />
+                )}
+              </div>
             </div>
             <div>
               <label className="label">Título (opcional)</label>

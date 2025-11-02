@@ -285,3 +285,14 @@ export async function uploadImage(file: File): Promise<string> {
   })
   return res.data?.url
 }
+
+// Upload video
+export async function uploadVideo(file: File): Promise<string> {
+  const formData = new FormData()
+  formData.append('video', file)
+  const res = await api.post('/upload_video.php', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 300000 // 5 minutos para videos grandes
+  })
+  return res.data?.url
+}
