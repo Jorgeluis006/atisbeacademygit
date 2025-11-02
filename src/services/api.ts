@@ -243,3 +243,35 @@ export async function updateBlogPost(input: BlogPost) {
 export async function deleteBlogPost(id: number) {
   return api.delete('/admin/blog.php', { data: { id } })
 }
+
+// CMS: Videos
+export type Video = {
+  id?: number
+  title?: string
+  video_url: string
+  thumbnail_url?: string
+  is_published?: boolean
+  display_order?: number
+}
+
+export async function getVideos(): Promise<Video[]> {
+  const res = await api.get('/public/videos.php')
+  return res.data?.items ?? []
+}
+
+export async function getAdminVideos(): Promise<Video[]> {
+  const res = await api.get('/admin/videos.php')
+  return res.data?.items ?? []
+}
+
+export async function createVideo(input: Video) {
+  return api.post('/admin/videos.php', input)
+}
+
+export async function updateVideo(input: Video) {
+  return api.put('/admin/videos.php', input)
+}
+
+export async function deleteVideo(id: number) {
+  return api.delete('/admin/videos.php', { data: { id } })
+}

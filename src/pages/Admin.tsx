@@ -24,7 +24,12 @@ import {
   createBlogPost,
   updateBlogPost,
   deleteBlogPost,
-  type BlogPost
+  type BlogPost,
+  getAdminVideos,
+  createVideo,
+  updateVideo,
+  deleteVideo,
+  type Video
 } from '../services/api'
 
 export default function Admin() {
@@ -33,7 +38,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true)
   const [msg, setMsg] = useState('')
   const [err, setErr] = useState('')
-  const [activeTab, setActiveTab] = useState<'users' | 'testimonials' | 'courses' | 'blog'>('users')
+  const [activeTab, setActiveTab] = useState<'users' | 'testimonials' | 'courses' | 'blog' | 'videos'>('users')
 
   useEffect(() => {
     (async () => {
@@ -85,6 +90,12 @@ export default function Admin() {
         >
           Blog
         </button>
+        <button 
+          className={`px-4 py-2 font-semibold transition-colors ${activeTab === 'videos' ? 'border-b-2 border-brand-purple text-brand-purple' : 'text-brand-black/60 hover:text-brand-black'}`}
+          onClick={() => setActiveTab('videos')}
+        >
+          Videos
+        </button>
       </div>
 
       {/* Tab Content */}
@@ -115,6 +126,7 @@ export default function Admin() {
       {activeTab === 'testimonials' && <TestimonialsManager />}
       {activeTab === 'courses' && <CoursesManager />}
       {activeTab === 'blog' && <BlogManager />}
+      {activeTab === 'videos' && <VideosManager />}
 
       {(msg || err) && (
         <div className="mt-4">
@@ -747,6 +759,124 @@ function BlogManager() {
                   <td className="text-sm">{item.category || '—'}</td>
                   <td>{item.is_published ? <span className="text-green-600">✓ Publicado</span> : <span className="text-gray-400">Borrador</span>}</td>
                   <td className="text-sm">{item.published_at ? new Date(item.published_at).toLocaleDateString() : '—'}</td>
+                  <td className="flex gap-2">
+                    <button className="btn-ghost text-sm" onClick={() => setEditing(item)}>Editar</button>
+                    <button className="btn-ghost text-sm text-red-600" onClick={() => handleDelete(item.id!)}>Eliminar</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function VideosManager() {
+  const [items, setItems] = useState<Video[]>([])
+  const [loading, setLoading] = useState(true)
+  const [editing, setEditing] = useState<Video | null>(null)
+
+  async function load() {
+    setLoading(true)
+    try {
+      const data = await getAdminVideos()
+      setItems(data)
+    } finally { setLoading(false) }
+  }
+
+  useEffect(() => { load() }, [])
+
+  async function handleSave(item: Video) {
+    try {
+      if (item.id) {
+        await updateVideo(item)
+      } else {
+        await createVideo(item)
+      }
+      setEditing(null)
+      await load()
+      alert('Guardado exitosamente')
+    } catch {
+      alert('Error al guardar')
+    }
+  }
+
+  async function handleDelete(id: number) {
+    if (!confirm('¿Eliminar este video?')) return
+    try {
+      await deleteVideo(id)
+      await load()
+    } catch {
+      alert('Error al eliminar')
+    }
+  }
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="section-title">Videos de Testimonios</h2>
+        <button className="btn-primary" onClick={() => setEditing({ video_url: '', is_published: true, display_order: 0 })}>
+          Nuevo video
+        </button>
+      </div>
+
+      {editing && (
+        <div className="card mb-6">
+          <h3 className="font-serif text-lg mb-3">{editing.id ? 'Editar' : 'Nuevo'} Video</h3>
+          <div className="grid gap-3">
+            <div>
+              <label className="label">URL del video (YouTube/Vimeo) *</label>
+              <input className="input-control" value={editing.video_url} onChange={e => setEditing({ ...editing, video_url: e.target.value })} placeholder="https://www.youtube.com/embed/..." />
+            </div>
+            <div>
+              <label className="label">Título (opcional)</label>
+              <input className="input-control" value={editing.title || ''} onChange={e => setEditing({ ...editing, title: e.target.value })} />
+            </div>
+            <div>
+              <label className="label">URL de miniatura (opcional)</label>
+              <input className="input-control" value={editing.thumbnail_url || ''} onChange={e => setEditing({ ...editing, thumbnail_url: e.target.value })} />
+            </div>
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div>
+                <label className="label">Orden</label>
+                <input className="input-control" type="number" value={editing.display_order || 0} onChange={e => setEditing({ ...editing, display_order: Number(e.target.value) })} />
+              </div>
+              <div className="flex items-end">
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" checked={editing.is_published !== false} onChange={e => setEditing({ ...editing, is_published: e.target.checked })} />
+                  <span className="text-sm">Publicado</span>
+                </label>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button className="btn-primary" onClick={() => handleSave(editing)}>Guardar</button>
+              <button className="btn-secondary" onClick={() => setEditing(null)}>Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {loading ? <p>Cargando...</p> : (
+        <div className="overflow-auto">
+          <table className="table-clean">
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>URL</th>
+                <th>Estado</th>
+                <th>Orden</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map(item => (
+                <tr key={item.id}>
+                  <td className="max-w-xs truncate">{item.title || 'Sin título'}</td>
+                  <td className="text-sm max-w-md truncate">{item.video_url}</td>
+                  <td>{item.is_published ? <span className="text-green-600">✓ Publicado</span> : <span className="text-gray-400">Oculto</span>}</td>
+                  <td className="text-sm">{item.display_order}</td>
                   <td className="flex gap-2">
                     <button className="btn-ghost text-sm" onClick={() => setEditing(item)}>Editar</button>
                     <button className="btn-ghost text-sm text-red-600" onClick={() => handleDelete(item.id!)}>Eliminar</button>

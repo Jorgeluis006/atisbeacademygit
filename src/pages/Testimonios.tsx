@@ -1,15 +1,20 @@
 import { useEffect, useState } from 'react'
-import { getTestimonials, type Testimonial } from '../services/api'
+import { getTestimonials, type Testimonial, getVideos, type Video } from '../services/api'
 
 export default function Testimonios() {
   const [items, setItems] = useState<Testimonial[]>([])
+  const [videos, setVideos] = useState<Video[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     (async () => {
       try {
-        const data = await getTestimonials()
-        setItems(data)
+        const [testimonialsData, videosData] = await Promise.all([
+          getTestimonials(),
+          getVideos()
+        ])
+        setItems(testimonialsData)
+        setVideos(videosData)
       } catch (err) {
         console.error('Error loading testimonials:', err)
       } finally {
@@ -52,11 +57,23 @@ export default function Testimonios() {
       )}
       <div className="mt-10">
         <h2 className="font-serif text-2xl">Videos</h2>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[1,2,3,4,5,6].map((i) => (
-            <div key={i} className="aspect-video rounded-xl bg-brand-black/10" />
-          ))}
-        </div>
+        {videos.length === 0 ? (
+          <p className="mt-4 text-brand-black/70">Aún no hay videos publicados.</p>
+        ) : (
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {videos.map((video) => (
+              <div key={video.id} className="aspect-video rounded-xl overflow-hidden bg-brand-black/10">
+                <iframe
+                  src={video.video_url}
+                  title={video.title || 'Video'}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </main>
   )
