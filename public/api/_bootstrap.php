@@ -226,6 +226,17 @@ function ensure_cms_schema() {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
     $pdo->exec($sql);
     
+    // Agregar columna course_type si no existe (para tablas existentes)
+    try {
+        $stmt = $pdo->query("SHOW COLUMNS FROM courses LIKE 'course_type'");
+        if (!$stmt->fetch()) {
+            $pdo->exec("ALTER TABLE courses ADD COLUMN course_type VARCHAR(100) DEFAULT 'general' AFTER modality");
+            $pdo->exec("ALTER TABLE courses ADD INDEX idx_course_type (course_type)");
+        }
+    } catch (Exception $e) {
+        // Ignorar errores si la columna ya existe o hay otro problema
+    }
+    
     // Tabla de posts de blog
     $sql = "CREATE TABLE IF NOT EXISTS blog_posts (
         id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
