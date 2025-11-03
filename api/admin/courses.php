@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $duration = trim($input['duration'] ?? '');
     $level = trim($input['level'] ?? '');
     $modality = trim($input['modality'] ?? 'virtual');
+    $course_type = trim($input['course_type'] ?? 'general');
     $image_url = trim($input['image_url'] ?? '');
     $syllabus = trim($input['syllabus'] ?? '');
     $is_published = isset($input['is_published']) ? (bool)$input['is_published'] : true;
@@ -32,10 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     $stmt = $pdo->prepare('
-        INSERT INTO courses (title, description, price, duration, level, modality, image_url, syllabus, is_published, display_order)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO courses (title, description, price, duration, level, modality, course_type, image_url, syllabus, is_published, display_order)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ');
-    $stmt->execute([$title, $description, $price, $duration, $level, $modality, $image_url, $syllabus, $is_published, $display_order]);
+    $stmt->execute([$title, $description, $price, $duration, $level, $modality, $course_type, $image_url, $syllabus, $is_published, $display_order]);
     
     json_ok(['id' => (int)$pdo->lastInsertId()]);
 }
@@ -55,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     $duration = trim($input['duration'] ?? '');
     $level = trim($input['level'] ?? '');
     $modality = trim($input['modality'] ?? 'virtual');
+    $course_type = trim($input['course_type'] ?? 'general');
     $image_url = trim($input['image_url'] ?? '');
     $syllabus = trim($input['syllabus'] ?? '');
     $is_published = isset($input['is_published']) ? (bool)$input['is_published'] : true;
@@ -66,10 +68,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     
     $stmt = $pdo->prepare('
         UPDATE courses 
-        SET title = ?, description = ?, price = ?, duration = ?, level = ?, modality = ?, image_url = ?, syllabus = ?, is_published = ?, display_order = ?
+        SET title = ?, description = ?, price = ?, duration = ?, level = ?, modality = ?, course_type = ?, image_url = ?, syllabus = ?, is_published = ?, display_order = ?
         WHERE id = ?
     ');
-    $stmt->execute([$title, $description, $price, $duration, $level, $modality, $image_url, $syllabus, $is_published, $display_order, $id]);
+    $stmt->execute([$title, $description, $price, $duration, $level, $modality, $course_type, $image_url, $syllabus, $is_published, $display_order, $id]);
     
     json_ok();
 }
