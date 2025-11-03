@@ -41,8 +41,11 @@ export default function Cursos() {
     ? cursos 
     : cursos.filter(c => {
         const courseType = c.course_type || 'general'
+        console.log('Curso:', c.title, 'Tipo:', c.course_type, 'Normalizado:', courseType, 'Buscando:', selectedType)
         return courseType === selectedType
       })
+
+  console.log('Total cursos:', cursos.length, 'Filtrados:', filteredCourses.length, 'Tipo seleccionado:', selectedType)
 
   return (
     <main className="bg-gradient-to-b from-white via-purple-50/20 to-white">
