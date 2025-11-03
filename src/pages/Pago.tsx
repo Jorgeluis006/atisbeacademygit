@@ -117,6 +117,17 @@ export default function Pago() {
                   <p className="text-gray-600">Escanea y paga desde tu app bancaria</p>
                 </div>
               </div>
+              {/* Step 5 - NEW */}
+              <div className="flex gap-6 items-start">
+                <div className="flex-shrink-0 w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center font-bold text-xl">5</div>
+                <div className="flex-1">
+                  <h4 className="font-bold text-lg text-gray-900 mb-1 flex items-center gap-2">
+                    Recibe tus credenciales de acceso
+                    <span className="text-2xl">🎓</span>
+                  </h4>
+                  <p className="text-gray-600">Una vez confirmado el pago, te enviaremos tu <span className="font-semibold text-brand-purple">usuario y contraseña</span> para acceder a la Zona de Estudiantes</p>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -128,6 +139,38 @@ export default function Pago() {
                 <h3 className="text-2xl font-bold text-green-900">Pago 100% Seguro</h3>
                 <p className="text-green-700">Transacciones protegidas y verificadas</p>
               </div>
+            </div>
+          </div>
+
+          {/* Student Access Info - NEW */}
+          <div className="bg-gradient-to-br from-purple-100 via-pink-50 to-purple-100 border-2 border-purple-300 rounded-2xl p-8 mb-8">
+            <div className="text-center">
+              <div className="inline-block p-4 bg-purple-500 text-white rounded-full mb-4">
+                <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold text-purple-900 mb-3">
+                🎓 Acceso a la Zona de Estudiantes
+              </h3>
+              <p className="text-purple-800 text-lg mb-4 max-w-2xl mx-auto">
+                Una vez que tu pago sea recibido y confirmado, te enviaremos por WhatsApp tus credenciales personales:
+              </p>
+              <div className="grid md:grid-cols-2 gap-4 max-w-xl mx-auto">
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-purple-200">
+                  <div className="text-3xl mb-2">👤</div>
+                  <h4 className="font-bold text-purple-900 mb-1">Usuario</h4>
+                  <p className="text-sm text-purple-700">Tu nombre de usuario único</p>
+                </div>
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-purple-200">
+                  <div className="text-3xl mb-2">🔑</div>
+                  <h4 className="font-bold text-purple-900 mb-1">Contraseña</h4>
+                  <p className="text-sm text-purple-700">Tu clave de acceso segura</p>
+                </div>
+              </div>
+              <p className="text-purple-700 mt-4 text-sm">
+                ⚡ Tiempo estimado de entrega: <span className="font-bold">Menos de 1 hora</span> después de confirmar el pago
+              </p>
             </div>
           </div>
 
