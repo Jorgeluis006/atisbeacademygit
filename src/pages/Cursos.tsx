@@ -39,7 +39,10 @@ export default function Cursos() {
 
   const filteredCourses = selectedType === 'all' 
     ? cursos 
-    : cursos.filter(c => c.course_type === selectedType)
+    : cursos.filter(c => {
+        const courseType = c.course_type || 'general'
+        return courseType === selectedType
+      })
 
   return (
     <main className="bg-gradient-to-b from-white via-purple-50/20 to-white">
@@ -115,11 +118,9 @@ export default function Cursos() {
                   )}
                   <div className="p-6">
                     <div className="flex flex-wrap items-start gap-2 mb-3">
-                      {c.course_type && (
-                        <span className="px-3 py-1 bg-brand-purple/10 text-brand-purple text-xs font-bold rounded-full">
-                          {getCourseTypeLabel(c.course_type)}
-                        </span>
-                      )}
+                      <span className="px-3 py-1 bg-brand-purple/10 text-brand-purple text-xs font-bold rounded-full">
+                        {getCourseTypeLabel(c.course_type || 'general')}
+                      </span>
                       {c.level && (
                         <span className="px-3 py-1 bg-brand-purple text-white text-xs font-semibold rounded-full">
                           {c.level}
