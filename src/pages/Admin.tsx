@@ -594,7 +594,7 @@ function CoursesManager() {
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="section-title">Cursos</h2>
-        <button className="btn-primary" onClick={() => setEditing({ title: '', description: '', modality: 'virtual', is_published: true, display_order: 0 })}>
+        <button className="btn-primary" onClick={() => setEditing({ title: '', description: '', modality: 'virtual', course_type: 'general', is_published: true, display_order: 0 })}>
           Nuevo curso
         </button>
       </div>
