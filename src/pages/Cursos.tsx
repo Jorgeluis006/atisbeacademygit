@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { getCourses, type Course } from '../services/api'
 
 export default function Cursos() {
   const [cursos, setCursos] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedType, setSelectedType] = useState<string>('all')
+  const navigate = useNavigate()
 
   useEffect(() => {
     (async () => {
@@ -145,8 +147,21 @@ export default function Cursos() {
                     </div>
                     {c.price && (
                       <div className="pt-4 border-t border-gray-100">
-                        <span className="text-2xl font-bold text-brand-purple">${c.price}</span>
-                        <span className="text-gray-500 text-sm ml-1">/ curso</span>
+                        <div className="flex items-center justify-between mb-3">
+                          <div>
+                            <span className="text-2xl font-bold text-brand-purple">${c.price}</span>
+                            <span className="text-gray-500 text-sm ml-1">/ curso</span>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => navigate('/pago')}
+                          className="w-full bg-brand-purple text-white py-2.5 px-4 rounded-lg font-semibold hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                          </svg>
+                          Ir a Pago
+                        </button>
                       </div>
                     )}
                   </div>
