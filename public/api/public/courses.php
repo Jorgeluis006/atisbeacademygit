@@ -6,7 +6,7 @@ $pdo = get_pdo();
 
 // Obtener solo cursos publicados
 $stmt = $pdo->query('
-    SELECT id, title, description, price, duration, level, modality, image_url, syllabus
+    SELECT id, title, description, price, duration, level, modality, course_type, image_url, syllabus
     FROM courses 
     WHERE is_published = TRUE
     ORDER BY display_order ASC, created_at DESC
