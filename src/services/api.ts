@@ -177,6 +177,7 @@ export type Course = {
   duration?: string
   level?: string
   modality?: string
+  course_type?: string
   image_url?: string
   syllabus?: string
   is_published?: boolean

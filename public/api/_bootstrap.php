@@ -213,6 +213,7 @@ function ensure_cms_schema() {
         duration VARCHAR(100) DEFAULT NULL,
         level VARCHAR(50) DEFAULT NULL,
         modality VARCHAR(50) DEFAULT 'virtual',
+        course_type VARCHAR(100) DEFAULT 'general',
         image_url VARCHAR(255) DEFAULT NULL,
         syllabus TEXT DEFAULT NULL,
         is_published BOOLEAN DEFAULT TRUE,
@@ -220,7 +221,8 @@ function ensure_cms_schema() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         INDEX (is_published),
-        INDEX (display_order)
+        INDEX (display_order),
+        INDEX (course_type)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
     $pdo->exec($sql);
     

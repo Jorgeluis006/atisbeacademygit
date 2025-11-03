@@ -643,6 +643,22 @@ function CoursesManager() {
                 </select>
               </div>
               <div>
+                <label className="label">Tipo de curso</label>
+                <select className="select-control" value={editing.course_type || 'general'} onChange={e => setEditing({ ...editing, course_type: e.target.value })}>
+                  <option value="general">General</option>
+                  <option value="ingles">Inglés</option>
+                  <option value="frances">Francés</option>
+                  <option value="espanol">Español para extranjeros</option>
+                  <option value="club-conversacional">Club Conversacional</option>
+                  <option value="conversarte">ConversArte</option>
+                  <option value="tour-cafetero">Tour Cafetero</option>
+                  <option value="ninos">Cursos para niños</option>
+                  <option value="personalizadas">Clases personalizadas</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div>
                 <label className="label">Orden</label>
                 <input className="input-control" type="number" value={editing.display_order || 0} onChange={e => setEditing({ ...editing, display_order: Number(e.target.value) })} />
               </div>
@@ -696,6 +712,7 @@ function CoursesManager() {
             <thead>
               <tr>
                 <th>Título</th>
+                <th>Tipo</th>
                 <th>Nivel</th>
                 <th>Modalidad</th>
                 <th>Precio</th>
@@ -708,6 +725,7 @@ function CoursesManager() {
               {items.map(item => (
                 <tr key={item.id}>
                   <td className="font-semibold">{item.title}</td>
+                  <td className="text-sm">{item.course_type || 'general'}</td>
                   <td>{item.level || '—'}</td>
                   <td>{item.modality}</td>
                   <td>{item.price ? `$${item.price}` : '—'}</td>
