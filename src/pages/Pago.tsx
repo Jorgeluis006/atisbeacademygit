@@ -11,7 +11,7 @@ export default function Pago() {
       {/* Hero Header */}
       <div className="bg-gradient-to-r from-brand-purple to-purple-600 text-white py-20">
         <div className="container-padded text-center">
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4">
             📱 Proceso de Pago por QR
           </h1>
           <p className="text-xl text-white/90 max-w-2xl mx-auto">

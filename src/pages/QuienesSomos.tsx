@@ -4,7 +4,7 @@ export default function QuienesSomos() {
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-brand-purple to-purple-600 text-white py-20">
         <div className="container-padded text-center">
-          <h1 className="text-5xl md:text-6xl font-extrabold mb-4">
+          <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-4">
             Quiénes somos
           </h1>
           <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto">
