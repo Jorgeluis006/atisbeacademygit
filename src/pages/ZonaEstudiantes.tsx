@@ -23,11 +23,13 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
     }
   }
   return (
-    <form onSubmit={onSubmit} className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 w-full max-w-md">
+    <form onSubmit={onSubmit} method="post" action="#" className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 w-full max-w-md">
       <h2 className="text-2xl font-bold mb-6 text-center">Ingreso de estudiantes</h2>
-      <label className="block text-sm font-semibold text-gray-700 mb-2">Usuario</label>
+      <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="username">Usuario</label>
       <input 
+        id="username"
         name="username"
+        type="text"
         autoComplete="username"
         className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
         placeholder="" 
@@ -35,8 +37,9 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
         onChange={(e) => setUser(e.target.value)} 
         required
       />
-      <label className="block text-sm font-semibold text-gray-700 mb-2">Correo electrónico</label>
+      <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="email">Correo electrónico</label>
       <input 
+        id="email"
         name="email"
         type="email"
         autoComplete="email"
@@ -45,9 +48,10 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
         value={email} 
         onChange={(e) => setEmail(e.target.value)} 
       />
-      <label className="block text-sm font-semibold text-gray-700 mb-2">Contraseña</label>
+      <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="password">Contraseña</label>
       <div className="relative mb-4">
         <input 
+          id="password"
           name="password"
           autoComplete="current-password"
           className="w-full border border-gray-300 rounded-lg px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
