@@ -20,7 +20,7 @@ if ($userId <= 0) {
 try {
     $pdo = get_pdo();
     
-    // Verificar que el usuario existe y obtener su rol
+    // Verificar que el usuario existe
     $stmt = $pdo->prepare('SELECT id, username, role FROM users WHERE id = ?');
     $stmt->execute([$userId]);
     $user = $stmt->fetch();
@@ -29,12 +29,7 @@ try {
         json_error('Usuario no encontrado', 404);
     }
     
-    // No permitir eliminar usuarios admin
-    if ($user['role'] === 'admin') {
-        json_error('No se puede eliminar una cuenta de administrador', 403);
-    }
-    
-    // Eliminar el usuario
+    // Eliminar el usuario (ahora se permiten admins también)
     $stmt = $pdo->prepare('DELETE FROM users WHERE id = ?');
     $stmt->execute([$userId]);
     
