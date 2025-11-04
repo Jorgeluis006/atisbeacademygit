@@ -26,21 +26,8 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
   }
   
   return (
-    <form onSubmit={handleSubmit} method="post" action="#" className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 w-full max-w-md">
+    <form onSubmit={handleSubmit} method="post" action="#" id="login-form" className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 w-full max-w-md">
       <h2 className="text-2xl font-bold mb-6 text-center">Ingreso de estudiantes</h2>
-      
-      <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="username">Usuario</label>
-      <input 
-        id="username"
-        name="username"
-        type="text"
-        autoComplete="username"
-        className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
-        placeholder="" 
-        value={username} 
-        onChange={(e) => setUsername(e.target.value)} 
-        required
-      />
       
       <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="email">Correo electrónico</label>
       <input 
@@ -49,9 +36,22 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
         type="email"
         autoComplete="email"
         className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
-        placeholder="" 
+        placeholder="tu@correo.com" 
         value={email} 
         onChange={(e) => setEmail(e.target.value)} 
+        required
+      />
+      
+      <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="username">Usuario</label>
+      <input 
+        id="username"
+        name="username"
+        type="text"
+        autoComplete="username"
+        className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
+        placeholder="Tu usuario" 
+        value={username} 
+        onChange={(e) => setUsername(e.target.value)} 
         required
       />
       
