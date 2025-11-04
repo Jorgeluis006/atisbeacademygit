@@ -47,7 +47,7 @@ export default function Cursos() {
       })
 
   return (
-    <main className="bg-gradient-to-b from-white via-purple-50/20 to-white">
+    <main className="bg-gradient-to-b from-brand-beige via-purple-50/20 to-brand-beige">
       {/* Hero Header */}
       <div className="bg-gradient-to-r from-brand-purple to-purple-600 text-white py-20">
         <div className="container-padded text-center">
@@ -71,7 +71,7 @@ export default function Cursos() {
                 className={`px-5 py-2.5 rounded-full font-semibold transition-all ${
                   selectedType === type.value
                     ? 'bg-brand-purple text-white shadow-lg scale-105'
-                    : 'bg-brand-beige text-brand-black hover:bg-brand-purple/10 border border-brand-black/10 hover:border-brand-purple'
+                    : 'bg-white text-brand-black hover:bg-brand-purple/10 border border-brand-black/10 hover:border-brand-purple'
                 }`}
               >
                 {type.label}
