@@ -33,7 +33,7 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
         onChange={(e) => setUser(e.target.value)} 
         required
       />
-      <label className="block text-sm font-semibold text-gray-700 mb-2">Correo electrónico <span className="text-xs text-gray-500">(opcional para admin)</span></label>
+      <label className="block text-sm font-semibold text-gray-700 mb-2">Correo electrónico</label>
       <input 
         type="email"
         className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
