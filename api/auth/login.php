@@ -11,11 +11,12 @@ if (!is_array($data)) {
     $data = $_POST;
 }
 
+$username = isset($data['username']) ? trim((string)$data['username']) : '';
 $email = isset($data['email']) ? trim((string)$data['email']) : '';
 $password = isset($data['password']) ? (string)$data['password'] : '';
 
-if ($email === '' || $password === '') {
-    json_error('Correo electrónico y contraseña son requeridos', 422);
+if ($username === '' || $email === '' || $password === '') {
+    json_error('Usuario, correo electrónico y contraseña son requeridos', 422);
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -28,31 +29,28 @@ try {
 
     $pdo = get_pdo();
     
-    // Special handling for admin email
-    $adminEmail = 'automatic@atisbeacademy.com';
+    // Login with username
+    $stmt = $pdo->prepare('SELECT id, username, password_hash, name, role, email FROM users WHERE username = ? LIMIT 1');
+    $stmt->execute([$username]);
+    $user = $stmt->fetch();
     
-    if ($email === $adminEmail) {
-        // Admin login: find any admin account
-        $stmt = $pdo->prepare('SELECT id, username, password_hash, name, role, email FROM users WHERE role = ? LIMIT 1');
-        $stmt->execute(['admin']);
-        $user = $stmt->fetch();
-        
-        if (!$user) {
-            json_error('No se encontró una cuenta de administrador', 404);
-        }
-    } else {
-        // Regular login with email
-        $stmt = $pdo->prepare('SELECT id, username, password_hash, name, role, email FROM users WHERE email = ? LIMIT 1');
-        $stmt->execute([$email]);
-        $user = $stmt->fetch();
-        
-        if (!$user) {
-            json_error('No se encontró una cuenta vinculada a este correo', 404);
-        }
+    if (!$user) {
+        json_error('Usuario no encontrado', 404);
     }
     
     if (!password_verify($password, (string)$user['password_hash'])) {
         json_error('Contraseña incorrecta', 401);
+    }
+    
+    // Verify email matches
+    if ($user['email'] !== null && $user['email'] !== '') {
+        if ($user['email'] !== $email) {
+            json_error('El correo electrónico no coincide con el registrado', 401);
+        }
+    } else {
+        // First login - set the email
+        $updateStmt = $pdo->prepare('UPDATE users SET email = ? WHERE id = ?');
+        $updateStmt->execute([$email, $user['id']]);
     }
     
     $_SESSION['user_id'] = (int)$user['id'];
