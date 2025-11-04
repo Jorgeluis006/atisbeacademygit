@@ -128,6 +128,31 @@ export default function Admin() {
               <a className="btn-secondary" href={EXPORT_RESERVATIONS_URL}>Descargar reservas CSV</a>
             </div>
           </section>
+
+          <section className="card mt-6 max-w-xl bg-red-50 border-red-300">
+            <h2 className="section-title text-red-800">⚠️ Zona de peligro</h2>
+            <p className="text-sm text-red-700 mb-4">Esta acción eliminará TODOS los usuarios excepto las cuentas admin. No se puede deshacer.</p>
+            <button 
+              className="bg-red-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-700 transition-colors"
+              onClick={async () => {
+                if (!confirm('¿Estás COMPLETAMENTE seguro de eliminar todos los usuarios (estudiantes y profesores)?\n\nEsta acción NO se puede deshacer.')) return
+                try {
+                  const res = await fetch('/api/admin/clear_users.php', { method: 'POST' })
+                  const data = await res.json()
+                  if (data.ok) {
+                    setMsg(`✓ ${data.deleted_count} usuarios eliminados correctamente`)
+                    setTimeout(() => window.location.reload(), 2000)
+                  } else {
+                    setErr(data.message || 'Error al eliminar usuarios')
+                  }
+                } catch (e) {
+                  setErr('Error al eliminar usuarios')
+                }
+              }}
+            >
+              Eliminar todos los usuarios (excepto admin)
+            </button>
+          </section>
         </>
       )}
 
@@ -151,22 +176,20 @@ function CreateUserForm({ onDone, onError }: { onDone: (msg: string) => void; on
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
   const [role, setRole] = useState<'student' | 'admin' | 'teacher'>('student')
   const [loading, setLoading] = useState(false)
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     if (!username || !password) { onError('Usuario y contraseña son requeridos'); return }
-    if (role !== 'admin' && !email) { onError('El correo electrónico es requerido para estudiantes y profesores'); return }
     setLoading(true)
     try {
-      await createUser({ username, password, name, role, email })
-      setUsername(''); setPassword(''); setName(''); setEmail(''); setRole('student')
+      await createUser({ username, password, name, role })
+      setUsername(''); setPassword(''); setName(''); setRole('student')
       onDone('Usuario creado correctamente')
     } catch (e: any) {
       if (e?.response?.status === 409) onError('El usuario ya existe')
-      else onError(e?.response?.data?.message || 'No se pudo crear el usuario')
+      else onError('No se pudo crear el usuario')
     } finally { setLoading(false) }
   }
 
@@ -176,8 +199,6 @@ function CreateUserForm({ onDone, onError }: { onDone: (msg: string) => void; on
       <input className="input-control" placeholder="Usuario" value={username} onChange={e => setUsername(e.target.value)} />
       <label className="label">Nombre (opcional)</label>
       <input className="input-control" placeholder="Nombre (opcional)" value={name} onChange={e => setName(e.target.value)} />
-      <label className="label">Correo electrónico {role !== 'admin' && <span className="text-red-600">*</span>}</label>
-      <input className="input-control" type="email" placeholder="correo@ejemplo.com" value={email} onChange={e => setEmail(e.target.value)} required={role !== 'admin'} />
       <label className="label">Contraseña</label>
       <input className="input-control" type="password" placeholder="Contraseña" value={password} onChange={e => setPassword(e.target.value)} />
       <label className="label">Rol</label>
