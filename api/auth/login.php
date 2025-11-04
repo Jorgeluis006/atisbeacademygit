@@ -28,13 +28,27 @@ try {
 
     $pdo = get_pdo();
     
-    // Login with email instead of username
-    $stmt = $pdo->prepare('SELECT id, username, password_hash, name, role, email FROM users WHERE email = ? LIMIT 1');
-    $stmt->execute([$email]);
-    $user = $stmt->fetch();
+    // Special handling for admin email
+    $adminEmail = 'automatic@atisbeacademy.com';
     
-    if (!$user) {
-        json_error('No se encontró una cuenta vinculada a este correo', 404);
+    if ($email === $adminEmail) {
+        // Admin login: find any admin account
+        $stmt = $pdo->prepare('SELECT id, username, password_hash, name, role, email FROM users WHERE role = ? LIMIT 1');
+        $stmt->execute(['admin']);
+        $user = $stmt->fetch();
+        
+        if (!$user) {
+            json_error('No se encontró una cuenta de administrador', 404);
+        }
+    } else {
+        // Regular login with email
+        $stmt = $pdo->prepare('SELECT id, username, password_hash, name, role, email FROM users WHERE email = ? LIMIT 1');
+        $stmt->execute([$email]);
+        $user = $stmt->fetch();
+        
+        if (!$user) {
+            json_error('No se encontró una cuenta vinculada a este correo', 404);
+        }
     }
     
     if (!password_verify($password, (string)$user['password_hash'])) {
