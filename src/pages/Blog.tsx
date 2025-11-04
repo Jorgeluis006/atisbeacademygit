@@ -4,6 +4,19 @@ import { getBlogPosts, type BlogPost } from '../services/api'
 export default function Blog() {
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
+  const [expandedPosts, setExpandedPosts] = useState<Set<number>>(new Set())
+
+  const toggleExpanded = (id: number) => {
+    setExpandedPosts(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(id)) {
+        newSet.delete(id)
+      } else {
+        newSet.add(id)
+      }
+      return newSet
+    })
+  }
 
   useEffect(() => {
     (async () => {
@@ -42,7 +55,12 @@ export default function Blog() {
           </div>
         ) : (
           <div className="max-w-4xl mx-auto space-y-12">
-            {posts.map((p) => (
+            {posts.map((p) => {
+              const postId = p.id || 0
+              const isExpanded = expandedPosts.has(postId)
+              const isLongText = p.content && p.content.length > 500
+              
+              return (
               <article 
                 key={p.id} 
                 className="group relative bg-white border-b-2 border-gray-100 pb-12 last:border-b-0 hover:bg-gray-50/50 transition-all duration-300 rounded-2xl p-6"
@@ -88,17 +106,36 @@ export default function Blog() {
                   </p>
                 )}
 
-                {/* Content Preview */}
+                {/* Content */}
                 {p.content && (
-                  <div 
-                    className="prose prose-lg max-w-none text-gray-600 mb-6 line-clamp-3"
-                    dangerouslySetInnerHTML={{ 
-                      __html: p.content.substring(0, 200) + (p.content.length > 200 ? '...' : '') 
-                    }}
-                  />
+                  <div className="mb-6">
+                    <div 
+                      className={`text-gray-700 leading-relaxed whitespace-pre-line ${!isExpanded && isLongText ? 'line-clamp-6' : ''}`}
+                    >
+                      {isExpanded || !isLongText ? p.content : p.content.substring(0, 500) + '...'}
+                    </div>
+                    {isLongText && (
+                      <button
+                        onClick={() => toggleExpanded(postId)}
+                        className="mt-4 text-brand-purple font-semibold hover:text-brand-purple/80 transition-colors flex items-center gap-2"
+                      >
+                        {isExpanded ? (
+                          <>
+                            Ver menos 
+                            <span className="text-xl">↑</span>
+                          </>
+                        ) : (
+                          <>
+                            Ver más 
+                            <span className="text-xl">↓</span>
+                          </>
+                        )}
+                      </button>
+                    )}
+                  </div>
                 )}
 
-                {/* Author & Read More */}
+                {/* Author */}
                 <div className="flex items-center justify-between">
                   {p.author_name && (
                     <div className="flex items-center gap-2">
@@ -110,13 +147,10 @@ export default function Blog() {
                       <span className="text-gray-700 font-medium">Por {p.author_name}</span>
                     </div>
                   )}
-                  <button className="text-brand-purple font-semibold hover:underline flex items-center gap-2 group-hover:gap-3 transition-all">
-                    Leer más 
-                    <span className="text-xl">→</span>
-                  </button>
                 </div>
               </article>
-            ))}
+              )
+            })}
           </div>
         )}
       </div>
