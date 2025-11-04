@@ -39,7 +39,7 @@ export default function Testimonios() {
   }, [])
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-white via-purple-50/30 to-white">
+    <main className="min-h-screen bg-gradient-to-b from-brand-beige via-purple-50/30 to-brand-beige">
       {/* Hero Header */}
       <div className="bg-gradient-to-r from-brand-purple to-purple-600 text-white py-20">
         <div className="container-padded text-center">
@@ -147,7 +147,7 @@ export default function Testimonios() {
       </div>
 
       {/* Videos Section */}
-      <div className="bg-gradient-to-b from-gray-50 to-white py-16">
+      <div className="bg-gradient-to-b from-brand-beige/50 to-brand-beige py-16">
         <div className="container-padded">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
