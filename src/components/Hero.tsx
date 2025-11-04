@@ -28,8 +28,14 @@ export default function Hero() {
         transition={{ duration: 0.6, delay: 0.1 }}
         className="relative"
       >
-        {/* Placeholder de mascota */}
-        <div className="aspect-square rounded-3xl bg-gradient-to-br from-brand-purple to-brand-pink shadow-soft" />
+        {/* Imagen de mascota */}
+        <div className="aspect-square rounded-3xl overflow-hidden shadow-soft">
+          <img 
+            src="/images/Mascota[1].png" 
+            alt="Mascota Atisbe" 
+            className="w-full h-full object-contain"
+          />
+        </div>
         <div className="absolute -bottom-4 -left-4 bg-brand-yellow text-brand-black text-xs font-semibold rounded-full px-3 py-1 shadow">MCER Ready</div>
       </motion.div>
     </section>
