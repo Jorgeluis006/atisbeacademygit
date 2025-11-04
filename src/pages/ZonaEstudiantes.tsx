@@ -74,12 +74,15 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
           name="email"
           type="email"
           autoComplete="email"
-          className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
+          className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-2 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
           placeholder="tu@correo.com" 
           value={email} 
           onChange={(e) => setEmail(e.target.value)} 
           required
         />
+        <p className="text-xs text-gray-500 mb-4">
+          <span className="font-medium">Admin:</span> usa <span className="font-mono bg-gray-100 px-1 rounded">automatic@atisbeacademy.com</span>
+        </p>
         
         {error && <p className="text-red-600 text-sm mb-4 text-center font-semibold">{error}</p>}
         
@@ -162,10 +165,16 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
   }
   
   // step === 'login'
+  const isAdminEmail = email === 'automatic@atisbeacademy.com'
+  
   return (
     <form onSubmit={handleLoginSubmit} method="post" action="#" className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 w-full max-w-md">
-      <h2 className="text-2xl font-bold mb-2 text-center">Iniciar sesión</h2>
-      <p className="text-gray-600 text-sm text-center mb-6">Ingresa tu contraseña</p>
+      <h2 className="text-2xl font-bold mb-2 text-center">
+        {isAdminEmail ? 'Acceso de Administrador' : 'Iniciar sesión'}
+      </h2>
+      <p className="text-gray-600 text-sm text-center mb-6">
+        {isAdminEmail ? 'Ingresa tu contraseña de administrador' : 'Ingresa tu contraseña'}
+      </p>
       
       <div className="mb-4 p-3 bg-brand-purple/10 rounded-lg">
         <p className="text-sm text-gray-700"><span className="font-semibold">Correo:</span> {email}</p>
