@@ -1,59 +1,22 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { login as apiLogin, logout as apiLogout, me as apiMe, checkEmail, linkAccount, getStudentProgress, type StudentProgress, getScheduleSlots, createReservation, getMyReservations, cancelReservation, type ScheduleSlot, type Reservation } from '../services/api'
+import { login as apiLogin, logout as apiLogout, me as apiMe, getStudentProgress, type StudentProgress, getScheduleSlots, createReservation, getMyReservations, cancelReservation, type ScheduleSlot, type Reservation } from '../services/api'
 
 function Login({ onSuccess }: { onSuccess: () => void }) {
-  const [step, setStep] = useState<'email' | 'link' | 'login'>('email')
-  const [email, setEmail] = useState('')
   const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   
-  async function handleEmailSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError('')
     
     try {
-      const result = await checkEmail(email)
-      if (result.linked) {
-        // Email already linked, go to login
-        setStep('login')
-      } else {
-        // Email not linked, go to link account
-        setStep('link')
-      }
-    } catch (err: any) {
-      setError(err?.response?.data?.message || 'Error al verificar el correo')
-    } finally {
-      setLoading(false)
-    }
-  }
-  
-  async function handleLinkSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
-    
-    try {
-      await linkAccount(email, username, password)
-      onSuccess()
-    } catch (err: any) {
-      setError(err?.response?.data?.message || 'Error al vincular la cuenta')
-    } finally {
-      setLoading(false)
-    }
-  }
-  
-  async function handleLoginSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
-    
-    try {
-      await apiLogin(email, password)
+      await apiLogin(username, email, password)
       onSuccess()
     } catch (err: any) {
       setError(err?.response?.data?.message || 'Credenciales inválidas')
@@ -62,123 +25,35 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
     }
   }
   
-  if (step === 'email') {
-    return (
-      <form onSubmit={handleEmailSubmit} method="post" action="#" className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-2 text-center">Zona de estudiantes</h2>
-        <p className="text-gray-600 text-sm text-center mb-6">Ingresa tu correo electrónico para continuar</p>
-        
-        <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="email">Correo electrónico</label>
-        <input 
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-2 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
-          placeholder="tu@correo.com" 
-          value={email} 
-          onChange={(e) => setEmail(e.target.value)} 
-          required
-        />
-        <p className="text-xs text-gray-500 mb-4">
-          <span className="font-medium">Admin:</span> usa <span className="font-mono bg-gray-100 px-1 rounded">automatic@atisbeacademy.com</span>
-        </p>
-        
-        {error && <p className="text-red-600 text-sm mb-4 text-center font-semibold">{error}</p>}
-        
-        <button className="btn-primary w-full" type="submit" disabled={loading}>
-          {loading ? 'Verificando…' : 'Continuar'}
-        </button>
-      </form>
-    )
-  }
-  
-  if (step === 'link') {
-    return (
-      <form onSubmit={handleLinkSubmit} method="post" action="#" className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-2 text-center">Vincula tu cuenta</h2>
-        <p className="text-gray-600 text-sm text-center mb-6">Ingresa el usuario y contraseña que te proporcionó tu profesor/admin</p>
-        
-        <div className="mb-4 p-3 bg-brand-purple/10 rounded-lg">
-          <p className="text-sm text-gray-700"><span className="font-semibold">Correo:</span> {email}</p>
-        </div>
-        
-        <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="username">Usuario</label>
-        <input 
-          id="username"
-          name="username"
-          type="text"
-          autoComplete="username"
-          className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
-          placeholder="Tu usuario" 
-          value={username} 
-          onChange={(e) => setUsername(e.target.value)} 
-          required
-        />
-        
-        <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="password">Contraseña</label>
-        <div className="relative mb-4">
-          <input 
-            id="password"
-            name="password"
-            autoComplete="current-password"
-            className="w-full border border-gray-300 rounded-lg px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
-            type={showPassword ? "text" : "password"}
-            placeholder="••••••••" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            required
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
-          >
-            {showPassword ? (
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-              </svg>
-            ) : (
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-            )}
-          </button>
-        </div>
-        
-        {error && <p className="text-red-600 text-sm mb-4 text-center font-semibold">{error}</p>}
-        
-        <button className="btn-primary w-full mb-3" type="submit" disabled={loading}>
-          {loading ? 'Vinculando…' : 'Vincular cuenta'}
-        </button>
-        
-        <button 
-          type="button"
-          className="text-sm text-brand-purple hover:underline w-full text-center"
-          onClick={() => { setStep('email'); setError(''); setUsername(''); setPassword(''); }}
-        >
-          ← Usar otro correo
-        </button>
-      </form>
-    )
-  }
-  
-  // step === 'login'
-  const isAdminEmail = email === 'automatic@atisbeacademy.com'
-  
   return (
-    <form onSubmit={handleLoginSubmit} method="post" action="#" className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 w-full max-w-md">
-      <h2 className="text-2xl font-bold mb-2 text-center">
-        {isAdminEmail ? 'Acceso de Administrador' : 'Iniciar sesión'}
-      </h2>
-      <p className="text-gray-600 text-sm text-center mb-6">
-        {isAdminEmail ? 'Ingresa tu contraseña de administrador' : 'Ingresa tu contraseña'}
-      </p>
+    <form onSubmit={handleSubmit} method="post" action="#" className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 w-full max-w-md">
+      <h2 className="text-2xl font-bold mb-6 text-center">Ingreso de estudiantes</h2>
       
-      <div className="mb-4 p-3 bg-brand-purple/10 rounded-lg">
-        <p className="text-sm text-gray-700"><span className="font-semibold">Correo:</span> {email}</p>
-      </div>
+      <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="username">Usuario</label>
+      <input 
+        id="username"
+        name="username"
+        type="text"
+        autoComplete="username"
+        className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
+        placeholder="" 
+        value={username} 
+        onChange={(e) => setUsername(e.target.value)} 
+        required
+      />
+      
+      <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="email">Correo electrónico</label>
+      <input 
+        id="email"
+        name="email"
+        type="email"
+        autoComplete="email"
+        className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
+        placeholder="" 
+        value={email} 
+        onChange={(e) => setEmail(e.target.value)} 
+        required
+      />
       
       <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="password">Contraseña</label>
       <div className="relative mb-4">
@@ -213,16 +88,8 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
       
       {error && <p className="text-red-600 text-sm mb-4 text-center font-semibold">{error}</p>}
       
-      <button className="btn-primary w-full mb-3" type="submit" disabled={loading}>
+      <button className="btn-primary w-full" type="submit" disabled={loading}>
         {loading ? 'Ingresando…' : 'Ingresar'}
-      </button>
-      
-      <button 
-        type="button"
-        className="text-sm text-brand-purple hover:underline w-full text-center"
-        onClick={() => { setStep('email'); setError(''); setPassword(''); }}
-      >
-        ← Usar otro correo
       </button>
     </form>
   )

@@ -21,17 +21,8 @@ export async function sendContactForm(payload: ContactPayload) {
 }
 
 // Auth
-export async function checkEmail(email: string) {
-  const res = await api.get('/auth/check_email.php', { params: { email } })
-  return res.data
-}
-
-export async function linkAccount(email: string, username: string, password: string) {
-  return api.post('/auth/link_account.php', { email, username, password })
-}
-
-export async function login(email: string, password: string) {
-  return api.post('/auth/login.php', { email, password })
+export async function login(username: string, email: string, password: string) {
+  return api.post('/auth/login.php', { username, email, password })
 }
 
 export async function logout() {

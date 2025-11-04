@@ -175,6 +175,7 @@ export default function Admin() {
 
 function CreateUserForm({ onDone, onError }: { onDone: (msg: string) => void; onError: (err: string) => void }) {
   const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
   const [role, setRole] = useState<'student' | 'admin' | 'teacher'>('student')
@@ -183,10 +184,11 @@ function CreateUserForm({ onDone, onError }: { onDone: (msg: string) => void; on
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     if (!username || !password) { onError('Usuario y contraseña son requeridos'); return }
+    if (!email) { onError('El correo electrónico es requerido'); return }
     setLoading(true)
     try {
-      await createUser({ username, password, name, role })
-      setUsername(''); setPassword(''); setName(''); setRole('student')
+      await createUser({ username, password, name, role, email })
+      setUsername(''); setEmail(''); setPassword(''); setName(''); setRole('student')
       onDone('Usuario creado correctamente')
     } catch (e: any) {
       if (e?.response?.status === 409) onError('El usuario ya existe')
@@ -198,6 +200,8 @@ function CreateUserForm({ onDone, onError }: { onDone: (msg: string) => void; on
     <form onSubmit={submit} className="space-y-3">
       <label className="label">Usuario</label>
       <input className="input-control" placeholder="Usuario" value={username} onChange={e => setUsername(e.target.value)} />
+      <label className="label">Correo electrónico</label>
+      <input className="input-control" type="email" placeholder="correo@ejemplo.com" value={email} onChange={e => setEmail(e.target.value)} />
       <label className="label">Nombre (opcional)</label>
       <input className="input-control" placeholder="Nombre (opcional)" value={name} onChange={e => setName(e.target.value)} />
       <label className="label">Contraseña</label>
