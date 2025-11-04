@@ -140,7 +140,12 @@ export default function ZonaEstudiantes() {
           </div>
       ) : (
         <>
-          <div className="mt-2 text-sm text-brand-black/70">Sesión: {user.name || user.username} ({user.role}) <button className="underline ml-2" onClick={handleLogout}>Salir</button></div>
+          <div className="flex items-center justify-between mb-6">
+            <div className="text-sm text-brand-black/70">
+              Sesión: <span className="font-semibold">{user.name || user.username}</span> ({user.role})
+            </div>
+            <button className="btn-secondary" onClick={handleLogout}>Salir</button>
+          </div>
           {loadingData ? (
             <div className="mt-6">
               <p>Cargando datos del estudiante…</p>
