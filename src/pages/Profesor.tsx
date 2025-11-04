@@ -210,36 +210,116 @@ export default function Profesor() {
         {reservations.length === 0 ? (
           <p className="text-sm text-brand-black/70">Aún no hay reservas.</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="table-clean">
-              <thead>
-                <tr>
-                  <th>Estudiante</th>
-                  <th>Fecha y hora</th>
-                  <th>Tipo</th>
-                  <th>Modalidad</th>
-                  <th>Notas</th>
-                </tr>
-              </thead>
-              <tbody>
-                {reservations.map(res => {
-                  const dt = new Date(res.datetime)
+          <>
+            {/* Horario tipo calendario */}
+            <div className="overflow-x-auto">
+              <div className="min-w-[800px] bg-white rounded-lg border border-gray-200 shadow-sm">
+                {/* Header con días de la semana */}
+                <div className="grid grid-cols-8 bg-gradient-to-r from-brand-purple to-purple-600">
+                  <div className="p-3 text-center text-white font-bold border-r border-white/20">
+                    Hora
+                  </div>
+                  {['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO', 'DOMINGO'].map((day) => (
+                    <div key={day} className="p-3 text-center text-white font-bold border-r border-white/20 last:border-r-0">
+                      {day}
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Filas de horas */}
+                {Array.from({ length: 14 }, (_, i) => i + 6).map((hour) => {
+                  // Obtener reservas para esta hora
+                  const getReservationsForHourAndDay = (dayOfWeek: number) => {
+                    return reservations.filter(res => {
+                      const dt = new Date(res.datetime)
+                      return dt.getHours() === hour && dt.getDay() === dayOfWeek
+                    })
+                  }
+
                   return (
-                    <tr key={res.id}>
-                      <td>
-                        <div className="font-semibold">{res.student_name || res.student_username}</div>
-                        <div className="text-xs text-brand-black/70">{res.student_username}</div>
-                      </td>
-                      <td>{dt.toLocaleString('es-ES')}</td>
-                      <td><span className={`inline-block px-2 py-1 rounded text-xs font-semibold ${res.tipo === 'examen' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'}`}>{res.tipo}</span></td>
-                      <td>{res.modalidad}</td>
-                      <td className="text-sm text-brand-black/70">{res.notas || '—'}</td>
-                    </tr>
+                    <div key={hour} className="grid grid-cols-8 border-t border-gray-200">
+                      {/* Columna de hora */}
+                      <div className="p-3 bg-blue-50 text-center font-semibold text-gray-700 border-r border-gray-200">
+                        {hour.toString().padStart(2, '0')}:00
+                      </div>
+                      
+                      {/* Columnas para cada día */}
+                      {[0, 1, 2, 3, 4, 5, 6].map((dayOfWeek) => {
+                        const dayReservations = getReservationsForHourAndDay(dayOfWeek)
+                        
+                        return (
+                          <div 
+                            key={dayOfWeek} 
+                            className="p-2 border-r border-gray-200 last:border-r-0 min-h-[60px] hover:bg-gray-50 transition-colors"
+                          >
+                            {dayReservations.map((res) => (
+                              <div
+                                key={res.id}
+                                className={`text-xs p-2 rounded mb-1 ${
+                                  res.tipo === 'examen' 
+                                    ? 'bg-red-100 border border-red-300' 
+                                    : 'bg-blue-100 border border-blue-300'
+                                }`}
+                              >
+                                <div className="font-semibold text-gray-900 truncate">
+                                  {res.student_name || res.student_username}
+                                </div>
+                                <div className="text-gray-600">
+                                  {res.modalidad}
+                                </div>
+                                {res.notas && (
+                                  <div className="text-gray-500 truncate mt-1">
+                                    {res.notas}
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        )
+                      })}
+                    </div>
                   )
                 })}
-              </tbody>
-            </table>
-          </div>
+              </div>
+            </div>
+
+            {/* Tabla tradicional (opcional, debajo del calendario) */}
+            <details className="mt-6">
+              <summary className="cursor-pointer text-brand-purple font-semibold hover:underline">
+                Ver lista detallada
+              </summary>
+              <div className="overflow-x-auto mt-4">
+                <table className="table-clean">
+                  <thead>
+                    <tr>
+                      <th>Estudiante</th>
+                      <th>Fecha y hora</th>
+                      <th>Tipo</th>
+                      <th>Modalidad</th>
+                      <th>Notas</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {reservations.map(res => {
+                      const dt = new Date(res.datetime)
+                      return (
+                        <tr key={res.id}>
+                          <td>
+                            <div className="font-semibold">{res.student_name || res.student_username}</div>
+                            <div className="text-xs text-brand-black/70">{res.student_username}</div>
+                          </td>
+                          <td>{dt.toLocaleString('es-ES')}</td>
+                          <td><span className={`inline-block px-2 py-1 rounded text-xs font-semibold ${res.tipo === 'examen' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'}`}>{res.tipo}</span></td>
+                          <td>{res.modalidad}</td>
+                          <td className="text-sm text-brand-black/70">{res.notas || '—'}</td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </details>
+          </>
         )}
       </section>
 
