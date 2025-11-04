@@ -20,7 +20,7 @@ try {
         $countStmt->execute();
         $total = (int)$countStmt->fetchColumn();
 
-        $stmt = $pdo->prepare('SELECT id, username, name, role, created_at FROM users WHERE username LIKE :q OR name LIKE :q2 ORDER BY created_at DESC LIMIT :limit OFFSET :offset');
+        $stmt = $pdo->prepare('SELECT id, username, name, role, email, created_at FROM users WHERE username LIKE :q OR name LIKE :q2 ORDER BY created_at DESC LIMIT :limit OFFSET :offset');
         $stmt->bindValue(':q', $like, PDO::PARAM_STR);
         $stmt->bindValue(':q2', $like, PDO::PARAM_STR);
         $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
@@ -28,7 +28,7 @@ try {
         $stmt->execute();
     } else {
         $total = (int)$pdo->query('SELECT COUNT(*) FROM users')->fetchColumn();
-        $stmt = $pdo->prepare('SELECT id, username, name, role, created_at FROM users ORDER BY created_at DESC LIMIT :limit OFFSET :offset');
+        $stmt = $pdo->prepare('SELECT id, username, name, role, email, created_at FROM users ORDER BY created_at DESC LIMIT :limit OFFSET :offset');
         $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
         $stmt->execute();

@@ -89,7 +89,7 @@ export async function disableDemoUser() {
   return api.post('/auth/disable_demo.php')
 }
 
-export type AdminUser = { id: number; username: string; name: string | null; role: string; created_at: string }
+export type AdminUser = { id: number; username: string; name: string | null; role: string; created_at: string; email: string | null }
 export async function listUsers(params: { q?: string; page?: number; limit?: number } = {}): Promise<{ items: AdminUser[]; total: number; page: number; limit: number }> {
   const res = await api.get('/admin/users.php', { params })
   return res.data

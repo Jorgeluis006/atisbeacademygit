@@ -371,6 +371,7 @@ function UsersList() {
               <tr>
                 <th>Usuario</th>
                 <th>Nombre</th>
+                <th>Correo</th>
                 <th>Rol</th>
                 <th>Creado</th>
                 <th>Acciones</th>
@@ -381,6 +382,7 @@ function UsersList() {
                 <tr key={u.id}>
                   <td>{u.username}</td>
                   <td>{u.name || '-'}</td>
+                  <td className="text-sm">{u.email || <span className="text-gray-400 italic">Sin correo</span>}</td>
                   <td>
                     {u.role === 'admin' && <span className="badge-role-admin">Admin</span>}
                     {u.role === 'teacher' && <span className="badge-role-teacher">Profesor</span>}
