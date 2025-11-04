@@ -27,6 +27,8 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
       <h2 className="text-2xl font-bold mb-6 text-center">Ingreso de estudiantes</h2>
       <label className="block text-sm font-semibold text-gray-700 mb-2">Usuario</label>
       <input 
+        name="username"
+        autoComplete="username"
         className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
         placeholder="" 
         value={user} 
@@ -35,7 +37,9 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
       />
       <label className="block text-sm font-semibold text-gray-700 mb-2">Correo electrónico</label>
       <input 
+        name="email"
         type="email"
+        autoComplete="email"
         className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
         placeholder="" 
         value={email} 
@@ -44,6 +48,8 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
       <label className="block text-sm font-semibold text-gray-700 mb-2">Contraseña</label>
       <div className="relative mb-4">
         <input 
+          name="password"
+          autoComplete="current-password"
           className="w-full border border-gray-300 rounded-lg px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
           type={showPassword ? "text" : "password"}
           placeholder="••••••••" 
