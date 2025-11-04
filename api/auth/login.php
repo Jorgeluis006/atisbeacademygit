@@ -13,6 +13,7 @@ if (!is_array($data)) {
 
 $username = isset($data['username']) ? trim((string)$data['username']) : '';
 $password = isset($data['password']) ? (string)$data['password'] : '';
+$email = isset($data['email']) ? trim((string)$data['email']) : '';
 
 if ($username === '' || $password === '') {
     json_error('Usuario y contraseña son requeridos', 422);
@@ -23,12 +24,23 @@ try {
     seed_demo_user_if_empty();
 
     $pdo = get_pdo();
-    $stmt = $pdo->prepare('SELECT id, username, password_hash, name, role FROM users WHERE username=? LIMIT 1');
+    $stmt = $pdo->prepare('SELECT id, username, password_hash, name, role, email FROM users WHERE username=? LIMIT 1');
     $stmt->execute([$username]);
     $user = $stmt->fetch();
     if (!$user || !password_verify($password, (string)$user['password_hash'])) {
         json_error('Credenciales inválidas', 401);
     }
+    
+    // Validar email para estudiantes y profesores (no admin)
+    if ($user['role'] !== 'admin') {
+        if ($email === '') {
+            json_error('El correo electrónico es requerido', 422);
+        }
+        if ($user['email'] !== null && $user['email'] !== $email) {
+            json_error('El correo electrónico no coincide', 401);
+        }
+    }
+    
     $_SESSION['user_id'] = (int)$user['id'];
     $_SESSION['username'] = $user['username'];
     $_SESSION['name'] = $user['name'];
