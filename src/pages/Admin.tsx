@@ -343,11 +343,13 @@ function UsersList() {
   }
 
   async function doDelete(u: AdminUser) {
-    if (u.role === 'admin') {
-      alert('No se puede eliminar una cuenta de administrador')
-      return
-    }
-    if (!confirm(`¿Estás seguro de eliminar el usuario "${u.username}"?\n\nEsta acción no se puede deshacer.`)) return
+    const isAdmin = u.role === 'admin'
+    const confirmMessage = isAdmin 
+      ? `⚠️ ADVERTENCIA: Estás a punto de eliminar una cuenta de ADMINISTRADOR.\n\nUsuario: "${u.username}"\n\n¿Estás COMPLETAMENTE seguro?\n\nEsta acción no se puede deshacer.`
+      : `¿Estás seguro de eliminar el usuario "${u.username}"?\n\nEsta acción no se puede deshacer.`
+    
+    if (!confirm(confirmMessage)) return
+    
     try {
       await deleteUser(u.id)
       alert('Usuario eliminado correctamente')
@@ -391,9 +393,12 @@ function UsersList() {
                   <td>{new Date(u.created_at).toLocaleString()}</td>
                   <td className="space-x-2">
                     <button className="btn-ghost underline" onClick={() => doReset(u)}>Resetear contraseña</button>
-                    {u.role !== 'admin' && (
-                      <button className="btn-ghost underline text-red-600 hover:text-red-700" onClick={() => doDelete(u)}>Eliminar</button>
-                    )}
+                    <button 
+                      className={`btn-ghost underline ${u.role === 'admin' ? 'text-orange-600 hover:text-orange-700' : 'text-red-600 hover:text-red-700'}`} 
+                      onClick={() => doDelete(u)}
+                    >
+                      Eliminar
+                    </button>
                   </td>
                 </tr>
               ))}
