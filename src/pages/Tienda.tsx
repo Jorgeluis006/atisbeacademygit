@@ -124,7 +124,7 @@ export default function Tienda() {
               {filteredProducts.map((product) => (
                 <article 
                   key={product.id} 
-                  className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100"
+                  className="group bg-brand-beige rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100"
                 >
                   {/* Product Image */}
                   <div className="relative overflow-hidden bg-gradient-to-br from-brand-purple/10 to-purple-100">
