@@ -151,20 +151,22 @@ function CreateUserForm({ onDone, onError }: { onDone: (msg: string) => void; on
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
   const [role, setRole] = useState<'student' | 'admin' | 'teacher'>('student')
   const [loading, setLoading] = useState(false)
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     if (!username || !password) { onError('Usuario y contraseña son requeridos'); return }
+    if (role !== 'admin' && !email) { onError('El correo electrónico es requerido para estudiantes y profesores'); return }
     setLoading(true)
     try {
-      await createUser({ username, password, name, role })
-      setUsername(''); setPassword(''); setName(''); setRole('student')
+      await createUser({ username, password, name, role, email })
+      setUsername(''); setPassword(''); setName(''); setEmail(''); setRole('student')
       onDone('Usuario creado correctamente')
     } catch (e: any) {
       if (e?.response?.status === 409) onError('El usuario ya existe')
-      else onError('No se pudo crear el usuario')
+      else onError(e?.response?.data?.message || 'No se pudo crear el usuario')
     } finally { setLoading(false) }
   }
 
@@ -174,6 +176,8 @@ function CreateUserForm({ onDone, onError }: { onDone: (msg: string) => void; on
       <input className="input-control" placeholder="Usuario" value={username} onChange={e => setUsername(e.target.value)} />
       <label className="label">Nombre (opcional)</label>
       <input className="input-control" placeholder="Nombre (opcional)" value={name} onChange={e => setName(e.target.value)} />
+      <label className="label">Correo electrónico {role !== 'admin' && <span className="text-red-600">*</span>}</label>
+      <input className="input-control" type="email" placeholder="correo@ejemplo.com" value={email} onChange={e => setEmail(e.target.value)} required={role !== 'admin'} />
       <label className="label">Contraseña</label>
       <input className="input-control" type="password" placeholder="Contraseña" value={password} onChange={e => setPassword(e.target.value)} />
       <label className="label">Rol</label>

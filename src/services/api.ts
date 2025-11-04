@@ -21,8 +21,8 @@ export async function sendContactForm(payload: ContactPayload) {
 }
 
 // Auth
-export async function login(username: string, password: string) {
-  return api.post('/auth/login.php', { username, password })
+export async function login(username: string, password: string, email?: string) {
+  return api.post('/auth/login.php', { username, password, email: email || '' })
 }
 
 export async function logout() {
@@ -81,7 +81,7 @@ export async function cancelReservation(id: number) {
 }
 
 // Admin: users
-export async function createUser(input: { username: string; password: string; name?: string; role?: 'student' | 'admin' | 'teacher' }) {
+export async function createUser(input: { username: string; password: string; name?: string; role?: 'student' | 'admin' | 'teacher'; email?: string }) {
   return api.post('/auth/create_user.php', input)
 }
 

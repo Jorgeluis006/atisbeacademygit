@@ -5,6 +5,7 @@ import { login as apiLogin, logout as apiLogout, me as apiMe, getStudentProgress
 function Login({ onSuccess }: { onSuccess: () => void }) {
   const [user, setUser] = useState('')
   const [pass, setPass] = useState('')
+  const [email, setEmail] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -13,10 +14,10 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
     e.preventDefault()
     setLoading(true); setError('')
     try {
-      await apiLogin(user, pass)
+      await apiLogin(user, pass, email)
       onSuccess()
-    } catch (err) {
-      setError('Credenciales inválidas')
+    } catch (err: any) {
+      setError(err?.response?.data?.message || 'Credenciales inválidas')
     } finally {
       setLoading(false)
     }
@@ -30,6 +31,15 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
         placeholder="" 
         value={user} 
         onChange={(e) => setUser(e.target.value)} 
+        required
+      />
+      <label className="block text-sm font-semibold text-gray-700 mb-2">Correo electrónico</label>
+      <input 
+        type="email"
+        className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
+        placeholder="" 
+        value={email} 
+        onChange={(e) => setEmail(e.target.value)} 
         required
       />
       <label className="block text-sm font-semibold text-gray-700 mb-2">Contraseña</label>

@@ -84,6 +84,17 @@ function ensure_users_schema() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
     get_pdo()->exec($sql);
+    
+    // Agregar columna email si no existe
+    try {
+        $pdo = get_pdo();
+        $cols = $pdo->query("SHOW COLUMNS FROM users LIKE 'email'")->fetchAll();
+        if (count($cols) === 0) {
+            $pdo->exec("ALTER TABLE users ADD COLUMN email VARCHAR(255) DEFAULT NULL AFTER name");
+        }
+    } catch (Throwable $e) {
+        // Column already exists
+    }
 }
 
 function seed_demo_user_if_empty() {
