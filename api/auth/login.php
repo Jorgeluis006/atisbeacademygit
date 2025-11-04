@@ -36,8 +36,16 @@ try {
         if ($email === '') {
             json_error('El correo electrónico es requerido', 422);
         }
-        if ($user['email'] !== null && $user['email'] !== $email) {
-            json_error('El correo electrónico no coincide', 401);
+        
+        // Si el usuario ya tiene email registrado, debe coincidir
+        if ($user['email'] !== null && $user['email'] !== '') {
+            if ($user['email'] !== $email) {
+                json_error('El correo electrónico no coincide con el registrado', 401);
+            }
+        } else {
+            // Primera vez: vincular el email a la cuenta
+            $updateStmt = $pdo->prepare('UPDATE users SET email = ? WHERE id = ?');
+            $updateStmt->execute([$email, $user['id']]);
         }
     }
     
