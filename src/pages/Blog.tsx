@@ -110,7 +110,8 @@ export default function Blog() {
                 {p.content && (
                   <div className="mb-6">
                     <div 
-                      className={`text-gray-700 leading-relaxed whitespace-pre-line ${!isExpanded && isLongText ? 'line-clamp-6' : ''}`}
+                      className="text-gray-700 leading-relaxed"
+                      style={{ whiteSpace: 'pre-wrap' }}
                     >
                       {isExpanded || !isLongText ? p.content : p.content.substring(0, 500) + '...'}
                     </div>
