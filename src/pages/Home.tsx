@@ -238,7 +238,7 @@ export default function Home() {
               <Link 
                 key={post.id} 
                 to="/blog" 
-                className="block bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-gray-100"
+                className="block bg-brand-beige rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-gray-100"
               >
                 {post.image_url && (
                   <img src={post.image_url} alt={post.title} className="w-full h-48 object-cover" />
@@ -277,7 +277,7 @@ export default function Home() {
               Pago seguro y certificado
             </p>
           </div>
-          <div className="max-w-4xl mx-auto bg-white rounded-2xl p-8 md:p-12 shadow-lg border border-gray-100">
+          <div className="max-w-4xl mx-auto bg-brand-beige rounded-2xl p-8 md:p-12 shadow-lg border border-gray-100">
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">Escanea el código QR</h3>

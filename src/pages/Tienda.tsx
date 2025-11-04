@@ -81,7 +81,7 @@ export default function Tienda() {
                 className={`px-6 py-2 rounded-full font-semibold transition-all ${
                   selectedCategory === cat.value
                     ? 'bg-brand-purple text-white shadow-lg'
-                    : 'bg-white text-brand-black hover:bg-brand-purple/10 border border-brand-black/10'
+                    : 'bg-brand-beige text-brand-black hover:bg-brand-purple/10 border border-brand-black/10'
                 }`}
               >
                 {cat.label}
