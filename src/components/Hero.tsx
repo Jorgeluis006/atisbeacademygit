@@ -29,14 +29,13 @@ export default function Hero() {
         className="relative"
       >
         {/* Imagen de mascota */}
-        <div className="aspect-square rounded-3xl overflow-hidden shadow-soft">
+        <div className="aspect-square">
           <img 
             src="/images/Mascota[1].png" 
             alt="Mascota Atisbe" 
-            className="w-full h-full object-contain"
+            className="w-full h-full object-contain scale-x-[-1]"
           />
         </div>
-        <div className="absolute -bottom-4 -left-4 bg-brand-yellow text-brand-black text-xs font-semibold rounded-full px-3 py-1 shadow">MCER Ready</div>
       </motion.div>
     </section>
   )
