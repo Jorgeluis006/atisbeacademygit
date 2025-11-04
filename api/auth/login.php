@@ -11,12 +11,15 @@ if (!is_array($data)) {
     $data = $_POST;
 }
 
-$username = isset($data['username']) ? trim((string)$data['username']) : '';
-$password = isset($data['password']) ? (string)$data['password'] : '';
 $email = isset($data['email']) ? trim((string)$data['email']) : '';
+$password = isset($data['password']) ? (string)$data['password'] : '';
 
-if ($username === '' || $password === '') {
-    json_error('Usuario y contraseña son requeridos', 422);
+if ($email === '' || $password === '') {
+    json_error('Correo electrónico y contraseña son requeridos', 422);
+}
+
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    json_error('El correo electrónico no es válido', 422);
 }
 
 try {
@@ -24,29 +27,18 @@ try {
     seed_demo_user_if_empty();
 
     $pdo = get_pdo();
-    $stmt = $pdo->prepare('SELECT id, username, password_hash, name, role, email FROM users WHERE username=? LIMIT 1');
-    $stmt->execute([$username]);
+    
+    // Login with email instead of username
+    $stmt = $pdo->prepare('SELECT id, username, password_hash, name, role, email FROM users WHERE email = ? LIMIT 1');
+    $stmt->execute([$email]);
     $user = $stmt->fetch();
-    if (!$user || !password_verify($password, (string)$user['password_hash'])) {
-        json_error('Credenciales inválidas', 401);
+    
+    if (!$user) {
+        json_error('No se encontró una cuenta vinculada a este correo', 404);
     }
     
-    // Validar email para estudiantes y profesores (no admin)
-    if ($user['role'] !== 'admin') {
-        if ($email === '') {
-            json_error('El correo electrónico es requerido', 422);
-        }
-        
-        // Si el usuario ya tiene email registrado, debe coincidir
-        if ($user['email'] !== null && $user['email'] !== '') {
-            if ($user['email'] !== $email) {
-                json_error('El correo electrónico no coincide con el registrado', 401);
-            }
-        } else {
-            // Primera vez: vincular el email a la cuenta
-            $updateStmt = $pdo->prepare('UPDATE users SET email = ? WHERE id = ?');
-            $updateStmt->execute([$email, $user['id']]);
-        }
+    if (!password_verify($password, (string)$user['password_hash'])) {
+        json_error('Contraseña incorrecta', 401);
     }
     
     $_SESSION['user_id'] = (int)$user['id'];
