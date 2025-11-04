@@ -47,7 +47,7 @@ export default function Home() {
           
           <div className="max-w-5xl mx-auto">
             {/* Introduction */}
-            <div className="bg-brand-beige rounded-2xl p-8 md:p-12 shadow-lg mb-8">
+            <div className="bg-white rounded-2xl p-8 md:p-12 shadow-lg mb-8">
               <p className="text-xl md:text-2xl leading-relaxed text-gray-700 text-center">
                 Atisbe es una academia <span className="font-bold text-brand-purple">cercana, alegre, disciplinada, motivadora y flexible</span>. 
                 Aplicamos el método ATIKA para lograr avances sostenibles paso a paso.
@@ -134,7 +134,7 @@ export default function Home() {
             <>
               <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
             {testimonials.map((t) => (
-              <article key={t.id} className="bg-brand-beige rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
+              <article key={t.id} className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
                 {t.image_url ? (
                   <img src={t.image_url} alt={t.author_name} className="w-14 h-14 rounded-full object-cover mb-4 ring-2 ring-brand-purple/20" />
                 ) : (
@@ -238,7 +238,7 @@ export default function Home() {
               <Link 
                 key={post.id} 
                 to="/blog" 
-                className="block bg-brand-beige rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-gray-100"
+                className="block bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-gray-100"
               >
                 {post.image_url && (
                   <img src={post.image_url} alt={post.title} className="w-full h-48 object-cover" />
@@ -277,7 +277,7 @@ export default function Home() {
               Pago seguro y certificado
             </p>
           </div>
-          <div className="max-w-4xl mx-auto bg-brand-beige rounded-2xl p-8 md:p-12 shadow-lg border border-gray-100">
+          <div className="max-w-4xl mx-auto bg-white rounded-2xl p-8 md:p-12 shadow-lg border border-gray-100">
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">Escanea el código QR</h3>

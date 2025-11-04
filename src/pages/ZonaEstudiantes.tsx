@@ -26,7 +26,7 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
   }
   
   return (
-    <form onSubmit={handleSubmit} method="post" action="#" id="login-form" className="bg-brand-beige rounded-2xl p-8 shadow-lg border border-gray-100 w-full max-w-md">
+    <form onSubmit={handleSubmit} method="post" action="#" id="login-form" className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 w-full max-w-md">
       <h2 className="text-2xl font-bold mb-6 text-center">Ingreso de estudiantes</h2>
       
       <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="email">Correo electrónico</label>

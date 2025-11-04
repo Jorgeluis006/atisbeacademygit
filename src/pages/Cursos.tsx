@@ -112,7 +112,7 @@ export default function Cursos() {
             </div>
             <div className="max-w-7xl mx-auto grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {filteredCourses.map((c) => (
-                <article key={c.id} className="group bg-brand-beige rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
+                <article key={c.id} className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
                   {c.image_url && (
                     <div className="w-full h-48 bg-gray-50 flex items-center justify-center p-4 overflow-hidden">
                       <img src={c.image_url} alt={c.title} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" />

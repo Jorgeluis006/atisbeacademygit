@@ -29,7 +29,7 @@ export default function Contacto() {
       <div className="container-padded w-full">
         <div className="max-w-3xl mx-auto">
           <h1 className="text-4xl font-extrabold text-center mb-8">Contacto</h1>
-          <form onSubmit={onSubmit} className="grid gap-4 bg-brand-beige rounded-2xl p-8 shadow-lg border border-gray-100">
+          <form onSubmit={onSubmit} className="grid gap-4 bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
             <div className="grid md:grid-cols-2 gap-4">
               <input className="border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" name="nombre" placeholder="Nombre completo" required value={form.nombre} onChange={onChange} />
               <input className="border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" name="edad" placeholder="Edad" required value={form.edad} onChange={onChange} />

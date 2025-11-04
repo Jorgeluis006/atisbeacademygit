@@ -18,7 +18,7 @@ export default function QuienesSomos() {
         <div className="max-w-5xl mx-auto">
           
           {/* Introduction Card */}
-          <div className="bg-brand-beige rounded-2xl p-8 md:p-12 shadow-lg mb-12 border-l-4 border-brand-purple">
+          <div className="bg-white rounded-2xl p-8 md:p-12 shadow-lg mb-12 border-l-4 border-brand-purple">
             <p className="text-xl md:text-2xl leading-relaxed text-gray-700">
               Atisbe es una academia <span className="font-bold text-brand-purple">cercana, alegre, disciplinada, motivadora y flexible</span>. 
               Aplicamos el método ATIKA para lograr avances sostenibles paso a paso.
@@ -72,7 +72,7 @@ export default function QuienesSomos() {
           </div>
 
           {/* Values Section */}
-          <div className="bg-brand-beige rounded-2xl p-8 md:p-12 shadow-lg">
+          <div className="bg-white rounded-2xl p-8 md:p-12 shadow-lg">
             <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
               Nuestros valores
             </h2>

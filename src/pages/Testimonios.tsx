@@ -65,7 +65,7 @@ export default function Testimonios() {
         ) : (
           <div className="max-w-6xl mx-auto">
             {/* Stats Bar */}
-            <div className="grid grid-cols-3 gap-4 mb-12 bg-brand-beige rounded-2xl p-8 shadow-lg">
+            <div className="grid grid-cols-3 gap-4 mb-12 bg-white rounded-2xl p-8 shadow-lg">
               <div className="text-center">
                 <div className="text-4xl font-bold text-brand-purple mb-2">{items.length}+</div>
                 <div className="text-gray-600">Testimonios</div>
@@ -92,7 +92,7 @@ export default function Testimonios() {
                 return (
                   <article 
                     key={t.id} 
-                    className="bg-brand-beige rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-brand-purple flex flex-col"
+                    className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-brand-purple flex flex-col"
                   >
                     {/* Author at top */}
                     <div className="flex items-center gap-3 mb-4">
@@ -168,7 +168,7 @@ export default function Testimonios() {
                 {videos.map((video) => (
                   <div 
                     key={video.id} 
-                    className="group bg-brand-beige rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
+                    className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
                   >
                     {/* Video Title */}
                     {video.title && (

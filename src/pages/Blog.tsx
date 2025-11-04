@@ -45,7 +45,7 @@ export default function Blog() {
             {posts.map((p) => (
               <article 
                 key={p.id} 
-                className="group relative bg-brand-beige border-b-2 border-gray-100 pb-12 last:border-b-0 hover:bg-gray-50/50 transition-all duration-300 rounded-2xl p-6"
+                className="group relative bg-white border-b-2 border-gray-100 pb-12 last:border-b-0 hover:bg-gray-50/50 transition-all duration-300 rounded-2xl p-6"
               >
                 {/* Category & Date */}
                 <div className="flex items-center gap-4 mb-4 text-sm">
