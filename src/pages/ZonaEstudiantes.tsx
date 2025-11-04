@@ -119,7 +119,7 @@ export default function ZonaEstudiantes() {
   }
 
   return (
-    <main className="bg-gradient-to-b from-white to-gray-50">
+    <main className="bg-brand-beige">
       <div className="container-padded py-12">
         <h1 className="text-4xl font-extrabold text-center mb-8">Zona de estudiantes</h1>
         {loading ? (
