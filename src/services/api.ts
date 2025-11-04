@@ -21,8 +21,17 @@ export async function sendContactForm(payload: ContactPayload) {
 }
 
 // Auth
-export async function login(username: string, password: string, email?: string) {
-  return api.post('/auth/login.php', { username, password, email: email || '' })
+export async function checkEmail(email: string) {
+  const res = await api.get('/auth/check_email.php', { params: { email } })
+  return res.data
+}
+
+export async function linkAccount(email: string, username: string, password: string) {
+  return api.post('/auth/link_account.php', { email, username, password })
+}
+
+export async function login(email: string, password: string) {
+  return api.post('/auth/login.php', { email, password })
 }
 
 export async function logout() {
@@ -97,6 +106,10 @@ export async function listUsers(params: { q?: string; page?: number; limit?: num
 
 export async function resetUserPassword(input: { id?: number; username?: string; password: string }) {
   return api.post('/admin/reset_password.php', input)
+}
+
+export async function deleteUser(id: number) {
+  return api.post('/admin/delete_user.php', { id })
 }
 
 export const EXPORT_CONTACTS_URL = '/admin/contacts_export.php'

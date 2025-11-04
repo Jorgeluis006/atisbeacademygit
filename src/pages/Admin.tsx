@@ -5,7 +5,8 @@ import {
   createUser, 
   listUsers, 
   type AdminUser, 
-  resetUserPassword, 
+  resetUserPassword,
+  deleteUser, 
   EXPORT_CONTACTS_URL, 
   EXPORT_RESERVATIONS_URL, 
   assignStudent, 
@@ -337,6 +338,21 @@ function UsersList() {
     catch { alert('No se pudo actualizar') }
   }
 
+  async function doDelete(u: AdminUser) {
+    if (u.role === 'admin') {
+      alert('No se puede eliminar una cuenta de administrador')
+      return
+    }
+    if (!confirm(`¿Estás seguro de eliminar el usuario "${u.username}"?\n\nEsta acción no se puede deshacer.`)) return
+    try {
+      await deleteUser(u.id)
+      alert('Usuario eliminado correctamente')
+      load() // Recargar la lista
+    } catch (e: any) {
+      alert(e?.response?.data?.message || 'No se pudo eliminar el usuario')
+    }
+  }
+
   return (
     <section className="card mt-6">
       <h2 className="section-title">Usuarios</h2>
@@ -367,8 +383,11 @@ function UsersList() {
                     {u.role === 'student' && <span className="badge-role-student">Estudiante</span>}
                   </td>
                   <td>{new Date(u.created_at).toLocaleString()}</td>
-                  <td>
+                  <td className="space-x-2">
                     <button className="btn-ghost underline" onClick={() => doReset(u)}>Resetear contraseña</button>
+                    {u.role !== 'admin' && (
+                      <button className="btn-ghost underline text-red-600 hover:text-red-700" onClick={() => doDelete(u)}>Eliminar</button>
+                    )}
                   </td>
                 </tr>
               ))}
