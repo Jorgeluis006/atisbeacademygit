@@ -84,17 +84,6 @@ function ensure_users_schema() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
     get_pdo()->exec($sql);
-    
-    // Agregar columna email si no existe
-    try {
-        $pdo = get_pdo();
-        $cols = $pdo->query("SHOW COLUMNS FROM users LIKE 'email'")->fetchAll();
-        if (count($cols) === 0) {
-            $pdo->exec("ALTER TABLE users ADD COLUMN email VARCHAR(255) DEFAULT NULL AFTER name");
-        }
-    } catch (Throwable $e) {
-        // Column already exists
-    }
 }
 
 function seed_demo_user_if_empty() {
@@ -163,6 +152,22 @@ function ensure_schedule_schema() {
     } catch (Throwable $e) {}
     try { 
         $pdo->exec("CREATE INDEX idx_res_slot ON schedule_reservations(slot_id)"); 
+    } catch (Throwable $e) {}
+    
+    // Agregar campos de curso y nivel a teacher_slots
+    try { 
+        $pdo->exec("ALTER TABLE teacher_slots ADD COLUMN curso VARCHAR(100) DEFAULT 'Inglés' AFTER duration_minutes"); 
+    } catch (Throwable $e) {}
+    try { 
+        $pdo->exec("ALTER TABLE teacher_slots ADD COLUMN nivel VARCHAR(10) DEFAULT NULL AFTER curso"); 
+    } catch (Throwable $e) {}
+    
+    // Agregar campos de curso y nivel a schedule_reservations
+    try { 
+        $pdo->exec("ALTER TABLE schedule_reservations ADD COLUMN curso VARCHAR(100) DEFAULT NULL AFTER modalidad"); 
+    } catch (Throwable $e) {}
+    try { 
+        $pdo->exec("ALTER TABLE schedule_reservations ADD COLUMN nivel VARCHAR(10) DEFAULT NULL AFTER curso"); 
     } catch (Throwable $e) {}
 }
 

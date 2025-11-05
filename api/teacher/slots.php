@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // Listar todos los slots del profesor
     $pdo = get_pdo();
     $stmt = $pdo->prepare('
-        SELECT id, datetime, tipo, modalidad, duration_minutes, is_available, created_at
+        SELECT id, datetime, tipo, modalidad, duration_minutes, curso, nivel, is_available, created_at
         FROM teacher_slots
         WHERE teacher_id = ?
         ORDER BY datetime ASC
@@ -31,6 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tipo = trim($input['tipo'] ?? 'clase');
     $modalidad = trim($input['modalidad'] ?? 'virtual');
     $duration = (int)($input['duration_minutes'] ?? 60);
+    $curso = trim($input['curso'] ?? 'Inglés');
+    $nivel = trim($input['nivel'] ?? '');
 
     if (!$datetime) {
         json_error('Fecha y hora requeridas');
@@ -45,10 +47,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $stmt = $pdo->prepare('
-        INSERT INTO teacher_slots (teacher_id, datetime, tipo, modalidad, duration_minutes)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO teacher_slots (teacher_id, datetime, tipo, modalidad, duration_minutes, curso, nivel)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     ');
-    $stmt->execute([$teacher_id, $datetime, $tipo, $modalidad, $duration]);
+    $stmt->execute([$teacher_id, $datetime, $tipo, $modalidad, $duration, $curso, $nivel !== '' ? $nivel : null]);
     
     json_ok(['id' => (int)$pdo->lastInsertId()]);
 }
