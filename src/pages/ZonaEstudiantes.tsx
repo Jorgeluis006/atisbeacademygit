@@ -349,8 +349,8 @@ export default function ZonaEstudiantes() {
                 </svg>
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Mascota MCER</h2>
               </div>
-              <div className="relative aspect-square rounded-2xl overflow-hidden bg-white">
-                <div className="absolute inset-0 flex items-center justify-center">
+              <div className="relative w-full h-96 rounded-2xl overflow-hidden bg-white">
+                <div className="absolute inset-0 flex items-center justify-center p-4">
                   {progress?.nivel?.mcer && ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'].includes(progress.nivel.mcer) ? (
                     <img 
                       src={`/images/${progress.nivel.mcer}.png`} 
