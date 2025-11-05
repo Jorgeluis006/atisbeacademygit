@@ -11,6 +11,7 @@ import {
   getTeacherSlots,
   createTeacherSlot,
   deleteTeacherSlot,
+  updateTeacherSlotMeetingLink,
   getTeacherReservations,
   type ScheduleSlot,
   type Reservation,
@@ -224,9 +225,13 @@ export default function Profesor() {
     modalidad: 'virtual', 
     duration_minutes: 60,
     curso: 'Inglés',
-    nivel: ''
+    nivel: '',
+    meeting_link: ''
   })
   const [creatingSlot, setCreatingSlot] = useState(false)
+  const [editingMeetingLink, setEditingMeetingLink] = useState<{ slotId: number; currentLink: string } | null>(null)
+  const [meetingLinkInput, setMeetingLinkInput] = useState('')
+  const [savingMeetingLink, setSavingMeetingLink] = useState(false)
 
   async function handleCreateSlot() {
     if (!newSlot.datetime) {
@@ -251,7 +256,8 @@ export default function Profesor() {
         modalidad: 'virtual', 
         duration_minutes: 60,
         curso: 'Inglés',
-        nivel: ''
+        nivel: '',
+        meeting_link: ''
       })
       alert('Horario creado exitosamente')
     } catch (err: any) {
@@ -278,6 +284,23 @@ export default function Profesor() {
       } else {
         alert('❌ Error al eliminar: ' + errorMsg)
       }
+    }
+  }
+
+  async function handleSaveMeetingLink() {
+    if (!editingMeetingLink) return
+    setSavingMeetingLink(true)
+    try {
+      await updateTeacherSlotMeetingLink(editingMeetingLink.slotId, meetingLinkInput)
+      const updated = await getTeacherSlots()
+      setSlots(updated)
+      setEditingMeetingLink(null)
+      setMeetingLinkInput('')
+      alert('✅ Link de clase actualizado exitosamente')
+    } catch (err: any) {
+      alert('❌ Error al actualizar: ' + (err?.response?.data?.error || 'No se pudo actualizar'))
+    } finally {
+      setSavingMeetingLink(false)
     }
   }
 
@@ -493,6 +516,22 @@ export default function Profesor() {
               />
             </div>
             <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                Link de la clase (Zoom/Teams) - Opcional
+              </label>
+              <input 
+                type="url" 
+                placeholder="https://zoom.us/j/... o https://teams.microsoft.com/..."
+                className="w-full px-4 py-3 border-2 border-purple-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all shadow-sm hover:border-purple-400 font-semibold" 
+                value={newSlot.meeting_link} 
+                onChange={e => setNewSlot({ ...newSlot, meeting_link: e.target.value })} 
+              />
+              <p className="text-xs text-gray-600 mt-1">Los estudiantes recibirán este link por correo al reservar</p>
+            </div>
+            <div>
               <button 
                 className="btn-primary w-full h-12 font-bold text-base shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2" 
                 disabled={creatingSlot || !newSlot.datetime} 
@@ -585,6 +624,14 @@ export default function Profesor() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       <span>Estado</span>
+                    </div>
+                  </th>
+                  <th className="px-6 py-4 text-left font-bold border-r border-white/20">
+                    <div className="flex items-center gap-2">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                      <span>Link Clase</span>
                     </div>
                   </th>
                   <th className="px-6 py-4 text-left font-bold">
@@ -681,6 +728,24 @@ export default function Profesor() {
                           </svg>
                           Disponible
                         </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <button 
+                          className={`px-4 py-2 font-bold rounded-lg transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center gap-2 ${
+                            slot.meeting_link 
+                              ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700' 
+                              : 'bg-gradient-to-r from-gray-300 to-gray-400 text-gray-700 hover:from-gray-400 hover:to-gray-500'
+                          }`}
+                          onClick={() => {
+                            setEditingMeetingLink({ slotId: slot.id!, currentLink: slot.meeting_link || '' })
+                            setMeetingLinkInput(slot.meeting_link || '')
+                          }}
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                          </svg>
+                          {slot.meeting_link ? 'Editar Link' : 'Agregar Link'}
+                        </button>
                       </td>
                       <td className="px-6 py-4">
                         <button 
@@ -1261,6 +1326,76 @@ export default function Profesor() {
         </div>
       )}
       {showChangePassword && <ChangePasswordModal onClose={() => setShowChangePassword(false)} />}
+      
+      {/* Modal para editar meeting link */}
+      {editingMeetingLink && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8 transform transition-all">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center shadow-lg">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-gray-800">Link de la Clase Virtual</h3>
+                <p className="text-sm text-gray-600">Zoom, Teams, Google Meet, etc.</p>
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-sm font-bold text-gray-700 mb-2">
+                Link de videollamada
+              </label>
+              <input 
+                type="url" 
+                className="w-full px-4 py-3 border-2 border-purple-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all font-semibold"
+                placeholder="https://zoom.us/j/123456789 o https://teams.microsoft.com/..."
+                value={meetingLinkInput}
+                onChange={e => setMeetingLinkInput(e.target.value)}
+                autoFocus
+              />
+              <p className="text-xs text-gray-600 mt-2">
+                📧 Los estudiantes recibirán este link automáticamente por correo cuando reserven la clase
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+              <button 
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-700 text-white font-bold rounded-xl hover:from-purple-600 hover:to-purple-800 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                onClick={handleSaveMeetingLink}
+                disabled={savingMeetingLink}
+              >
+                {savingMeetingLink ? (
+                  <>
+                    <svg className="animate-spin w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    <span>Guardando...</span>
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Guardar Link</span>
+                  </>
+                )}
+              </button>
+              <button 
+                className="px-6 py-3 bg-gray-300 text-gray-800 font-bold rounded-xl hover:bg-gray-400 transition-all"
+                onClick={() => {
+                  setEditingMeetingLink(null)
+                  setMeetingLinkInput('')
+                }}
+                disabled={savingMeetingLink}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       </div>
     </main>
   )

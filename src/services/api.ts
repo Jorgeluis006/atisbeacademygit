@@ -68,6 +68,7 @@ export type ScheduleSlot = {
   duration_minutes?: number;
   curso?: string;
   nivel?: string;
+  meeting_link?: string;
 }
 export type Reservation = { 
   id: number; 
@@ -145,8 +146,12 @@ export async function getTeacherSlots(): Promise<ScheduleSlot[]> {
   return res.data?.slots ?? []
 }
 
-export async function createTeacherSlot(input: { datetime: string; tipo: string; modalidad: string; duration_minutes?: number }) {
+export async function createTeacherSlot(input: { datetime: string; tipo: string; modalidad: string; duration_minutes?: number; curso?: string; nivel?: string; meeting_link?: string }) {
   return api.post('/teacher/slots.php', input)
+}
+
+export async function updateTeacherSlotMeetingLink(id: number, meeting_link: string) {
+  return api.put('/teacher/slots.php', { id, meeting_link })
 }
 
 export async function deleteTeacherSlot(id: number) {
