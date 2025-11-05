@@ -458,9 +458,13 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
                   minute: '2-digit',
                   hour12: true
                 })
+                
+                const cursoInfo = s.curso ? ` - ${s.curso}` : ''
+                const nivelInfo = s.nivel ? ` [${s.nivel}]` : ''
+                
                 return (
                   <option key={s.id} value={s.id}>
-                    {formattedDate}, {formattedTime} - {s.tipo} ({s.modalidad})
+                    {formattedDate}, {formattedTime} - {s.tipo} ({s.modalidad}){cursoInfo}{nivelInfo}
                   </option>
                 )
               })}

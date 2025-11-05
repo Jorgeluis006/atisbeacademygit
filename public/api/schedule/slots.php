@@ -27,6 +27,8 @@ $stmt = $pdo->prepare('
         tipo,
         modalidad,
         duration_minutes,
+        curso,
+        nivel,
         is_available
     FROM teacher_slots
     WHERE teacher_id = ? 

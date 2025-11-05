@@ -51,7 +51,14 @@ export default function Profesor() {
   // Slots y reservas
   const [slots, setSlots] = useState<ScheduleSlot[]>([])
   const [reservations, setReservations] = useState<Reservation[]>([])
-  const [newSlot, setNewSlot] = useState({ datetime: '', tipo: 'clase', modalidad: 'virtual', duration_minutes: 60 })
+  const [newSlot, setNewSlot] = useState({ 
+    datetime: '', 
+    tipo: 'clase', 
+    modalidad: 'virtual', 
+    duration_minutes: 60,
+    curso: 'Inglés',
+    nivel: ''
+  })
   const [creatingSlot, setCreatingSlot] = useState(false)
 
   async function handleCreateSlot() {
@@ -71,7 +78,14 @@ export default function Profesor() {
       })
       const updated = await getTeacherSlots()
       setSlots(updated)
-      setNewSlot({ datetime: '', tipo: 'clase', modalidad: 'virtual', duration_minutes: 60 })
+      setNewSlot({ 
+        datetime: '', 
+        tipo: 'clase', 
+        modalidad: 'virtual', 
+        duration_minutes: 60,
+        curso: 'Inglés',
+        nivel: ''
+      })
       alert('Horario creado exitosamente')
     } catch (err: any) {
       alert(err?.response?.data?.error || 'No se pudo crear el horario')
@@ -179,8 +193,8 @@ export default function Profesor() {
         </p>
         
         <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-purple-200 mb-6">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
-            <div className="lg:col-span-2">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+            <div>
               <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
                 <span className="text-base">🕐</span>
                 Fecha y hora
@@ -192,6 +206,37 @@ export default function Profesor() {
                 onChange={e => setNewSlot({ ...newSlot, datetime: e.target.value })} 
               />
             </div>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                <span className="text-base">🎓</span>
+                Curso
+              </label>
+              <select className="w-full px-4 py-3 border-2 border-indigo-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-indigo-200 focus:border-indigo-500 transition-all shadow-sm hover:border-indigo-400 font-semibold" value={newSlot.curso} onChange={e => setNewSlot({ ...newSlot, curso: e.target.value })}>
+                <option value="Inglés">🇬🇧 Inglés</option>
+                <option value="Francés">🇫🇷 Francés</option>
+                <option value="Alemán">🇩🇪 Alemán</option>
+                <option value="Italiano">🇮🇹 Italiano</option>
+                <option value="Portugués">🇵🇹 Portugués</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                <span className="text-base">📊</span>
+                Nivel MCER
+              </label>
+              <select className="w-full px-4 py-3 border-2 border-orange-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition-all shadow-sm hover:border-orange-400 font-semibold" value={newSlot.nivel} onChange={e => setNewSlot({ ...newSlot, nivel: e.target.value })}>
+                <option value="">— Todos los niveles —</option>
+                <option value="A1">📚 A1 - Principiante</option>
+                <option value="A2">📘 A2 - Elemental</option>
+                <option value="B1">📙 B1 - Intermedio</option>
+                <option value="B2">📗 B2 - Intermedio Alto</option>
+                <option value="C1">📕 C1 - Avanzado</option>
+                <option value="C2">📔 C2 - Dominio</option>
+              </select>
+            </div>
+          </div>
+          
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
                 <span className="text-base">📚</span>
@@ -211,6 +256,20 @@ export default function Profesor() {
                 <option value="virtual">🌐 Virtual</option>
                 <option value="presencial">🏫 Presencial</option>
               </select>
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                <span className="text-base">⏱️</span>
+                Duración (min)
+              </label>
+              <input 
+                type="number" 
+                min="15" 
+                step="15"
+                className="w-full px-4 py-3 border-2 border-purple-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-brand-purple transition-all shadow-sm hover:border-purple-400 font-semibold" 
+                value={newSlot.duration_minutes} 
+                onChange={e => setNewSlot({ ...newSlot, duration_minutes: parseInt(e.target.value) || 60 })} 
+              />
             </div>
             <div>
               <button 
@@ -256,6 +315,16 @@ export default function Profesor() {
                   <th className="px-6 py-4 text-left font-bold border-r border-white/20">
                     <div className="flex items-center gap-2">
                       <span>💻</span> Modalidad
+                    </div>
+                  </th>
+                  <th className="px-6 py-4 text-left font-bold border-r border-white/20">
+                    <div className="flex items-center gap-2">
+                      <span>🎓</span> Curso
+                    </div>
+                  </th>
+                  <th className="px-6 py-4 text-left font-bold border-r border-white/20">
+                    <div className="flex items-center gap-2">
+                      <span>📊</span> Nivel
                     </div>
                   </th>
                   <th className="px-6 py-4 text-left font-bold border-r border-white/20">
@@ -310,6 +379,20 @@ export default function Profesor() {
                           <span>{slot.modalidad === 'virtual' ? '🌐' : '🏫'}</span>
                           {slot.modalidad}
                         </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-bold bg-gradient-to-r from-indigo-100 to-indigo-200 text-indigo-700 border border-indigo-300 shadow-sm">
+                          <span>🎓</span> {slot.curso || 'Inglés'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        {slot.nivel ? (
+                          <span className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-bold bg-gradient-to-r from-orange-100 to-orange-200 text-orange-700 border border-orange-300 shadow-sm">
+                            <span>📊</span> {slot.nivel}
+                          </span>
+                        ) : (
+                          <span className="text-gray-500 text-sm">Todos</span>
+                        )}
                       </td>
                       <td className="px-6 py-4 font-semibold text-gray-700">
                         <span className="flex items-center gap-1">
