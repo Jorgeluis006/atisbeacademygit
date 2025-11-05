@@ -21,7 +21,7 @@ export default function Footer() {
         <div>
           <h4 className="font-serif font-bold">Contacto</h4>
           <ul className="mt-3 space-y-2 text-sm">
-            <li><a href="mailto:info@atisbeacademy.com">info@atisbeacademy.com</a></li>
+            <li><a href="mailto:automatic@atisbeacademy.com">automatic@atisbeacademy.com</a></li>
             <li><a href="tel:+573227850345">+57 322 785 0345</a></li>
             <li><a href="/politicas-privacidad">Políticas de privacidad</a></li>
           </ul>
