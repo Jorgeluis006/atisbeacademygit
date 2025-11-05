@@ -180,30 +180,106 @@ export default function ZonaEstudiantes() {
             </div>
           ) : (
             <div className="mt-6 grid gap-6 md:grid-cols-3">
-            <section className="card">
-              <h2 className="section-title">Progreso</h2>
+            <section className="bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 rounded-2xl p-6 shadow-xl border-2 border-purple-200">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-3xl">📊</span>
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-brand-purple to-brand-pink bg-clip-text text-transparent">Progreso</h2>
+              </div>
               {!progress ? (
-                <p className="text-sm text-brand-black/70 mt-2">Cargando progreso…</p>
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center border border-purple-200">
+                  <div className="animate-spin text-4xl mb-2">⏳</div>
+                  <p className="text-sm text-gray-600 font-semibold">Cargando progreso…</p>
+                </div>
               ) : (
-                <div className="mt-2 text-sm text-brand-black/80 space-y-2">
-                  <div><strong>Asistencia:</strong> {progress.asistencia}%</div>
-                  <div>
-                    <strong>Nivel (MCER):</strong> {progress.nivel.mcer}
-                    <div className="text-brand-black/70">{progress.nivel.descripcion}</div>
+                <div className="space-y-4">
+                  {/* Asistencia */}
+                  <div className="bg-white rounded-xl p-4 shadow-md border border-blue-200">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-gray-700 flex items-center gap-2">
+                        <span className="text-xl">📈</span> Asistencia
+                      </span>
+                      <span className="text-2xl font-extrabold text-blue-600">{progress.asistencia}%</span>
+                    </div>
+                    <div className="mt-2 bg-gray-200 rounded-full h-3 overflow-hidden">
+                      <div 
+                        className="bg-gradient-to-r from-blue-500 to-blue-600 h-full rounded-full transition-all duration-500" 
+                        style={{ width: `${progress.asistencia}%` }}
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <strong>Notas:</strong>
-                    <ul className="list-disc pl-5 mt-1">
-                      {progress.notas.map((n, idx) => (
-                        <li key={idx}>{n.actividad}: {n.nota} ({n.fecha})</li>
-                      ))}
-                    </ul>
+
+                  {/* Nivel MCER */}
+                  <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 shadow-md border-2 border-green-300">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-2xl">🎯</span>
+                      <span className="font-bold text-gray-800">Nivel (MCER)</span>
+                    </div>
+                    <div className="text-3xl font-extrabold text-green-600 mb-2">📚 {progress.nivel.mcer}</div>
+                    <p className="text-sm text-gray-700 leading-relaxed">{progress.nivel.descripcion}</p>
                   </div>
-                  <div>
-                    <strong>Fortalezas:</strong> {progress.fortalezas.join(', ')}
+
+                  {/* Notas */}
+                  <div className="bg-white rounded-xl p-4 shadow-md border border-purple-200">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-xl">📋</span>
+                      <span className="font-bold text-gray-800">Notas</span>
+                    </div>
+                    {progress.notas.length === 0 ? (
+                      <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                        <div className="text-3xl mb-1">📭</div>
+                        <p className="text-xs text-gray-600">Sin notas aún</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        {progress.notas.map((n, idx) => (
+                          <div key={idx} className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-3 border border-blue-200">
+                            <div className="flex justify-between items-start mb-1">
+                              <span className="font-semibold text-gray-800 text-sm">📖 {n.actividad}</span>
+                              <span className="text-lg font-bold text-green-600">⭐ {n.nota}</span>
+                            </div>
+                            <span className="text-xs text-gray-600">📅 {n.fecha}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  <div>
-                    <strong>Debilidades:</strong> {progress.debilidades.join(', ')}
+
+                  {/* Fortalezas */}
+                  <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 shadow-md border-2 border-green-300">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-xl">💪</span>
+                      <span className="font-bold text-gray-800">Fortalezas</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {progress.fortalezas.length === 0 ? (
+                        <span className="text-sm text-gray-600">Sin fortalezas registradas</span>
+                      ) : (
+                        progress.fortalezas.map((f, idx) => (
+                          <span key={idx} className="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-sm">
+                            ✨ {f}
+                          </span>
+                        ))
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Debilidades */}
+                  <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4 shadow-md border-2 border-orange-300">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-xl">📌</span>
+                      <span className="font-bold text-gray-800">Áreas de mejora</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {progress.debilidades.length === 0 ? (
+                        <span className="text-sm text-gray-600">Sin áreas de mejora registradas</span>
+                      ) : (
+                        progress.debilidades.map((d, idx) => (
+                          <span key={idx} className="bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-sm">
+                            🎯 {d}
+                          </span>
+                        ))
+                      )}
+                    </div>
                   </div>
                 </div>
               )}
