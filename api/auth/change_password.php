@@ -11,8 +11,8 @@ $raw = file_get_contents('php://input');
 $data = json_decode($raw, true);
 if (!is_array($data)) { $data = $_POST; }
 
-$currentPassword = isset($data['currentPassword']) ? (string)$data['currentPassword'] : '';
-$newPassword = isset($data['newPassword']) ? (string)$data['newPassword'] : '';
+$currentPassword = isset($data['current_password']) ? (string)$data['current_password'] : '';
+$newPassword = isset($data['new_password']) ? (string)$data['new_password'] : '';
 
 if ($currentPassword === '' || $newPassword === '') {
     json_error('La contraseña actual y la nueva son requeridas', 422);
@@ -42,5 +42,6 @@ try {
     
     json_ok(['message' => 'Contraseña actualizada exitosamente']);
 } catch (Throwable $e) {
-    json_error('Error al cambiar la contraseña', 500, ['details' => $e->getMessage()]);
+    error_log('Error en change_password: ' . $e->getMessage());
+    json_error('Error al cambiar la contraseña', 500);
 }
