@@ -90,12 +90,11 @@ function ensure_users_schema() {
     
     // Agregar email si la tabla ya existe pero no tiene el campo
     try {
-        $pdo->exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR(255) DEFAULT NULL");
-    } catch (Throwable $e) {
-        // Ignorar si ya existe
-    }
-    try {
-        $pdo->exec("ALTER TABLE users ADD UNIQUE INDEX IF NOT EXISTS idx_email (email)");
+        $columns = $pdo->query("SHOW COLUMNS FROM users LIKE 'email'")->fetchAll();
+        if (empty($columns)) {
+            $pdo->exec("ALTER TABLE users ADD COLUMN email VARCHAR(255) DEFAULT NULL");
+            $pdo->exec("ALTER TABLE users ADD UNIQUE INDEX idx_email (email)");
+        }
     } catch (Throwable $e) {
         // Ignorar si ya existe
     }

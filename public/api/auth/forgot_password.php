@@ -23,13 +23,8 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 try {
     $pdo = get_pdo();
     
-    // Agregar campo email si no existe
-    try {
-        $pdo->exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR(255) DEFAULT NULL");
-        $pdo->exec("ALTER TABLE users ADD UNIQUE INDEX IF NOT EXISTS idx_email (email)");
-    } catch (Throwable $e) {
-        // Ignorar si ya existe
-    }
+    // Asegurar que la tabla tenga el campo email
+    ensure_users_schema();
     
     // Buscar usuario por email
     $stmt = $pdo->prepare('SELECT id, username, name, email FROM users WHERE email = ? AND email IS NOT NULL');
