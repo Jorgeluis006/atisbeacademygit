@@ -568,6 +568,21 @@ export default function Profesor() {
                   if (!selStudent || !prog) return; setSaving(true)
                   try { 
                     await saveStudentProgress({ student_username: selStudent, progreso: prog }); 
+                    
+                    // Recargar grupos de estudiantes para reflejar cambios de nivel
+                    const gs = await getTeacherStudents()
+                    setGroups(gs)
+                    
+                    // Actualizar lista aplanada de estudiantes
+                    const flat: { username: string; name?: string }[] = []
+                    Object.keys(gs).forEach(k => {
+                      const g = gs[k] as { virtual: any[]; presencial: any[]; ['sin-definir']: any[] }
+                      ;(['virtual','presencial','sin-definir'] as const).forEach(mod => {
+                        (g?.[mod] || []).forEach((s: any) => flat.push({ username: s.username, name: s.name }))
+                      })
+                    })
+                    setAllStudents(flat)
+                    
                     alert('✅ Progreso actualizado exitosamente'); 
                   }
                   catch { alert('❌ No se pudo guardar'); }
