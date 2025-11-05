@@ -33,9 +33,6 @@ export default function Footer() {
             <a href="#" aria-label="Facebook">Facebook</a>
             <a href="#" aria-label="YouTube">YouTube</a>
           </div>
-          <div className="mt-4 text-sm">
-            <a href="#" className="underline" aria-label="Agente IA">Asistente IA (Chat)</a>
-          </div>
         </div>
       </div>
       <div className="border-t border-brand-pink/20 py-4 text-center text-xs text-brand-black/60">© {new Date().getFullYear()} Atisbe Academy</div>
