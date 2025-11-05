@@ -69,7 +69,19 @@ export type ScheduleSlot = {
   curso?: string;
   nivel?: string;
 }
-export type Reservation = { id: number; datetime: string; tipo: string; modalidad: string; notas?: string; created_at: string; student_id?: number; student_name?: string; student_username?: string }
+export type Reservation = { 
+  id: number; 
+  datetime: string; 
+  tipo: string; 
+  modalidad: string; 
+  notas?: string; 
+  created_at: string; 
+  student_id?: number; 
+  student_name?: string; 
+  student_username?: string;
+  curso?: string;
+  nivel?: string;
+}
 
 export async function getScheduleSlots(): Promise<ScheduleSlot[]> {
   const res = await api.get('/schedule/slots.php')
