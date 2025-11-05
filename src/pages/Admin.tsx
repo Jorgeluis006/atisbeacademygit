@@ -52,8 +52,8 @@ export default function Admin() {
 
   if (loading) return <main className="container-padded py-12"><p>Cargando…</p></main>
   if (!auth) return (
-    <main className="bg-brand-beige">
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 py-12">
+    <main className="bg-brand-cream">
+      <div className="bg-brand-purple py-12">
         <div className="container-padded">
           <h1 className="text-4xl md:text-5xl font-extrabold text-white text-center">
             Panel de administración
@@ -70,9 +70,9 @@ export default function Admin() {
   )
 
   return (
-    <main className="bg-brand-beige">
+    <main className="bg-brand-cream">
       {/* Header con título */}
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 py-12">
+      <div className="bg-brand-purple py-12">
         <div className="container-padded">
           <h1 className="text-4xl md:text-5xl font-extrabold text-white text-center">
             Panel de administración
@@ -153,8 +153,8 @@ export default function Admin() {
 
       {(msg || err) && (
         <div className="mt-4">
-          {msg && <p className="text-green-700">{msg}</p>}
-          {err && <p className="text-red-600">{err}</p>}
+          {msg && <p className="text-brand-purple font-semibold">{msg}</p>}
+          {err && <p className="text-brand-orange font-semibold">{err}</p>}
         </div>
       )}
       </div>
@@ -373,7 +373,7 @@ function UsersList() {
                 <tr key={u.id}>
                   <td>{u.username}</td>
                   <td>{u.name || '-'}</td>
-                  <td className="text-sm">{u.email || <span className="text-gray-400 italic">Sin correo</span>}</td>
+                  <td className="text-sm">{u.email || <span className="text-brand-mauve/60 italic">Sin correo</span>}</td>
                   <td>
                     {u.role === 'admin' && <span className="badge-role-admin">Admin</span>}
                     {u.role === 'teacher' && <span className="badge-role-teacher">Profesor</span>}
@@ -383,7 +383,7 @@ function UsersList() {
                   <td className="space-x-2">
                     <button className="btn-ghost underline" onClick={() => doReset(u)}>Resetear contraseña</button>
                     <button 
-                      className={`btn-ghost underline ${u.role === 'admin' ? 'text-orange-600 hover:text-orange-700' : 'text-red-600 hover:text-red-700'}`} 
+                      className={`btn-ghost underline ${u.role === 'admin' ? 'text-brand-orange hover:text-brand-orange/80' : 'text-brand-orange hover:text-brand-orange/80'}`} 
                       onClick={() => doDelete(u)}
                     >
                       Eliminar
@@ -559,11 +559,11 @@ function TestimonialsManager() {
                   </td>
                   <td className="max-w-md truncate">{item.content}</td>
                   <td>{item.rating}/5</td>
-                  <td>{item.is_published ? <span className="text-green-600">✓</span> : <span className="text-gray-400">✗</span>}</td>
+                  <td>{item.is_published ? <span className="text-brand-purple font-semibold">✓</span> : <span className="text-brand-mauve/60">✗</span>}</td>
                   <td>{item.display_order}</td>
                   <td className="flex gap-2">
                     <button className="btn-ghost text-sm" onClick={() => setEditing(item)}>Editar</button>
-                    <button className="btn-ghost text-sm text-red-600" onClick={() => handleDelete(item.id!)}>Eliminar</button>
+                    <button className="btn-ghost text-sm text-brand-orange hover:text-brand-orange/80" onClick={() => handleDelete(item.id!)}>Eliminar</button>
                   </td>
                 </tr>
               ))}
@@ -773,11 +773,11 @@ function CoursesManager() {
                   <td>{item.level || '—'}</td>
                   <td>{item.modality}</td>
                   <td>{item.price ? `$${item.price}` : '—'}</td>
-                  <td>{item.is_published ? <span className="text-green-600">✓</span> : <span className="text-gray-400">✗</span>}</td>
+                  <td>{item.is_published ? <span className="text-brand-purple font-semibold">✓</span> : <span className="text-brand-mauve/60">✗</span>}</td>
                   <td>{item.display_order}</td>
                   <td className="flex gap-2">
                     <button className="btn-ghost text-sm" onClick={() => setEditing(item)}>Editar</button>
-                    <button className="btn-ghost text-sm text-red-600" onClick={() => handleDelete(item.id!)}>Eliminar</button>
+                    <button className="btn-ghost text-sm text-brand-orange hover:text-brand-orange/80" onClick={() => handleDelete(item.id!)}>Eliminar</button>
                   </td>
                 </tr>
               ))}
@@ -945,11 +945,11 @@ function BlogManager() {
                   <td className="font-semibold max-w-md truncate">{item.title}</td>
                   <td className="text-sm">{item.author_name || item.author_username || '—'}</td>
                   <td className="text-sm">{item.category || '—'}</td>
-                  <td>{item.is_published ? <span className="text-green-600">✓ Publicado</span> : <span className="text-gray-400">Borrador</span>}</td>
+                  <td>{item.is_published ? <span className="text-brand-purple font-semibold">✓ Publicado</span> : <span className="text-brand-mauve/60">Borrador</span>}</td>
                   <td className="text-sm">{item.published_at ? new Date(item.published_at).toLocaleDateString() : '—'}</td>
                   <td className="flex gap-2">
                     <button className="btn-ghost text-sm" onClick={() => setEditing(item)}>Editar</button>
-                    <button className="btn-ghost text-sm text-red-600" onClick={() => handleDelete(item.id!)}>Eliminar</button>
+                    <button className="btn-ghost text-sm text-brand-orange hover:text-brand-orange/80" onClick={() => handleDelete(item.id!)}>Eliminar</button>
                   </td>
                 </tr>
               ))}
@@ -1140,11 +1140,11 @@ function VideosManager() {
                 <tr key={item.id}>
                   <td className="max-w-xs truncate">{item.title || 'Sin título'}</td>
                   <td className="text-sm max-w-md truncate">{item.video_url}</td>
-                  <td>{item.is_published ? <span className="text-green-600">✓ Publicado</span> : <span className="text-gray-400">Oculto</span>}</td>
+                  <td>{item.is_published ? <span className="text-brand-purple font-semibold">✓ Publicado</span> : <span className="text-brand-mauve/60">Oculto</span>}</td>
                   <td className="text-sm">{item.display_order}</td>
                   <td className="flex gap-2">
                     <button className="btn-ghost text-sm" onClick={() => setEditing(item)}>Editar</button>
-                    <button className="btn-ghost text-sm text-red-600" onClick={() => handleDelete(item.id!)}>Eliminar</button>
+                    <button className="btn-ghost text-sm text-brand-orange hover:text-brand-orange/80" onClick={() => handleDelete(item.id!)}>Eliminar</button>
                   </td>
                 </tr>
               ))}
@@ -1340,10 +1340,10 @@ function ProductsManager() {
                   <td>{item.category}</td>
                   <td>${item.price}</td>
                   <td>{item.stock}</td>
-                  <td>{item.is_active ? <span className="text-green-600">✓</span> : <span className="text-gray-400">✗</span>}</td>
+                  <td>{item.is_active ? <span className="text-brand-purple font-semibold">✓</span> : <span className="text-brand-mauve/60">✗</span>}</td>
                   <td className="flex gap-2">
                     <button className="btn-ghost text-sm" onClick={() => setEditing(item)}>Editar</button>
-                    <button className="btn-ghost text-sm text-red-600" onClick={() => handleDelete(item.id!)}>Eliminar</button>
+                    <button className="btn-ghost text-sm text-brand-orange hover:text-brand-orange/80" onClick={() => handleDelete(item.id!)}>Eliminar</button>
                   </td>
                 </tr>
               ))}
