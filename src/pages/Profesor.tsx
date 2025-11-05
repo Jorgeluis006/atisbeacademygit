@@ -51,6 +51,7 @@ export default function Profesor() {
   // Slots y reservas
   const [slots, setSlots] = useState<ScheduleSlot[]>([])
   const [reservations, setReservations] = useState<Reservation[]>([])
+  const [availableCursos, setAvailableCursos] = useState<Array<{ name: string }>>([])
   const [newSlot, setNewSlot] = useState({ 
     datetime: '', 
     tipo: 'clase', 
@@ -154,6 +155,17 @@ export default function Profesor() {
           ])
           setSlots(slotsRes)
           setReservations(reservationsRes)
+          
+          // Cargar cursos disponibles desde la base de datos
+          try {
+            const response = await fetch('/api/teacher/courses.php')
+            const data = await response.json()
+            if (data.ok && data.courses) {
+              setAvailableCursos(data.courses)
+            }
+          } catch (err) {
+            console.error('Error loading courses:', err)
+          }
         }
       } finally { setLoading(false) }
     })()
@@ -212,11 +224,15 @@ export default function Profesor() {
                 Curso
               </label>
               <select className="w-full px-4 py-3 border-2 border-indigo-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-indigo-200 focus:border-indigo-500 transition-all shadow-sm hover:border-indigo-400 font-semibold" value={newSlot.curso} onChange={e => setNewSlot({ ...newSlot, curso: e.target.value })}>
-                <option value="Inglés">🇬🇧 Inglés</option>
-                <option value="Francés">🇫🇷 Francés</option>
-                <option value="Alemán">🇩🇪 Alemán</option>
-                <option value="Italiano">🇮🇹 Italiano</option>
-                <option value="Portugués">🇵🇹 Portugués</option>
+                {availableCursos.length > 0 ? (
+                  availableCursos.map((curso, idx) => (
+                    <option key={idx} value={curso.name}>
+                      {curso.name}
+                    </option>
+                  ))
+                ) : (
+                  <option value="Inglés">Inglés</option>
+                )}
               </select>
             </div>
             <div>
