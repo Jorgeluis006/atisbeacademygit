@@ -107,7 +107,7 @@ export default function Profesor() {
       const errorMsg = err?.response?.data?.error || 'No se pudo eliminar'
       
       if (errorMsg.includes('reservas activas') || errorMsg.includes('reservas')) {
-        alert('❌ No se puede eliminar este horario\n\n📌 Razón: Hay estudiantes que ya lo reservaron.\n\n💡 Sugerencia: Cancela primero las reservas de los estudiantes o espera a que termine la clase.')
+        alert('⚠️ No se puede eliminar este horario\n\nRazón: Hay estudiantes que ya lo reservaron.\n\nSugerencia: Cancela primero las reservas de los estudiantes o espera a que termine la clase.')
       } else {
         alert('❌ Error al eliminar: ' + errorMsg)
       }
@@ -182,7 +182,9 @@ export default function Profesor() {
       {/* Gestión de horarios */}
       <section className="bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 rounded-2xl p-8 shadow-2xl border-2 border-purple-200 mt-6">
         <div className="flex items-center gap-3 mb-3">
-          <span className="text-4xl">📅</span>
+          <svg className="w-10 h-10 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
           <h2 className="text-3xl font-extrabold bg-gradient-to-r from-brand-purple to-brand-pink bg-clip-text text-transparent">
             Gestión de horarios
           </h2>
@@ -512,7 +514,11 @@ export default function Profesor() {
                 {/* Header con días de la semana */}
                 <div className="grid grid-cols-8 bg-gradient-to-r from-brand-purple via-purple-600 to-brand-pink shadow-lg">
                   <div className="p-4 text-center text-white font-extrabold text-sm border-r border-white/30 bg-purple-800/50">
-                    <div className="text-xs opacity-80 mb-1">📅</div>
+                    <div className="flex items-center justify-center mb-1">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
                     <div>HORA</div>
                   </div>
                   {(() => {
