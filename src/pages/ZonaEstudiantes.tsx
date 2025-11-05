@@ -149,31 +149,40 @@ export default function ZonaEstudiantes() {
   return (
     <main className="bg-brand-beige">
       <div className="container-padded py-12">
-        <h1 className="text-4xl font-extrabold text-center mb-8">Zona de estudiantes</h1>
-        {loading ? (
-          <div className="flex justify-center items-center py-20">
-            <p className="text-xl text-gray-500">Cargando…</p>
-          </div>
-        ) : !user ? (
-          <div className="flex justify-center items-center py-8">
-            <Login onSuccess={async () => {
-              const u = await apiMe();
-              if (u && u.role === 'admin') { navigate('/admin', { replace: true }); return }
-              if (u && u.role === 'teacher') { navigate('/profesor', { replace: true }); return }
-              setUser(u ? { username: u.username, name: u.name, role: u.role } : null)
-              if (u && u.role === 'student') {
-                await loadStudentData()
-              }
-            }} />
-          </div>
-      ) : (
-        <>
-          <div className="flex items-center justify-between mb-6">
-            <div className="text-sm text-brand-black/70">
-              Sesión: <span className="font-semibold">{user.name || user.username}</span> ({user.role})
+        {!user ? (
+          <>
+            <h1 className="text-4xl font-extrabold text-center mb-8">Zona de estudiantes</h1>
+            {loading ? (
+              <div className="flex justify-center items-center py-20">
+                <p className="text-xl text-gray-500">Cargando…</p>
+              </div>
+            ) : (
+              <div className="flex justify-center items-center py-8">
+                <Login onSuccess={async () => {
+                  const u = await apiMe();
+                  if (u && u.role === 'admin') { navigate('/admin', { replace: true }); return }
+                  if (u && u.role === 'teacher') { navigate('/profesor', { replace: true }); return }
+                  setUser(u ? { username: u.username, name: u.name, role: u.role } : null)
+                  if (u && u.role === 'student') {
+                    await loadStudentData()
+                  }
+                }} />
+              </div>
+            )}
+          </>
+        ) : (
+          <>
+            <div className="flex items-center justify-between gap-4 mb-8">
+              <div>
+                <h1 className="text-3xl font-extrabold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  Zona de estudiantes
+                </h1>
+                <p className="text-sm text-brand-black/70 mt-1">
+                  Sesión: <span className="font-semibold">{user.name || user.username}</span> (student)
+                </p>
+              </div>
+              <button className="btn-secondary" onClick={handleLogout}>Salir</button>
             </div>
-            <button className="btn-secondary" onClick={handleLogout}>Salir</button>
-          </div>
           {loadingData ? (
             <div className="mt-6">
               <p>Cargando datos del estudiante…</p>
