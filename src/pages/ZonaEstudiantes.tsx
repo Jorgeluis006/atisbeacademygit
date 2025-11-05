@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { login as apiLogin, logout as apiLogout, me as apiMe, getStudentProgress, type StudentProgress, getScheduleSlots, createReservation, getMyReservations, cancelReservation, type ScheduleSlot, type Reservation } from '../services/api'
 import jsPDF from 'jspdf'
-import 'jspdf-autotable'
+import autoTable from 'jspdf-autotable'
 
 function Login({ onSuccess }: { onSuccess: () => void }) {
   const [username, setUsername] = useState('')
@@ -186,7 +186,7 @@ export default function ZonaEstudiantes() {
     }
     
     // Generar tabla con autoTable
-    ;(doc as any).autoTable({
+    autoTable(doc, {
       startY: 38,
       head: [headers],
       body: rows,
