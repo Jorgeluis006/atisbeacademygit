@@ -531,72 +531,202 @@ export default function Profesor() {
       </section>
 
       {/* Editor de progreso */}
-      <section className="card mt-6">
-        <h2 className="section-title">Editar progreso del estudiante</h2>
-        <div className="grid sm:grid-cols-3 gap-3 items-end">
-          <div className="sm:col-span-2">
-            <label className="label">Selecciona estudiante</label>
-            <select className="select-control" value={selStudent} onChange={async (e) => {
-              const u = e.target.value; setSelStudent(u); setProg(null)
-              if (u) {
-                try { const res = await getStudentProgressFor(u); setProg(res.progreso) } catch {}
-              }
-            }}>
-              <option value="">—</option>
-              {allStudents.map(s => <option key={s.username} value={s.username}>{s.username}{s.name ? ` — ${s.name}` : ''}</option>)}
-            </select>
-          </div>
-          <div>
-            <button className="btn-primary w-full" disabled={!selStudent || !prog || saving} onClick={async () => {
-              if (!selStudent || !prog) return; setSaving(true)
-              try { await saveStudentProgress({ student_username: selStudent, progreso: prog }); alert('Progreso actualizado'); }
-              catch { alert('No se pudo guardar'); }
-              finally { setSaving(false) }
-            }}>{saving ? 'Guardando…' : 'Guardar'}</button>
+      <section className="bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 rounded-2xl p-8 shadow-2xl border-2 border-purple-200 mt-6">
+        <div className="flex items-center gap-3 mb-6">
+          <span className="text-4xl">📊</span>
+          <h2 className="text-3xl font-extrabold bg-gradient-to-r from-brand-purple to-brand-pink bg-clip-text text-transparent">
+            Editar progreso del estudiante
+          </h2>
+        </div>
+        
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-purple-200 mb-6">
+          <div className="grid sm:grid-cols-3 gap-4 items-end">
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                <span className="text-base">👤</span>
+                Selecciona estudiante
+              </label>
+              <select 
+                className="w-full px-4 py-3 border-2 border-purple-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-brand-purple transition-all shadow-sm hover:border-purple-400 font-semibold" 
+                value={selStudent} 
+                onChange={async (e) => {
+                  const u = e.target.value; setSelStudent(u); setProg(null)
+                  if (u) {
+                    try { const res = await getStudentProgressFor(u); setProg(res.progreso) } catch {}
+                  }
+                }}
+              >
+                <option value="">— Seleccionar —</option>
+                {allStudents.map(s => <option key={s.username} value={s.username}>👨‍🎓 {s.username}{s.name ? ` — ${s.name}` : ''}</option>)}
+              </select>
+            </div>
+            <div>
+              <button 
+                className="btn-primary w-full h-12 font-bold text-base shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2" 
+                disabled={!selStudent || !prog || saving} 
+                onClick={async () => {
+                  if (!selStudent || !prog) return; setSaving(true)
+                  try { 
+                    await saveStudentProgress({ student_username: selStudent, progreso: prog }); 
+                    alert('✅ Progreso actualizado exitosamente'); 
+                  }
+                  catch { alert('❌ No se pudo guardar'); }
+                  finally { setSaving(false) }
+                }}
+              >
+                {saving ? (
+                  <>
+                    <span className="animate-spin">⏳</span> Guardando…
+                  </>
+                ) : (
+                  <>
+                    <span>💾</span> Guardar
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
 
         {prog && (
-          <div className="mt-4 grid md:grid-cols-2 gap-4">
-            <div>
-              <label className="label">Asistencia (%)</label>
-              <input type="number" min={0} max={100} className="input-control" value={prog.asistencia} onChange={e => setProg({ ...prog, asistencia: Math.max(0, Math.min(100, Number(e.target.value)||0)) })} />
-            </div>
-            <div>
-              <label className="label">Nivel (MCER)</label>
-              <select className="select-control" value={prog.nivel.mcer} onChange={e => setProg({ ...prog, nivel: { ...prog.nivel, mcer: e.target.value } })}>
-                <option value="">—</option>
-                {['A1','A2','B1','B2','C1','C2'].map(n => <option key={n} value={n}>{n}</option>)}
-              </select>
-            </div>
-            <div className="md:col-span-2">
-              <label className="label">Descripción nivel</label>
-              <textarea className="input-control" rows={3} value={prog.nivel.descripcion} onChange={e => setProg({ ...prog, nivel: { ...prog.nivel, descripcion: e.target.value } })} />
-            </div>
-            <div className="md:col-span-2">
-              <label className="label">Notas</label>
-              <div className="space-y-2">
-                {prog.notas.length === 0 && (
-                  <p className="text-sm text-brand-black/70">Aún no hay notas. Agrega la primera.</p>
-                )}
-                {prog.notas.map((n, idx) => (
-                  <div key={idx} className="grid sm:grid-cols-[1fr_110px_170px_auto] gap-2">
-                    <input className="input-control" placeholder="Actividad" value={n.actividad} onChange={e => updateNote(idx, { actividad: e.target.value })} />
-                    <input className="input-control" type="number" step={0.1} min={0} max={5} placeholder="Nota" value={Number.isFinite(n.nota) ? n.nota : 0} onChange={e => updateNote(idx, { nota: Math.max(0, Math.min(5, Number(e.target.value)||0)) })} />
-                    <input className="input-control" type="date" value={n.fecha || ''} onChange={e => updateNote(idx, { fecha: e.target.value })} />
-                    <button type="button" className="btn-secondary" onClick={() => removeNote(idx)}>Eliminar</button>
-                  </div>
-                ))}
-                <button type="button" className="btn-ghost" onClick={addNote}>+ Añadir nota</button>
+          <div className="space-y-6">
+            {/* Asistencia y Nivel */}
+            <div className="bg-white rounded-xl p-6 shadow-lg border border-purple-200">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                    <span className="text-base">📈</span>
+                    Asistencia (%)
+                  </label>
+                  <input 
+                    type="number" 
+                    min={0} 
+                    max={100} 
+                    className="w-full px-4 py-3 border-2 border-blue-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all shadow-sm hover:border-blue-400 font-bold text-lg" 
+                    value={prog.asistencia} 
+                    onChange={e => setProg({ ...prog, asistencia: Math.max(0, Math.min(100, Number(e.target.value)||0)) })} 
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                    <span className="text-base">🎯</span>
+                    Nivel (MCER)
+                  </label>
+                  <select 
+                    className="w-full px-4 py-3 border-2 border-green-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-200 focus:border-green-500 transition-all shadow-sm hover:border-green-400 font-bold text-lg" 
+                    value={prog.nivel.mcer} 
+                    onChange={e => setProg({ ...prog, nivel: { ...prog.nivel, mcer: e.target.value } })}
+                  >
+                    <option value="">— Seleccionar nivel —</option>
+                    {['A1','A2','B1','B2','C1','C2'].map(n => <option key={n} value={n}>📚 {n}</option>)}
+                  </select>
+                </div>
+              </div>
+              
+              <div className="mt-6">
+                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                  <span className="text-base">📝</span>
+                  Descripción nivel
+                </label>
+                <textarea 
+                  className="w-full px-4 py-3 border-2 border-purple-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-brand-purple transition-all shadow-sm hover:border-purple-400" 
+                  rows={3} 
+                  value={prog.nivel.descripcion} 
+                  onChange={e => setProg({ ...prog, nivel: { ...prog.nivel, descripcion: e.target.value } })} 
+                />
               </div>
             </div>
-            <div>
-              <label className="label">Fortalezas (separadas por coma)</label>
-              <textarea className="input-control" rows={5} value={prog.fortalezas.join(', ')} onChange={e => setProg({ ...prog, fortalezas: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })} />
+
+            {/* Notas */}
+            <div className="bg-white rounded-xl p-6 shadow-lg border border-purple-200">
+              <label className="block text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <span className="text-2xl">📋</span>
+                Notas
+              </label>
+              <div className="space-y-3">
+                {prog.notas.length === 0 && (
+                  <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl p-6 text-center">
+                    <div className="text-4xl mb-2">📭</div>
+                    <p className="text-gray-600 font-semibold">Aún no hay notas. Agrega la primera.</p>
+                  </div>
+                )}
+                {prog.notas.map((n, idx) => (
+                  <div key={idx} className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 border-2 border-blue-200 shadow-sm">
+                    <div className="grid sm:grid-cols-[1fr_110px_170px_auto] gap-3">
+                      <input 
+                        className="px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 font-semibold" 
+                        placeholder="📖 Actividad" 
+                        value={n.actividad} 
+                        onChange={e => updateNote(idx, { actividad: e.target.value })} 
+                      />
+                      <input 
+                        className="px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 font-bold text-center" 
+                        type="number" 
+                        step={0.1} 
+                        min={0} 
+                        max={5} 
+                        placeholder="⭐ Nota" 
+                        value={Number.isFinite(n.nota) ? n.nota : 0} 
+                        onChange={e => updateNote(idx, { nota: Math.max(0, Math.min(5, Number(e.target.value)||0)) })} 
+                      />
+                      <input 
+                        className="px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400 font-semibold" 
+                        type="date" 
+                        value={n.fecha || ''} 
+                        onChange={e => updateNote(idx, { fecha: e.target.value })} 
+                      />
+                      <button 
+                        type="button" 
+                        className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white font-bold rounded-lg hover:from-red-600 hover:to-red-700 transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2" 
+                        onClick={() => removeNote(idx)}
+                      >
+                        <span>🗑️</span>
+                        <span className="hidden sm:inline">Eliminar</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                <button 
+                  type="button" 
+                  className="w-full px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold rounded-xl hover:from-green-600 hover:to-green-700 transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2" 
+                  onClick={addNote}
+                >
+                  <span className="text-xl">➕</span> Añadir nota
+                </button>
+              </div>
             </div>
-            <div className="md:col-span-2">
-              <label className="label">Debilidades (separadas por coma)</label>
-              <textarea className="input-control" rows={3} value={prog.debilidades.join(', ')} onChange={e => setProg({ ...prog, debilidades: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })} />
+
+            {/* Fortalezas y Debilidades */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-lg border-2 border-green-300">
+                <label className="block text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                  <span className="text-2xl">💪</span>
+                  Fortalezas
+                </label>
+                <p className="text-xs text-gray-600 mb-2">Separadas por coma</p>
+                <textarea 
+                  className="w-full px-4 py-3 border-2 border-green-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-200 focus:border-green-500 transition-all shadow-sm" 
+                  rows={5} 
+                  placeholder="Ejemplo: Pronunciación, Gramática, Vocabulario..." 
+                  value={prog.fortalezas.join(', ')} 
+                  onChange={e => setProg({ ...prog, fortalezas: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })} 
+                />
+              </div>
+              
+              <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 shadow-lg border-2 border-orange-300">
+                <label className="block text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                  <span className="text-2xl">📌</span>
+                  Debilidades
+                </label>
+                <p className="text-xs text-gray-600 mb-2">Separadas por coma</p>
+                <textarea 
+                  className="w-full px-4 py-3 border-2 border-orange-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition-all shadow-sm" 
+                  rows={5} 
+                  placeholder="Ejemplo: Tiempos verbales, Listening, Speaking..." 
+                  value={prog.debilidades.join(', ')} 
+                  onChange={e => setProg({ ...prog, debilidades: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })} 
+                />
+              </div>
             </div>
           </div>
         )}
