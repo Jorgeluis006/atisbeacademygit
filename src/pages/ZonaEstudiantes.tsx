@@ -343,14 +343,14 @@ export default function ZonaEstudiantes() {
               <ScheduleSection slots={slots} reservas={reservas} onBooked={async () => setReservas(await getMyReservations())} onCancel={async () => setReservas(await getMyReservations())} />
             </section>
             
-            <section className="rounded-2xl p-6">
+            <section className="rounded-2xl p-6 flex flex-col h-full">
               <div className="flex items-center gap-3 mb-4">
                 <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Mascota MCER</h2>
               </div>
-              <div className="relative w-full h-96 rounded-2xl overflow-hidden bg-white">
+              <div className="relative flex-1 rounded-2xl overflow-hidden bg-white min-h-[600px]">
                 <div className="absolute inset-0 flex items-center justify-center p-4">
                   {progress?.nivel?.mcer && ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'].includes(progress.nivel.mcer) ? (
                     <img 
