@@ -484,22 +484,13 @@ export default function ZonaEstudiantes() {
                       <div>HORA</div>
                     </div>
                     {(() => {
+                      // Siempre mostrar la semana actual
                       const today = new Date()
                       today.setHours(0, 0, 0, 0)
                       
-                      let startDate = new Date(today)
-                      if (reservas.length > 0) {
-                        const reservationDates = reservas.map(r => parseLocalDateTime(r.datetime))
-                        const minDate = new Date(Math.min(...reservationDates.map(d => d.getTime())))
-                        minDate.setHours(0, 0, 0, 0)
-                        
-                        if (minDate < today) {
-                          startDate = minDate
-                        }
-                      }
-                      
-                      const startOfWeek = new Date(startDate)
-                      startOfWeek.setDate(startDate.getDate() - startDate.getDay())
+                      // Calcular el inicio de la semana actual (domingo)
+                      const startOfWeek = new Date(today)
+                      startOfWeek.setDate(today.getDate() - today.getDay())
                       
                       const daysConfig = [
                         { name: 'DOMINGO', dayOfWeek: 0 },
@@ -531,21 +522,12 @@ export default function ZonaEstudiantes() {
                   
                   {/* Filas de horas */}
                   {Array.from({ length: 19 }, (_, i) => i + 5).map((hour) => {
+                    // Siempre usar la semana actual
                     const today = new Date()
                     today.setHours(0, 0, 0, 0)
                     
-                    let startDate = new Date(today)
-                    if (reservas.length > 0) {
-                      const reservationDates = reservas.map(r => parseLocalDateTime(r.datetime))
-                      const minDate = new Date(Math.min(...reservationDates.map(d => d.getTime())))
-                      minDate.setHours(0, 0, 0, 0)
-                      if (minDate < today) {
-                        startDate = minDate
-                      }
-                    }
-                    
-                    const startOfWeek = new Date(startDate)
-                    startOfWeek.setDate(startDate.getDate() - startDate.getDay())
+                    const startOfWeek = new Date(today)
+                    startOfWeek.setDate(today.getDate() - today.getDay())
                     
                     return (
                       <div key={hour} className="grid grid-cols-8 border-t border-purple-200">
