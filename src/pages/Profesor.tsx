@@ -211,17 +211,27 @@ export default function Profesor() {
           <p className="text-sm text-brand-black/70">Aún no hay reservas.</p>
         ) : (
           <>
-            {/* Horario tipo calendario */}
-            <div className="overflow-x-auto">
-              <div className="min-w-[800px] bg-white rounded-lg border border-gray-200 shadow-sm">
+            {/* Horario tipo calendario mejorado */}
+            <div className="overflow-x-auto -mx-6 px-6">
+              <div className="min-w-[900px] bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 rounded-2xl shadow-2xl overflow-hidden border-2 border-purple-200">
                 {/* Header con días de la semana */}
-                <div className="grid grid-cols-8 bg-gradient-to-r from-brand-purple to-purple-600">
-                  <div className="p-3 text-center text-white font-bold border-r border-white/20">
-                    Hora
+                <div className="grid grid-cols-8 bg-gradient-to-r from-brand-purple via-purple-600 to-brand-pink shadow-lg">
+                  <div className="p-4 text-center text-white font-extrabold text-sm border-r border-white/30 bg-purple-800/50">
+                    <div className="text-xs opacity-80 mb-1">📅</div>
+                    <div>HORA</div>
                   </div>
-                  {['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO', 'DOMINGO'].map((day) => (
-                    <div key={day} className="p-3 text-center text-white font-bold border-r border-white/20 last:border-r-0">
-                      {day}
+                  {[
+                    { name: 'LUNES', emoji: '📚' },
+                    { name: 'MARTES', emoji: '📖' },
+                    { name: 'MIÉRCOLES', emoji: '✏️' },
+                    { name: 'JUEVES', emoji: '📝' },
+                    { name: 'VIERNES', emoji: '🎓' },
+                    { name: 'SÁBADO', emoji: '📔' },
+                    { name: 'DOMINGO', emoji: '📕' }
+                  ].map((day) => (
+                    <div key={day.name} className="p-4 text-center text-white font-extrabold text-sm border-r border-white/30 last:border-r-0">
+                      <div className="text-xs opacity-80 mb-1">{day.emoji}</div>
+                      <div>{day.name}</div>
                     </div>
                   ))}
                 </div>
@@ -236,44 +246,71 @@ export default function Profesor() {
                     })
                   }
 
+                  const isEvenHour = hour % 2 === 0
+
                   return (
-                    <div key={hour} className="grid grid-cols-8 border-t border-gray-200">
+                    <div key={hour} className={`grid grid-cols-8 border-t-2 ${isEvenHour ? 'border-purple-200' : 'border-blue-200'}`}>
                       {/* Columna de hora */}
-                      <div className="p-3 bg-blue-50 text-center font-semibold text-gray-700 border-r border-gray-200">
-                        {hour.toString().padStart(2, '0')}:00
+                      <div className={`p-4 text-center font-bold border-r-2 border-purple-200 ${
+                        isEvenHour 
+                          ? 'bg-gradient-to-r from-purple-100 to-purple-50' 
+                          : 'bg-gradient-to-r from-blue-100 to-blue-50'
+                      }`}>
+                        <div className="text-2xl font-extrabold bg-gradient-to-r from-brand-purple to-brand-pink bg-clip-text text-transparent">
+                          {hour.toString().padStart(2, '0')}
+                        </div>
+                        <div className="text-xs text-gray-600 font-semibold">00</div>
                       </div>
                       
                       {/* Columnas para cada día */}
                       {[0, 1, 2, 3, 4, 5, 6].map((dayOfWeek) => {
                         const dayReservations = getReservationsForHourAndDay(dayOfWeek)
+                        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6
                         
                         return (
                           <div 
                             key={dayOfWeek} 
-                            className="p-2 border-r border-gray-200 last:border-r-0 min-h-[60px] hover:bg-gray-50 transition-colors"
+                            className={`p-2 border-r-2 last:border-r-0 min-h-[80px] transition-all duration-200 ${
+                              isWeekend 
+                                ? 'border-purple-200 bg-purple-50/30 hover:bg-purple-100/50' 
+                                : 'border-blue-200 bg-white/50 hover:bg-blue-50/50'
+                            } ${dayReservations.length > 0 ? 'shadow-inner' : ''}`}
                           >
-                            {dayReservations.map((res) => (
-                              <div
-                                key={res.id}
-                                className={`text-xs p-2 rounded mb-1 ${
-                                  res.tipo === 'examen' 
-                                    ? 'bg-red-100 border border-red-300' 
-                                    : 'bg-blue-100 border border-blue-300'
-                                }`}
-                              >
-                                <div className="font-semibold text-gray-900 truncate">
-                                  {res.student_name || res.student_username}
-                                </div>
-                                <div className="text-gray-600">
-                                  {res.modalidad}
-                                </div>
-                                {res.notas && (
-                                  <div className="text-gray-500 truncate mt-1">
-                                    {res.notas}
-                                  </div>
-                                )}
+                            {dayReservations.length === 0 ? (
+                              <div className="h-full flex items-center justify-center opacity-20">
+                                <span className="text-2xl">·</span>
                               </div>
-                            ))}
+                            ) : (
+                              dayReservations.map((res) => (
+                                <div
+                                  key={res.id}
+                                  className={`text-xs p-3 rounded-xl mb-2 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer ${
+                                    res.tipo === 'examen' 
+                                      ? 'bg-gradient-to-br from-red-100 to-red-200 border-2 border-red-400 hover:from-red-200 hover:to-red-300' 
+                                      : 'bg-gradient-to-br from-blue-100 to-blue-200 border-2 border-blue-400 hover:from-blue-200 hover:to-blue-300'
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-1 mb-1">
+                                    <span className="text-base">{res.tipo === 'examen' ? '📝' : '📚'}</span>
+                                    <div className="font-bold text-gray-900 truncate flex-1 text-sm">
+                                      {res.student_name || res.student_username}
+                                    </div>
+                                  </div>
+                                  <div className={`text-xs font-semibold px-2 py-1 rounded-full inline-block ${
+                                    res.modalidad === 'virtual' ? 'bg-purple-500 text-white' :
+                                    res.modalidad === 'presencial' ? 'bg-green-500 text-white' :
+                                    'bg-gray-500 text-white'
+                                  }`}>
+                                    {res.modalidad}
+                                  </div>
+                                  {res.notas && (
+                                    <div className="text-gray-700 text-xs mt-2 p-2 bg-white/60 rounded backdrop-blur-sm">
+                                      💬 {res.notas}
+                                    </div>
+                                  )}
+                                </div>
+                              ))
+                            )}
                           </div>
                         )
                       })}
