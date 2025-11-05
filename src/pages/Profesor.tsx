@@ -543,13 +543,13 @@ export default function Profesor() {
                     startOfWeek.setDate(startDate.getDate() - startDate.getDay())
                     
                     const daysConfig = [
-                      { name: 'DOMINGO', emoji: '📕', dayOfWeek: 0 },
-                      { name: 'LUNES', emoji: '📚', dayOfWeek: 1 },
-                      { name: 'MARTES', emoji: '📖', dayOfWeek: 2 },
-                      { name: 'MIÉRCOLES', emoji: '✏️', dayOfWeek: 3 },
-                      { name: 'JUEVES', emoji: '📝', dayOfWeek: 4 },
-                      { name: 'VIERNES', emoji: '🎓', dayOfWeek: 5 },
-                      { name: 'SÁBADO', emoji: '📔', dayOfWeek: 6 }
+                      { name: 'DOMINGO', dayOfWeek: 0 },
+                      { name: 'LUNES', dayOfWeek: 1 },
+                      { name: 'MARTES', dayOfWeek: 2 },
+                      { name: 'MIÉRCOLES', dayOfWeek: 3 },
+                      { name: 'JUEVES', dayOfWeek: 4 },
+                      { name: 'VIERNES', dayOfWeek: 5 },
+                      { name: 'SÁBADO', dayOfWeek: 6 }
                     ]
                     
                     // Calcular la fecha exacta para cada día de la semana
@@ -562,7 +562,6 @@ export default function Profesor() {
                       
                       return (
                         <div key={day.name} className="p-4 text-center text-white font-extrabold text-sm border-r border-white/30 last:border-r-0" data-date={fullDate}>
-                          <div className="text-xs opacity-80 mb-1">{day.emoji}</div>
                           <div>{day.name}</div>
                           <div className="text-lg font-bold mt-1">{dayNumber}</div>
                           <div className="text-xs opacity-90">{monthName}</div>
