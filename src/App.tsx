@@ -15,6 +15,7 @@ import Tienda from './pages/Tienda'
 import Influencers from './pages/Influencers'
 import Admin from './pages/Admin'
 import Profesor from './pages/Profesor'
+import ResetPassword from './pages/ResetPassword'
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/influencers" element={<Influencers />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/profesor" element={<Profesor />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
       </div>
       <Footer />

@@ -13,7 +13,8 @@ import {
   deleteTeacherSlot,
   getTeacherReservations,
   type ScheduleSlot,
-  type Reservation
+  type Reservation,
+  changePassword
 } from '../services/api'
 
 // Helper function to parse MySQL datetime as local time (not UTC)
@@ -38,6 +39,171 @@ function parseLocalDateTime(mysqlDatetime: string): Date {
   )
 }
 
+function ChangePasswordModal({ onClose }: { onClose: () => void }) {
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showCurrent, setShowCurrent] = useState(false)
+  const [showNew, setShowNew] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
+  const [loading, setLoading] = useState(false)
+  
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setError('')
+    
+    if (newPassword.length < 6) {
+      setError('La nueva contraseña debe tener al menos 6 caracteres')
+      return
+    }
+    
+    if (newPassword !== confirmPassword) {
+      setError('Las contraseñas nuevas no coinciden')
+      return
+    }
+    
+    setLoading(true)
+    
+    try {
+      await changePassword(currentPassword, newPassword)
+      setSuccess(true)
+      setTimeout(() => {
+        onClose()
+      }, 2000)
+    } catch (err: any) {
+      setError(err?.response?.data?.message || 'Error al cambiar la contraseña')
+    } finally {
+      setLoading(false)
+    }
+  }
+  
+  if (success) {
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div className="bg-white rounded-2xl p-8 shadow-xl w-full max-w-md text-center">
+          <div className="mb-6">
+            <svg className="w-16 h-16 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 className="text-xl font-bold mb-2">¡Contraseña actualizada!</h3>
+          <p className="text-gray-600">Tu contraseña ha sido cambiada exitosamente.</p>
+        </div>
+      </div>
+    )
+  }
+  
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={onClose}>
+      <div className="bg-white rounded-2xl p-8 shadow-xl w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-2xl font-bold">Cambiar contraseña</h3>
+          <button 
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <form onSubmit={handleSubmit}>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            Contraseña actual
+          </label>
+          <div className="relative mb-4">
+            <input 
+              type={showCurrent ? "text" : "password"}
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
+              placeholder="••••••••" 
+              value={currentPassword} 
+              onChange={(e) => setCurrentPassword(e.target.value)} 
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowCurrent(!showCurrent)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {showCurrent ? '🙈' : '👁️'}
+            </button>
+          </div>
+          
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            Nueva contraseña
+          </label>
+          <div className="relative mb-4">
+            <input 
+              type={showNew ? "text" : "password"}
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
+              placeholder="••••••••" 
+              value={newPassword} 
+              onChange={(e) => setNewPassword(e.target.value)} 
+              required
+              minLength={6}
+            />
+            <button
+              type="button"
+              onClick={() => setShowNew(!showNew)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {showNew ? '🙈' : '👁️'}
+            </button>
+          </div>
+          
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            Confirmar nueva contraseña
+          </label>
+          <div className="relative mb-6">
+            <input 
+              type={showConfirm ? "text" : "password"}
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
+              placeholder="••••••••" 
+              value={confirmPassword} 
+              onChange={(e) => setConfirmPassword(e.target.value)} 
+              required
+              minLength={6}
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirm(!showConfirm)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {showConfirm ? '🙈' : '👁️'}
+            </button>
+          </div>
+          
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">
+              {error}
+            </div>
+          )}
+          
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 font-semibold"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex-1 btn-primary"
+            >
+              {loading ? 'Guardando…' : 'Guardar'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
+
 export default function Profesor() {
   const navigate = useNavigate()
   const [auth, setAuth] = useState<{ username: string; name: string; role: string } | null>(null)
@@ -47,6 +213,7 @@ export default function Profesor() {
   const [selStudent, setSelStudent] = useState<string>('')
   const [prog, setProg] = useState<StudentProgress | null>(null)
   const [saving, setSaving] = useState(false)
+  const [showChangePassword, setShowChangePassword] = useState(false)
 
   // Slots y reservas
   const [slots, setSlots] = useState<ScheduleSlot[]>([])
@@ -199,7 +366,18 @@ export default function Profesor() {
           <div className="text-sm text-brand-black/70">
             Sesión: <span className="font-semibold">{auth.name || auth.username}</span>
           </div>
-          <button className="btn-secondary" onClick={async () => { try { await apiLogout() } finally { navigate('/', { replace: true }) } }}>Salir</button>
+          <div className="flex gap-3">
+            <button 
+              className="px-4 py-2 bg-brand-purple text-white rounded-lg hover:bg-brand-purple/90 font-semibold flex items-center gap-2"
+              onClick={() => setShowChangePassword(true)}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              Cambiar contraseña
+            </button>
+            <button className="btn-secondary" onClick={async () => { try { await apiLogout() } finally { navigate('/', { replace: true }) } }}>Salir</button>
+          </div>
         </div>
 
       {/* Gestión de horarios */}
@@ -1082,6 +1260,7 @@ export default function Profesor() {
           })}
         </div>
       )}
+      {showChangePassword && <ChangePasswordModal onClose={() => setShowChangePassword(false)} />}
       </div>
     </main>
   )

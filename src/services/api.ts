@@ -322,3 +322,22 @@ export async function uploadVideo(file: File): Promise<string> {
   })
   return res.data?.url
 }
+
+// Password management
+export async function changePassword(currentPassword: string, newPassword: string) {
+  return api.post('/auth/change_password.php', { 
+    current_password: currentPassword, 
+    new_password: newPassword 
+  })
+}
+
+export async function forgotPassword(email: string) {
+  return api.post('/auth/forgot_password.php', { email })
+}
+
+export async function resetPassword(token: string, newPassword: string) {
+  return api.post('/auth/reset_password.php', { 
+    token, 
+    new_password: newPassword 
+  })
+}

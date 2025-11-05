@@ -1,16 +1,20 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { login as apiLogin, logout as apiLogout, me as apiMe, getStudentProgress, type StudentProgress, getScheduleSlots, createReservation, getMyReservations, cancelReservation, type ScheduleSlot, type Reservation } from '../services/api'
+import { login as apiLogin, logout as apiLogout, me as apiMe, getStudentProgress, type StudentProgress, getScheduleSlots, createReservation, getMyReservations, cancelReservation, type ScheduleSlot, type Reservation, forgotPassword, changePassword } from '../services/api'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 
 function Login({ onSuccess }: { onSuccess: () => void }) {
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [forgotEmail, setForgotEmail] = useState('')
+  const [forgotMessage, setForgotMessage] = useState('')
+  const [forgotLoading, setForgotLoading] = useState(false)
   
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -25,6 +29,75 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
     } finally {
       setLoading(false)
     }
+  }
+  
+  async function handleForgotPassword(e: React.FormEvent) {
+    e.preventDefault()
+    setForgotLoading(true)
+    setForgotMessage('')
+    
+    try {
+      await forgotPassword(forgotEmail)
+      setForgotMessage('Si el correo existe, recibirás instrucciones para restablecer tu contraseña')
+      setForgotEmail('')
+    } catch (err: any) {
+      setForgotMessage(err?.response?.data?.message || 'Error al procesar la solicitud')
+    } finally {
+      setForgotLoading(false)
+    }
+  }
+  
+  if (showForgotPassword) {
+    return (
+      <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 w-full max-w-md">
+        <button 
+          onClick={() => {
+            setShowForgotPassword(false)
+            setForgotMessage('')
+            setForgotEmail('')
+          }}
+          className="text-brand-purple hover:text-brand-purple/80 mb-4 flex items-center gap-2"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Volver al inicio de sesión
+        </button>
+        
+        <h2 className="text-2xl font-bold mb-6 text-center">Recuperar contraseña</h2>
+        
+        <form onSubmit={handleForgotPassword}>
+          <p className="text-gray-600 mb-4 text-center">
+            Ingresa tu correo electrónico y te enviaremos instrucciones para restablecer tu contraseña.
+          </p>
+          
+          <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="forgot-email">
+            Correo electrónico
+          </label>
+          <input 
+            id="forgot-email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
+            placeholder="tu@correo.com" 
+            value={forgotEmail} 
+            onChange={(e) => setForgotEmail(e.target.value)} 
+            required
+          />
+          
+          {forgotMessage && (
+            <p className="text-brand-purple text-sm mb-4 text-center font-semibold bg-brand-cream p-3 rounded-lg">
+              {forgotMessage}
+            </p>
+          )}
+          
+          <button className="btn-primary w-full" type="submit" disabled={forgotLoading}>
+            {forgotLoading ? 'Enviando…' : 'Enviar instrucciones'}
+          </button>
+        </form>
+      </div>
+    )
   }
   
   return (
@@ -88,12 +161,187 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
         </button>
       </div>
       
+      <div className="text-center mb-4">
+        <button 
+          type="button"
+          onClick={() => setShowForgotPassword(true)}
+          className="text-sm text-brand-purple hover:text-brand-purple/80 font-semibold"
+        >
+          ¿Olvidaste tu contraseña?
+        </button>
+      </div>
+      
       {error && <p className="text-red-600 text-sm mb-4 text-center font-semibold">{error}</p>}
       
       <button className="btn-primary w-full" type="submit" disabled={loading}>
         {loading ? 'Ingresando…' : 'Ingresar'}
       </button>
     </form>
+  )
+}
+
+function ChangePasswordModal({ onClose }: { onClose: () => void }) {
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showCurrent, setShowCurrent] = useState(false)
+  const [showNew, setShowNew] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
+  const [loading, setLoading] = useState(false)
+  
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setError('')
+    
+    if (newPassword.length < 6) {
+      setError('La nueva contraseña debe tener al menos 6 caracteres')
+      return
+    }
+    
+    if (newPassword !== confirmPassword) {
+      setError('Las contraseñas nuevas no coinciden')
+      return
+    }
+    
+    setLoading(true)
+    
+    try {
+      await changePassword(currentPassword, newPassword)
+      setSuccess(true)
+      setTimeout(() => {
+        onClose()
+      }, 2000)
+    } catch (err: any) {
+      setError(err?.response?.data?.message || 'Error al cambiar la contraseña')
+    } finally {
+      setLoading(false)
+    }
+  }
+  
+  if (success) {
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div className="bg-white rounded-2xl p-8 shadow-xl w-full max-w-md text-center">
+          <div className="mb-6">
+            <svg className="w-16 h-16 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 className="text-xl font-bold mb-2">¡Contraseña actualizada!</h3>
+          <p className="text-gray-600">Tu contraseña ha sido cambiada exitosamente.</p>
+        </div>
+      </div>
+    )
+  }
+  
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={onClose}>
+      <div className="bg-white rounded-2xl p-8 shadow-xl w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-2xl font-bold">Cambiar contraseña</h3>
+          <button 
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <form onSubmit={handleSubmit}>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            Contraseña actual
+          </label>
+          <div className="relative mb-4">
+            <input 
+              type={showCurrent ? "text" : "password"}
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
+              placeholder="••••••••" 
+              value={currentPassword} 
+              onChange={(e) => setCurrentPassword(e.target.value)} 
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowCurrent(!showCurrent)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {showCurrent ? '🙈' : '👁️'}
+            </button>
+          </div>
+          
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            Nueva contraseña
+          </label>
+          <div className="relative mb-4">
+            <input 
+              type={showNew ? "text" : "password"}
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
+              placeholder="••••••••" 
+              value={newPassword} 
+              onChange={(e) => setNewPassword(e.target.value)} 
+              required
+              minLength={6}
+            />
+            <button
+              type="button"
+              onClick={() => setShowNew(!showNew)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {showNew ? '🙈' : '👁️'}
+            </button>
+          </div>
+          
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            Confirmar nueva contraseña
+          </label>
+          <div className="relative mb-6">
+            <input 
+              type={showConfirm ? "text" : "password"}
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" 
+              placeholder="••••••••" 
+              value={confirmPassword} 
+              onChange={(e) => setConfirmPassword(e.target.value)} 
+              required
+              minLength={6}
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirm(!showConfirm)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {showConfirm ? '🙈' : '👁️'}
+            </button>
+          </div>
+          
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">
+              {error}
+            </div>
+          )}
+          
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 font-semibold"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex-1 btn-primary"
+            >
+              {loading ? 'Guardando…' : 'Guardar'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   )
 }
 
@@ -105,6 +353,7 @@ export default function ZonaEstudiantes() {
   const [reservas, setReservas] = useState<Reservation[]>([])
   const [loading, setLoading] = useState(true)
   const [loadingData, setLoadingData] = useState(false)
+  const [showChangePassword, setShowChangePassword] = useState(false)
 
   async function loadStudentData() {
     setLoadingData(true)
@@ -305,7 +554,18 @@ export default function ZonaEstudiantes() {
               <div className="text-sm text-brand-black/70">
                 Sesión: <span className="font-semibold">{user.name || user.username}</span>
               </div>
-              <button className="btn-secondary" onClick={handleLogout}>Salir</button>
+              <div className="flex gap-3">
+                <button 
+                  className="px-4 py-2 bg-brand-purple text-white rounded-lg hover:bg-brand-purple/90 font-semibold flex items-center gap-2"
+                  onClick={() => setShowChangePassword(true)}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  Cambiar contraseña
+                </button>
+                <button className="btn-secondary" onClick={handleLogout}>Salir</button>
+              </div>
             </div>
           {loadingData ? (
             <div className="mt-6">
@@ -740,6 +1000,7 @@ export default function ZonaEstudiantes() {
           )}
         </>
       )}
+      {showChangePassword && <ChangePasswordModal onClose={() => setShowChangePassword(false)} />}
       </div>
     </main>
   )
