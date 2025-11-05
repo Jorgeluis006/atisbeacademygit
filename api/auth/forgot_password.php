@@ -34,7 +34,7 @@ try {
     if (!$user) {
         // Por seguridad, no revelar si el email existe o no
         json_ok(['message' => 'Si el correo existe, recibirás instrucciones para restablecer tu contraseña']);
-        return;
+        exit;
     }
     
     // Generar token de recuperación (válido por 1 hora)
@@ -45,7 +45,7 @@ try {
     // Primero asegurar que existe la tabla
     $pdo->exec("CREATE TABLE IF NOT EXISTS password_reset_tokens (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        user_id INT NOT NULL,
+        user_id INT UNSIGNED NOT NULL,
         token VARCHAR(64) NOT NULL UNIQUE,
         expires_at DATETIME NOT NULL,
         used TINYINT(1) DEFAULT 0,
