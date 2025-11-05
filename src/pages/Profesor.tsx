@@ -316,20 +316,38 @@ export default function Profesor() {
                     <div className="text-xs opacity-80 mb-1">📅</div>
                     <div>HORA</div>
                   </div>
-                  {[
-                    { name: 'LUNES', emoji: '📚' },
-                    { name: 'MARTES', emoji: '📖' },
-                    { name: 'MIÉRCOLES', emoji: '✏️' },
-                    { name: 'JUEVES', emoji: '📝' },
-                    { name: 'VIERNES', emoji: '🎓' },
-                    { name: 'SÁBADO', emoji: '📔' },
-                    { name: 'DOMINGO', emoji: '📕' }
-                  ].map((day) => (
-                    <div key={day.name} className="p-4 text-center text-white font-extrabold text-sm border-r border-white/30 last:border-r-0">
-                      <div className="text-xs opacity-80 mb-1">{day.emoji}</div>
-                      <div>{day.name}</div>
-                    </div>
-                  ))}
+                  {(() => {
+                    // Obtener la fecha actual y calcular los días de la semana
+                    const today = new Date()
+                    const currentDay = today.getDay() // 0 = Domingo, 1 = Lunes, etc.
+                    const daysConfig = [
+                      { name: 'DOMINGO', emoji: '📕', dayOfWeek: 0 },
+                      { name: 'LUNES', emoji: '📚', dayOfWeek: 1 },
+                      { name: 'MARTES', emoji: '📖', dayOfWeek: 2 },
+                      { name: 'MIÉRCOLES', emoji: '✏️', dayOfWeek: 3 },
+                      { name: 'JUEVES', emoji: '📝', dayOfWeek: 4 },
+                      { name: 'VIERNES', emoji: '🎓', dayOfWeek: 5 },
+                      { name: 'SÁBADO', emoji: '📔', dayOfWeek: 6 }
+                    ]
+                    
+                    // Calcular la fecha para cada día de la semana
+                    return daysConfig.map((day) => {
+                      const daysFromToday = day.dayOfWeek - currentDay
+                      const date = new Date(today)
+                      date.setDate(today.getDate() + daysFromToday)
+                      const dayNumber = date.getDate()
+                      const monthName = date.toLocaleDateString('es-ES', { month: 'short' })
+                      
+                      return (
+                        <div key={day.name} className="p-4 text-center text-white font-extrabold text-sm border-r border-white/30 last:border-r-0">
+                          <div className="text-xs opacity-80 mb-1">{day.emoji}</div>
+                          <div>{day.name}</div>
+                          <div className="text-lg font-bold mt-1">{dayNumber}</div>
+                          <div className="text-xs opacity-90">{monthName}</div>
+                        </div>
+                      )
+                    })
+                  })()}
                 </div>
                 
                 {/* Filas de horas */}
@@ -353,9 +371,11 @@ export default function Profesor() {
                           : 'bg-gradient-to-r from-blue-100 to-blue-50'
                       }`}>
                         <div className="text-2xl font-extrabold bg-gradient-to-r from-brand-purple to-brand-pink bg-clip-text text-transparent">
-                          {hour.toString().padStart(2, '0')}
+                          {hour.toString().padStart(2, '0')}:00
                         </div>
-                        <div className="text-xs text-gray-600 font-semibold">00</div>
+                        <div className="text-xs text-gray-600 font-semibold mt-1">
+                          {hour < 12 ? 'a.m.' : 'p.m.'}
+                        </div>
                       </div>
                       
                       {/* Columnas para cada día */}
@@ -377,7 +397,15 @@ export default function Profesor() {
                                 <span className="text-2xl">·</span>
                               </div>
                             ) : (
-                              dayReservations.map((res) => (
+                              dayReservations.map((res) => {
+                                const resDateTime = new Date(res.datetime)
+                                const timeStr = resDateTime.toLocaleTimeString('es-ES', { 
+                                  hour: '2-digit', 
+                                  minute: '2-digit',
+                                  hour12: true 
+                                })
+                                
+                                return (
                                 <div
                                   key={res.id}
                                   className={`text-xs p-3 rounded-xl mb-2 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer ${
@@ -386,6 +414,12 @@ export default function Profesor() {
                                       : 'bg-gradient-to-br from-blue-100 to-blue-200 border-2 border-blue-400 hover:from-blue-200 hover:to-blue-300'
                                   }`}
                                 >
+                                  {/* Hora exacta */}
+                                  <div className="text-xs font-bold text-gray-700 mb-1 flex items-center gap-1">
+                                    <span>🕐</span>
+                                    <span>{timeStr}</span>
+                                  </div>
+                                  
                                   <div className="flex items-center gap-1 mb-1">
                                     <span className="text-base">{res.tipo === 'examen' ? '📝' : '📚'}</span>
                                     <div className="font-bold text-gray-900 truncate flex-1 text-sm">
@@ -405,7 +439,8 @@ export default function Profesor() {
                                     </div>
                                   )}
                                 </div>
-                              ))
+                                )
+                              })
                             )}
                           </div>
                         )
