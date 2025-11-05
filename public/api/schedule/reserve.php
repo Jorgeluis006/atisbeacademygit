@@ -95,7 +95,8 @@ if ($slot_id) {
         $stmt->execute([$teacher_id, $slot_id, $user_id]);
         $info = $stmt->fetch();
         
-        if ($info && $info['student_email'] && $info['meeting_link']) {
+        // Enviar email si el estudiante tiene email configurado
+        if ($info && $info['student_email']) {
             $studentName = $info['student_name'] ?: 'Estudiante';
             $teacherName = $info['teacher_name'] ?: 'tu profesor';
             $meetingLink = $info['meeting_link'];
@@ -139,7 +140,7 @@ if ($slot_id) {
                             <p><strong>💻 Modalidad:</strong> ' . htmlspecialchars(ucfirst($modalidad)) . '</p>
                             <p><strong>📝 Tipo:</strong> ' . htmlspecialchars(ucfirst($tipo)) . '</p>
                         </div>
-                        
+                        ' . ($meetingLink ? '
                         <p style="text-align: center; margin: 30px 0;">
                             <strong>🎥 Enlace de la videollamada:</strong>
                         </p>
@@ -150,6 +151,11 @@ if ($slot_id) {
                         
                         <p style="font-size: 12px; color: #666; text-align: center;">O copia y pega este enlace en tu navegador:</p>
                         <p style="font-size: 12px; word-break: break-all; color: #791eba; text-align: center;">' . htmlspecialchars($meetingLink) . '</p>
+                        ' : '
+                        <p style="text-align: center; margin: 30px 0; padding: 15px; background: #fff3cd; border-radius: 8px; color: #856404;">
+                            ℹ️ El profesor agregará el enlace de la videollamada próximamente.
+                        </p>
+                        ') . '
                         
                         <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
                         
