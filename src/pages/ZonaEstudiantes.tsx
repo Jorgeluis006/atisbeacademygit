@@ -284,14 +284,32 @@ export default function ZonaEstudiantes() {
                 </div>
               )}
             </section>
-            <section className="card">
-              <h2 className="section-title">Horarios / Agendar</h2>
-              <p className="text-sm text-brand-black/70">Agenda clases personalizadas y exámenes.</p>
+            
+            <section className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-2xl p-6 shadow-xl border-2 border-blue-200">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-3xl">📅</span>
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Horarios / Agendar</h2>
+              </div>
+              <p className="text-sm text-gray-600 mb-4">Agenda clases personalizadas y exámenes.</p>
               <ScheduleSection slots={slots} reservas={reservas} onBooked={async () => setReservas(await getMyReservations())} onCancel={async () => setReservas(await getMyReservations())} />
             </section>
-            <section className="card">
-              <h2 className="section-title">Mascota MCER</h2>
-              <div className="mt-2 aspect-square rounded-xl bg-gradient-to-br from-brand-purple to-brand-amber" />
+            
+            <section className="bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100 rounded-2xl p-6 shadow-xl border-2 border-purple-300">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-3xl">🐾</span>
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Mascota MCER</h2>
+              </div>
+              <div className="relative aspect-square rounded-2xl bg-gradient-to-br from-brand-purple via-pink-400 to-brand-amber shadow-lg overflow-hidden">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-8xl animate-bounce">🦊</span>
+                </div>
+              </div>
+              <div className="mt-4 bg-white/80 backdrop-blur-sm rounded-xl p-4 text-center border border-purple-200">
+                <p className="text-sm font-semibold text-gray-700">Tu mascota está creciendo 🌱</p>
+                <div className="mt-2 bg-gray-200 rounded-full h-3 overflow-hidden">
+                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 h-full rounded-full" style={{ width: '65%' }} />
+                </div>
+              </div>
             </section>
           </div>
           )}
@@ -353,36 +371,36 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
     <div className="mt-3">
       {/* Filtros de modalidad */}
       <div className="mb-4">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-sm font-semibold text-gray-700">Filtrar por modalidad:</span>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-sm font-bold text-gray-800">Filtrar por modalidad:</span>
         </div>
         <div className="flex gap-2 flex-wrap">
           <button
             onClick={() => setModalidadFilter('todas')}
-            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all shadow-sm ${
+            className={`px-4 py-2.5 rounded-xl font-bold text-sm transition-all ${
               modalidadFilter === 'todas'
-                ? 'bg-gradient-to-r from-brand-purple to-purple-600 text-white shadow-md'
-                : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-purple-400'
+                ? 'bg-gradient-to-r from-brand-purple to-purple-600 text-white shadow-lg scale-105'
+                : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-purple-400 hover:shadow-md'
             }`}
           >
             📚 Todas ({slots.length})
           </button>
           <button
             onClick={() => setModalidadFilter('virtual')}
-            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all shadow-sm ${
+            className={`px-4 py-2.5 rounded-xl font-bold text-sm transition-all ${
               modalidadFilter === 'virtual'
-                ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-md'
-                : 'bg-white text-gray-700 border-2 border-purple-300 hover:border-purple-500'
+                ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg scale-105'
+                : 'bg-white text-gray-700 border-2 border-purple-300 hover:border-purple-500 hover:shadow-md'
             }`}
           >
             🌐 Virtual ({slots.filter(s => s.modalidad === 'virtual').length})
           </button>
           <button
             onClick={() => setModalidadFilter('presencial')}
-            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all shadow-sm ${
+            className={`px-4 py-2.5 rounded-xl font-bold text-sm transition-all ${
               modalidadFilter === 'presencial'
-                ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md'
-                : 'bg-white text-gray-700 border-2 border-green-300 hover:border-green-500'
+                ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg scale-105'
+                : 'bg-white text-gray-700 border-2 border-green-300 hover:border-green-500 hover:shadow-md'
             }`}
           >
             🏫 Presencial ({slots.filter(s => s.modalidad === 'presencial').length})
@@ -391,46 +409,133 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
       </div>
 
       {/* Selector de horario */}
-      <div className="grid gap-3">
-        <select 
-          className="select-control" 
-          value={selected?.id || ''} 
-          onChange={(e) => {
-            const slot = filteredSlots.find(s => s.id === Number(e.target.value))
-            setSelected(slot || null)
-          }}
-        >
-          <option value="">Selecciona un horario</option>
-          {filteredSlots.map((s) => (
-            <option key={s.id} value={s.id}>
-              {new Date(s.datetime).toLocaleString()} - {s.tipo} ({s.modalidad})
-            </option>
-          ))}
-        </select>
-        <input className="input-control" placeholder="Notas (opcional)" value={notas} onChange={(e) => setNotas(e.target.value)} />
-      </div>
-      <div className="mt-3">
-        <button className="btn-primary" disabled={loading} onClick={reservar}>{loading ? 'Procesando…' : 'Agendar'}</button>
-        {error && <span className="text-red-600 text-sm ml-3">{error}</span>}
-        {ok && <span className="text-green-600 text-sm ml-3">{ok}</span>}
+      <div className="bg-white/80 backdrop-blur-sm rounded-xl p-5 border-2 border-blue-200 shadow-md mb-4">
+        <div className="grid gap-4">
+          <div>
+            <label className="block text-sm font-bold text-gray-800 mb-2 flex items-center gap-2">
+              <span>🕐</span> Selecciona un horario
+            </label>
+            <select 
+              className="w-full px-4 py-3 border-2 border-blue-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all shadow-sm hover:border-blue-400 font-semibold" 
+              value={selected?.id || ''} 
+              onChange={(e) => {
+                const slot = filteredSlots.find(s => s.id === Number(e.target.value))
+                setSelected(slot || null)
+              }}
+            >
+              <option value="">Selecciona un horario</option>
+              {filteredSlots.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {new Date(s.datetime).toLocaleString()} - {s.tipo} ({s.modalidad})
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-bold text-gray-800 mb-2 flex items-center gap-2">
+              <span>📝</span> Notas (opcional)
+            </label>
+            <input 
+              className="w-full px-4 py-3 border-2 border-purple-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all shadow-sm hover:border-purple-400" 
+              placeholder="Escribe tus notas aquí..." 
+              value={notas} 
+              onChange={(e) => setNotas(e.target.value)} 
+            />
+          </div>
+        </div>
+        
+        <div className="mt-5 flex items-center gap-3">
+          <button 
+            className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold rounded-xl hover:from-green-600 hover:to-green-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" 
+            disabled={loading || !selected} 
+            onClick={reservar}
+          >
+            {loading ? (
+              <>
+                <span className="animate-spin">⏳</span> Procesando…
+              </>
+            ) : (
+              <>
+                <span>✅</span> Agendar
+              </>
+            )}
+          </button>
+        </div>
+        
+        {error && (
+          <div className="mt-3 bg-red-50 border-2 border-red-300 rounded-xl p-3 flex items-center gap-2">
+            <span className="text-xl">❌</span>
+            <span className="text-red-700 text-sm font-semibold">{error}</span>
+          </div>
+        )}
+        {ok && (
+          <div className="mt-3 bg-green-50 border-2 border-green-300 rounded-xl p-3 flex items-center gap-2">
+            <span className="text-xl">✅</span>
+            <span className="text-green-700 text-sm font-semibold">{ok}</span>
+          </div>
+        )}
       </div>
 
-      <div className="mt-5">
-        <h3 className="font-serif text-lg">Mis reservas</h3>
+      {/* Mis reservas */}
+      <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-5 border-2 border-indigo-200 shadow-md">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-2xl">📋</span>
+          <h3 className="text-xl font-bold text-gray-800">Mis reservas</h3>
+        </div>
+        
         {reservas.length === 0 ? (
-          <p className="text-sm text-brand-black/70 mt-2">Aún no tienes reservas.</p>
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-8 text-center border border-indigo-200">
+            <div className="text-5xl mb-3">📭</div>
+            <p className="text-sm text-gray-600 font-semibold">Aún no tienes reservas.</p>
+            <p className="text-xs text-gray-500 mt-1">Agenda tu primera clase arriba 👆</p>
+          </div>
         ) : (
-          <ul className="mt-2 space-y-2">
+          <div className="space-y-3">
             {reservas.map((r) => (
-              <li key={r.id} className="flex items-center justify-between rounded-xl p-3 bg-gradient-to-r from-brand-black/[0.05] to-transparent">
-                <div className="text-sm">
-                  <div className="flex items-center gap-2"><span className="badge-role-student">{r.tipo}</span> <span>{new Date(r.datetime).toLocaleString()}</span> <span className="badge-role-teacher">{r.modalidad}</span></div>
-                  {r.notas && <div className="text-brand-black/70 mt-1">{r.notas}</div>}
+              <div key={r.id} className="bg-white rounded-xl p-4 shadow-lg border border-indigo-200 hover:shadow-xl transition-all">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                        r.tipo === 'clase' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                      }`}>
+                        {r.tipo === 'clase' ? '📚 Clase' : '📝 Examen'}
+                      </span>
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                        r.modalidad === 'virtual' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
+                      }`}>
+                        {r.modalidad === 'virtual' ? '🌐 Virtual' : '🏫 Presencial'}
+                      </span>
+                    </div>
+                    <div className="text-sm font-bold text-gray-800 flex items-center gap-2">
+                      <span>🕐</span> {new Date(r.datetime).toLocaleString('es-ES', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </div>
+                    {r.notas && (
+                      <div className="mt-2 bg-gray-50 rounded-lg p-2 border border-gray-200">
+                        <span className="text-xs text-gray-500 font-semibold">📝 Notas:</span>
+                        <p className="text-sm text-gray-700 mt-1">{r.notas}</p>
+                      </div>
+                    )}
+                  </div>
+                  <button 
+                    className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white font-bold rounded-lg hover:from-red-600 hover:to-red-700 transition-all shadow-md hover:shadow-lg disabled:opacity-50 text-sm flex items-center gap-1" 
+                    disabled={loading} 
+                    onClick={() => cancelar(r.id)}
+                  >
+                    <span>🗑️</span> Cancelar
+                  </button>
                 </div>
-                <button className="btn-ghost underline" disabled={loading} onClick={() => cancelar(r.id)}>Cancelar</button>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>
