@@ -203,34 +203,34 @@ export default function Profesor() {
         </div>
 
       {/* Gestión de horarios */}
-      <section className="bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 rounded-2xl p-8 shadow-2xl border-2 border-purple-200 mt-6">
+      <section className="bg-gradient-to-br from-brand-mauve/20 via-brand-cream to-brand-purple/10 rounded-2xl p-8 shadow-2xl border-2 border-brand-mauve/50 mt-6">
         <div className="flex items-center gap-3 mb-3">
-          <svg className="w-10 h-10 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-10 h-10 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
-          <h2 className="text-3xl font-extrabold bg-gradient-to-r from-brand-purple to-brand-pink bg-clip-text text-transparent">
+          <h2 className="text-3xl font-extrabold bg-gradient-to-r from-brand-purple to-brand-orange bg-clip-text text-transparent">
             Gestión de horarios
           </h2>
         </div>
         <p className="text-sm text-gray-600 mb-6 flex items-center gap-2">
-          <svg className="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
           Crea horarios disponibles para que tus estudiantes los reserven.
         </p>
         
-        <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-purple-200 mb-6">
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-brand-mauve mb-6">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 Fecha y hora
               </label>
               <input 
                 type="datetime-local" 
-                className="w-full px-4 py-3 border-2 border-purple-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-brand-purple transition-all shadow-sm hover:border-purple-400" 
+                className="w-full px-4 py-3 border-2 border-brand-mauve/50 rounded-xl focus:outline-none focus:ring-4 focus:ring-brand-purple/20 focus:border-brand-purple transition-all shadow-sm hover:border-brand-mauve" 
                 value={newSlot.datetime} 
                 onChange={e => setNewSlot({ ...newSlot, datetime: e.target.value })} 
               />
@@ -300,7 +300,7 @@ export default function Profesor() {
             </div>
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 Duración (min)
@@ -309,7 +309,7 @@ export default function Profesor() {
                 type="number" 
                 min="15" 
                 step="15"
-                className="w-full px-4 py-3 border-2 border-purple-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-brand-purple transition-all shadow-sm hover:border-purple-400 font-semibold" 
+                className="w-full px-4 py-3 border-2 border-brand-purple/50 rounded-xl focus:outline-none focus:ring-4 focus:ring-brand-purple/20 focus:border-brand-purple transition-all shadow-sm hover:border-brand-purple/70 font-semibold" 
                 value={newSlot.duration_minutes} 
                 onChange={e => setNewSlot({ ...newSlot, duration_minutes: parseInt(e.target.value) || 60 })} 
               />
