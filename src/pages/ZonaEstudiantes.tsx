@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { login as apiLogin, logout as apiLogout, me as apiMe, getStudentProgress, type StudentProgress, getScheduleSlots, createReservation, getMyReservations, cancelReservation, type ScheduleSlot, type Reservation } from '../services/api'
+import jsPDF from 'jspdf'
+import 'jspdf-autotable'
 
 function Login({ onSuccess }: { onSuccess: () => void }) {
   const [username, setUsername] = useState('')
@@ -120,6 +122,99 @@ export default function ZonaEstudiantes() {
     } finally {
       setLoadingData(false)
     }
+  }
+
+  // Función para generar PDF del horario semanal
+  function downloadSchedulePDF() {
+    const doc = new jsPDF('landscape')
+    
+    // Título
+    doc.setFontSize(18)
+    doc.setTextColor(121, 30, 186) // brand-purple
+    doc.text('Mi Horario Semanal - Atisbe Academy', 148, 15, { align: 'center' })
+    
+    // Información del estudiante
+    doc.setFontSize(11)
+    doc.setTextColor(0, 0, 0)
+    doc.text(`Estudiante: ${user?.name || user?.username || 'N/A'}`, 14, 25)
+    
+    // Calcular semana actual
+    const today = new Date()
+    const startOfWeek = new Date(today)
+    startOfWeek.setDate(today.getDate() - today.getDay())
+    const endOfWeek = new Date(startOfWeek)
+    endOfWeek.setDate(startOfWeek.getDate() + 6)
+    
+    doc.text(`Semana: ${startOfWeek.toLocaleDateString('es-ES')} - ${endOfWeek.toLocaleDateString('es-ES')}`, 14, 31)
+    
+    // Preparar datos para la tabla
+    const daysOfWeek = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
+    const headers = ['Hora', ...daysOfWeek]
+    
+    // Crear filas para cada hora (5am - 11pm)
+    const rows = []
+    for (let hour = 5; hour <= 23; hour++) {
+      const row = [`${hour.toString().padStart(2, '0')}:00`]
+      
+      // Para cada día de la semana
+      for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+        const targetDate = new Date(startOfWeek)
+        targetDate.setDate(startOfWeek.getDate() + dayOfWeek)
+        const targetDateStr = targetDate.toISOString().split('T')[0]
+        
+        // Buscar reservas para esta hora y día
+        const reservation = reservas.find(res => {
+          const dt = parseLocalDateTime(res.datetime)
+          const resDateStr = dt.toISOString().split('T')[0]
+          return dt.getHours() === hour && resDateStr === targetDateStr
+        })
+        
+        if (reservation) {
+          const tipo = reservation.tipo === 'clase' ? '📚 Clase' : '📝 Examen'
+          const modalidad = reservation.modalidad === 'virtual' ? '💻' : '🏫'
+          row.push(`${tipo} ${modalidad}`)
+        } else {
+          row.push('')
+        }
+      }
+      
+      rows.push(row)
+    }
+    
+    // Generar tabla con autoTable
+    ;(doc as any).autoTable({
+      startY: 38,
+      head: [headers],
+      body: rows,
+      theme: 'grid',
+      headStyles: {
+        fillColor: [121, 30, 186], // brand-purple
+        textColor: [255, 255, 255],
+        fontStyle: 'bold',
+        halign: 'center'
+      },
+      bodyStyles: {
+        fontSize: 8,
+        halign: 'center',
+        valign: 'middle'
+      },
+      columnStyles: {
+        0: { fillColor: [191, 166, 164], fontStyle: 'bold', textColor: [255, 255, 255] } // Primera columna (horas) con brand-mauve
+      },
+      alternateRowStyles: {
+        fillColor: [255, 254, 241] // brand-cream
+      },
+      margin: { top: 38, left: 14, right: 14 }
+    })
+    
+    // Pie de página
+    doc.setFontSize(9)
+    doc.setTextColor(128, 128, 128)
+    doc.text(`Generado el ${new Date().toLocaleDateString('es-ES')} - Atisbe Academy`, 148, 200, { align: 'center' })
+    
+    // Guardar PDF
+    const fileName = `Horario_Semanal_${startOfWeek.toISOString().split('T')[0]}.pdf`
+    doc.save(fileName)
   }
 
   useEffect(() => {
@@ -455,11 +550,24 @@ export default function ZonaEstudiantes() {
 
           {/* Calendario Semanal - Abajo de todo */}
           <section className="mt-6 bg-gradient-to-br from-brand-mauve/20 via-brand-cream to-brand-purple/10 rounded-2xl p-6 shadow-xl border-2 border-brand-mauve/50">
-            <div className="flex items-center gap-3 mb-4">
-              <svg className="w-8 h-8 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-brand-purple to-brand-orange bg-clip-text text-transparent">Mis Clases - Vista Semanal</h2>
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <div className="flex items-center gap-3">
+                <svg className="w-8 h-8 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-brand-purple to-brand-orange bg-clip-text text-transparent">Mis Clases - Vista Semanal</h2>
+              </div>
+              {reservas.length > 0 && (
+                <button 
+                  onClick={downloadSchedulePDF}
+                  className="flex items-center gap-2 px-4 py-2 bg-brand-purple hover:bg-brand-purple/90 text-white rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span className="font-semibold">Descargar PDF</span>
+                </button>
+              )}
             </div>
             
             {reservas.length === 0 ? (
