@@ -39,7 +39,14 @@ export default function Profesor() {
     }
     setCreatingSlot(true)
     try {
-      await createTeacherSlot(newSlot)
+      // Convertir datetime-local a formato MySQL (YYYY-MM-DD HH:MM:SS)
+      // datetime-local da formato "2025-11-05T20:54"
+      const datetimeFormatted = newSlot.datetime.replace('T', ' ') + ':00'
+      
+      await createTeacherSlot({
+        ...newSlot,
+        datetime: datetimeFormatted
+      })
       const updated = await getTeacherSlots()
       setSlots(updated)
       setNewSlot({ datetime: '', tipo: 'clase', modalidad: 'virtual', duration_minutes: 60 })
