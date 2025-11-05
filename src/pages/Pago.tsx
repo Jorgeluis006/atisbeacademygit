@@ -174,27 +174,6 @@ export default function Pago() {
             </div>
           </div>
 
-          {/* Convenios */}
-          <div className="bg-white rounded-2xl shadow-lg p-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-              Ahora en convenio con:
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-              <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-6 border-2 border-orange-200 text-center">
-                <div className="text-4xl mb-2">🔥</div>
-                <h4 className="font-bold text-gray-900">Vanti</h4>
-              </div>
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border-2 border-blue-200 text-center">
-                <div className="text-4xl mb-2">💳</div>
-                <h4 className="font-bold text-gray-900">Addi</h4>
-              </div>
-              <div className="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-xl p-6 border-2 border-yellow-200 text-center col-span-2 md:col-span-1">
-                <div className="text-4xl mb-2">🏦</div>
-                <h4 className="font-bold text-gray-900">Banco de Bogotá</h4>
-              </div>
-            </div>
-          </div>
-
           {/* CTA Final */}
           <div className="mt-12 text-center">
             <button 
