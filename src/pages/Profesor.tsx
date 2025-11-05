@@ -317,9 +317,26 @@ export default function Profesor() {
                     <div>HORA</div>
                   </div>
                   {(() => {
-                    // Obtener la fecha actual y calcular los días de la semana
+                    // Encontrar la fecha mínima de las reservas o usar hoy
                     const today = new Date()
-                    const currentDay = today.getDay() // 0 = Domingo, 1 = Lunes, etc.
+                    today.setHours(0, 0, 0, 0)
+                    
+                    let startDate = new Date(today)
+                    if (reservations.length > 0) {
+                      const reservationDates = reservations.map(r => new Date(r.datetime))
+                      const minDate = new Date(Math.min(...reservationDates.map(d => d.getTime())))
+                      minDate.setHours(0, 0, 0, 0)
+                      
+                      // Usar la menor entre hoy y la fecha de la primera reserva
+                      if (minDate < today) {
+                        startDate = minDate
+                      }
+                    }
+                    
+                    // Calcular el inicio de la semana (domingo)
+                    const startOfWeek = new Date(startDate)
+                    startOfWeek.setDate(startDate.getDate() - startDate.getDay())
+                    
                     const daysConfig = [
                       { name: 'DOMINGO', emoji: '📕', dayOfWeek: 0 },
                       { name: 'LUNES', emoji: '📚', dayOfWeek: 1 },
@@ -330,16 +347,16 @@ export default function Profesor() {
                       { name: 'SÁBADO', emoji: '📔', dayOfWeek: 6 }
                     ]
                     
-                    // Calcular la fecha para cada día de la semana
+                    // Calcular la fecha exacta para cada día de la semana
                     return daysConfig.map((day) => {
-                      const daysFromToday = day.dayOfWeek - currentDay
-                      const date = new Date(today)
-                      date.setDate(today.getDate() + daysFromToday)
+                      const date = new Date(startOfWeek)
+                      date.setDate(startOfWeek.getDate() + day.dayOfWeek)
                       const dayNumber = date.getDate()
                       const monthName = date.toLocaleDateString('es-ES', { month: 'short' })
+                      const fullDate = date.toISOString().split('T')[0] // YYYY-MM-DD
                       
                       return (
-                        <div key={day.name} className="p-4 text-center text-white font-extrabold text-sm border-r border-white/30 last:border-r-0">
+                        <div key={day.name} className="p-4 text-center text-white font-extrabold text-sm border-r border-white/30 last:border-r-0" data-date={fullDate}>
                           <div className="text-xs opacity-80 mb-1">{day.emoji}</div>
                           <div>{day.name}</div>
                           <div className="text-lg font-bold mt-1">{dayNumber}</div>
@@ -352,11 +369,33 @@ export default function Profesor() {
                 
                 {/* Filas de horas */}
                 {Array.from({ length: 14 }, (_, i) => i + 6).map((hour) => {
-                  // Obtener reservas para esta hora
+                  // Calcular fechas de la semana para comparación
+                  const today = new Date()
+                  today.setHours(0, 0, 0, 0)
+                  
+                  let startDate = new Date(today)
+                  if (reservations.length > 0) {
+                    const reservationDates = reservations.map(r => new Date(r.datetime))
+                    const minDate = new Date(Math.min(...reservationDates.map(d => d.getTime())))
+                    minDate.setHours(0, 0, 0, 0)
+                    if (minDate < today) {
+                      startDate = minDate
+                    }
+                  }
+                  
+                  const startOfWeek = new Date(startDate)
+                  startOfWeek.setDate(startDate.getDate() - startDate.getDay())
+                  
+                  // Obtener reservas para esta hora y día específico
                   const getReservationsForHourAndDay = (dayOfWeek: number) => {
+                    const targetDate = new Date(startOfWeek)
+                    targetDate.setDate(startOfWeek.getDate() + dayOfWeek)
+                    const targetDateStr = targetDate.toISOString().split('T')[0]
+                    
                     return reservations.filter(res => {
                       const dt = new Date(res.datetime)
-                      return dt.getHours() === hour && dt.getDay() === dayOfWeek
+                      const resDateStr = dt.toISOString().split('T')[0]
+                      return dt.getHours() === hour && resDateStr === targetDateStr
                     })
                   }
 
