@@ -126,7 +126,11 @@ export default function ZonaEstudiantes() {
 
   // Función para generar PDF del horario semanal
   function downloadSchedulePDF() {
-    const doc = new jsPDF('landscape')
+    try {
+      console.log('Iniciando generación de PDF...')
+      console.log('Reservas:', reservas)
+      
+      const doc = new jsPDF('landscape')
     
     // Título
     doc.setFontSize(18)
@@ -215,6 +219,11 @@ export default function ZonaEstudiantes() {
     // Guardar PDF
     const fileName = `Horario_Semanal_${startOfWeek.toISOString().split('T')[0]}.pdf`
     doc.save(fileName)
+    console.log('PDF generado exitosamente:', fileName)
+    } catch (error) {
+      console.error('Error al generar PDF:', error)
+      alert('Error al generar el PDF. Por favor, revisa la consola para más detalles.')
+    }
   }
 
   useEffect(() => {
