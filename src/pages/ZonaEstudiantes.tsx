@@ -322,9 +322,12 @@ export default function ZonaEstudiantes() {
 
 // Helper function to parse MySQL datetime as local time (not UTC)
 function parseLocalDateTime(mysqlDatetime: string): Date {
+  if (!mysqlDatetime) {
+    return new Date()
+  }
+  
   // MySQL datetime format: "2025-11-05 20:54:00"
-  // Replace space with 'T' to make it ISO-like, then parse as local
-  const [datePart, timePart] = mysqlDatetime.split(' ')
+  const [datePart, timePart = '00:00:00'] = mysqlDatetime.split(' ')
   const [year, month, day] = datePart.split('-')
   const [hour, minute, second] = timePart.split(':')
   
@@ -333,8 +336,8 @@ function parseLocalDateTime(mysqlDatetime: string): Date {
     parseInt(year),
     parseInt(month) - 1, // months are 0-indexed
     parseInt(day),
-    parseInt(hour),
-    parseInt(minute),
+    parseInt(hour || '0'),
+    parseInt(minute || '0'),
     parseInt(second || '0')
   )
 }

@@ -18,18 +18,22 @@ import {
 
 // Helper function to parse MySQL datetime as local time (not UTC)
 function parseLocalDateTime(mysqlDatetime: string): Date {
+  if (!mysqlDatetime) {
+    return new Date()
+  }
+  
   // MySQL datetime format: "2025-11-05 20:54:00"
-  const [datePart, timePart] = mysqlDatetime.split(' ')
+  const [datePart, timePart = '00:00:00'] = mysqlDatetime.split(' ')
   const [year, month, day] = datePart.split('-')
-  const [hour, minute, second] = (timePart || '00:00:00').split(':')
+  const [hour, minute, second] = timePart.split(':')
   
   // Create date with local timezone
   return new Date(
     parseInt(year),
     parseInt(month) - 1, // months are 0-indexed
     parseInt(day),
-    parseInt(hour),
-    parseInt(minute),
+    parseInt(hour || '0'),
+    parseInt(minute || '0'),
     parseInt(second || '0')
   )
 }
