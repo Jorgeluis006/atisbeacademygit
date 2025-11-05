@@ -405,8 +405,8 @@ export default function Profesor() {
                   })()}
                 </div>
                 
-                {/* Filas de horas */}
-                {Array.from({ length: 14 }, (_, i) => i + 6).map((hour) => {
+                {/* Filas de horas - de 5am a 11pm */}
+                {Array.from({ length: 19 }, (_, i) => i + 5).map((hour) => {
                   // Calcular fechas de la semana para comparación
                   const today = new Date()
                   today.setHours(0, 0, 0, 0)
