@@ -7,8 +7,6 @@ import {
   type AdminUser, 
   resetUserPassword,
   deleteUser, 
-  EXPORT_CONTACTS_URL, 
-  EXPORT_RESERVATIONS_URL, 
   assignStudent, 
   logout as apiLogout,
   getAdminTestimonials,
@@ -144,14 +142,6 @@ export default function Admin() {
           </section>
 
           <UsersList />
-
-          <section className="card mt-6 max-w-xl">
-            <h2 className="section-title">Exportar datos</h2>
-            <div className="flex gap-3 flex-wrap">
-              <a className="btn-secondary" href={EXPORT_CONTACTS_URL}>Descargar contactos CSV</a>
-              <a className="btn-secondary" href={EXPORT_RESERVATIONS_URL}>Descargar reservas CSV</a>
-            </div>
-          </section>
         </>
       )}
 
