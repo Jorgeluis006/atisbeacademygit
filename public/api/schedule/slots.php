@@ -36,10 +36,5 @@ $stmt = $pdo->prepare('
 $stmt->execute([$teacher_id]);
 $slots = $stmt->fetchAll();
 
-// Formatear para el frontend
-foreach ($slots as &$slot) {
-    $dt = new DateTime($slot['datetime']);
-    $slot['datetime'] = $dt->format(DateTime::ATOM);
-}
-
+// No necesitamos formatear - enviar datetime tal como está en MySQL
 json_ok(['slots' => $slots]);

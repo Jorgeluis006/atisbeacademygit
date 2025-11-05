@@ -8,9 +8,5 @@ $stmt = $pdo->prepare('SELECT id, datetime, tipo, modalidad, notas, created_at F
 $stmt->execute([ (int)$_SESSION['user_id'] ]);
 $reservas = $stmt->fetchAll();
 
-// Formato ISO 8601 para el frontend
-foreach ($reservas as &$r) {
-    $r['datetime'] = (new DateTime($r['datetime']))->format(DateTime::ATOM);
-}
-
+// No necesitamos formatear - enviar datetime tal como está en MySQL
 json_ok(['reservas' => $reservas]);
