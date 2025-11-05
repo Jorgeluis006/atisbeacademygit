@@ -179,6 +179,7 @@ export default function ZonaEstudiantes() {
               <p>Cargando datos del estudiante…</p>
             </div>
           ) : (
+            <>
             <div className="mt-6 grid gap-6 md:grid-cols-3">
             <section className="bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 rounded-2xl p-6 shadow-xl border-2 border-purple-200">
               <div className="flex items-center gap-3 mb-4">
@@ -330,177 +331,6 @@ export default function ZonaEstudiantes() {
               )}
             </section>
 
-            {/* Calendario Semanal de Reservas */}
-            <section className="md:col-span-2 bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 rounded-2xl p-6 shadow-xl border-2 border-purple-200">
-              <div className="flex items-center gap-3 mb-4">
-                <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Mis Clases - Vista Semanal</h2>
-              </div>
-              
-              {reservas.length === 0 ? (
-                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-8 text-center border border-purple-200">
-                  <svg className="w-16 h-16 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <p className="text-sm text-gray-600 font-semibold">Aún no tienes clases agendadas</p>
-                  <p className="text-xs text-gray-500 mt-1">Agenda tu primera clase más abajo 👇</p>
-                </div>
-              ) : (
-                <div className="overflow-x-auto -mx-6 px-6">
-                  <div className="min-w-[900px] bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 rounded-2xl shadow-2xl overflow-hidden border-2 border-purple-200">
-                    {/* Header con días de la semana */}
-                    <div className="grid grid-cols-8 bg-gradient-to-r from-brand-purple via-purple-600 to-brand-pink shadow-lg">
-                      <div className="p-4 text-center text-white font-extrabold text-sm border-r border-white/30 bg-purple-800/50">
-                        <div className="flex items-center justify-center mb-1">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        </div>
-                        <div>HORA</div>
-                      </div>
-                      {(() => {
-                        // Calcular inicio de semana basado en las reservas
-                        const today = new Date()
-                        today.setHours(0, 0, 0, 0)
-                        
-                        let startDate = new Date(today)
-                        if (reservas.length > 0) {
-                          const reservationDates = reservas.map(r => parseLocalDateTime(r.datetime))
-                          const minDate = new Date(Math.min(...reservationDates.map(d => d.getTime())))
-                          minDate.setHours(0, 0, 0, 0)
-                          
-                          if (minDate < today) {
-                            startDate = minDate
-                          }
-                        }
-                        
-                        const startOfWeek = new Date(startDate)
-                        startOfWeek.setDate(startDate.getDate() - startDate.getDay())
-                        
-                        const daysConfig = [
-                          { name: 'DOMINGO', dayOfWeek: 0 },
-                          { name: 'LUNES', dayOfWeek: 1 },
-                          { name: 'MARTES', dayOfWeek: 2 },
-                          { name: 'MIÉRCOLES', dayOfWeek: 3 },
-                          { name: 'JUEVES', dayOfWeek: 4 },
-                          { name: 'VIERNES', dayOfWeek: 5 },
-                          { name: 'SÁBADO', dayOfWeek: 6 }
-                        ]
-                        
-                        return daysConfig.map((day) => {
-                          const date = new Date(startOfWeek)
-                          date.setDate(startOfWeek.getDate() + day.dayOfWeek)
-                          const dayNumber = date.getDate()
-                          const monthName = date.toLocaleDateString('es-ES', { month: 'short' })
-                          const fullDate = date.toISOString().split('T')[0]
-                          
-                          return (
-                            <div key={day.name} className="p-4 text-center text-white font-extrabold text-sm border-r border-white/30 last:border-r-0" data-date={fullDate}>
-                              <div>{day.name}</div>
-                              <div className="text-lg font-bold mt-1">{dayNumber}</div>
-                              <div className="text-xs opacity-90">{monthName}</div>
-                            </div>
-                          )
-                        })
-                      })()}
-                    </div>
-                    
-                    {/* Filas de horas */}
-                    {Array.from({ length: 19 }, (_, i) => i + 5).map((hour) => {
-                      const today = new Date()
-                      today.setHours(0, 0, 0, 0)
-                      
-                      let startDate = new Date(today)
-                      if (reservas.length > 0) {
-                        const reservationDates = reservas.map(r => parseLocalDateTime(r.datetime))
-                        const minDate = new Date(Math.min(...reservationDates.map(d => d.getTime())))
-                        minDate.setHours(0, 0, 0, 0)
-                        if (minDate < today) {
-                          startDate = minDate
-                        }
-                      }
-                      
-                      const startOfWeek = new Date(startDate)
-                      startOfWeek.setDate(startDate.getDate() - startDate.getDay())
-                      
-                      return (
-                        <div key={hour} className="grid grid-cols-8 border-t border-purple-200">
-                          <div className="p-3 text-center bg-gradient-to-r from-purple-100 to-pink-100 border-r border-purple-200 flex flex-col items-center justify-center">
-                            <div className="text-lg font-extrabold text-purple-700">
-                              {hour.toString().padStart(2, '0')}:00
-                            </div>
-                            <div className="text-xs text-purple-600 font-semibold">
-                              {hour < 12 ? 'a.m.' : 'p.m.'}
-                            </div>
-                          </div>
-                          
-                          {[0, 1, 2, 3, 4, 5, 6].map((dayOffset) => {
-                            const cellDate = new Date(startOfWeek)
-                            cellDate.setDate(startOfWeek.getDate() + dayOffset)
-                            const cellDateStr = cellDate.toISOString().split('T')[0]
-                            
-                            const cellReservations = reservas.filter(r => {
-                              const rDate = parseLocalDateTime(r.datetime)
-                              const rDateStr = rDate.toISOString().split('T')[0]
-                              const rHour = rDate.getHours()
-                              return rDateStr === cellDateStr && rHour === hour
-                            })
-                            
-                            return (
-                              <div 
-                                key={dayOffset} 
-                                className="p-2 border-r border-purple-200 last:border-r-0 min-h-[80px] bg-white/50 hover:bg-purple-50/50 transition-colors"
-                              >
-                                {cellReservations.map((r) => (
-                                  <div 
-                                    key={r.id} 
-                                    className={`rounded-lg p-2 mb-1 shadow-md border-2 ${
-                                      r.tipo === 'clase' 
-                                        ? 'bg-gradient-to-br from-green-100 to-green-200 border-green-400' 
-                                        : 'bg-gradient-to-br from-orange-100 to-orange-200 border-orange-400'
-                                    }`}
-                                  >
-                                    <div className="flex items-center gap-1 mb-1">
-                                      <span className="text-xs font-bold text-gray-800">
-                                        {parseLocalDateTime(r.datetime).toLocaleTimeString('es-ES', { 
-                                          hour: '2-digit', 
-                                          minute: '2-digit',
-                                          hour12: true 
-                                        })}
-                                      </span>
-                                    </div>
-                                    <div className="flex gap-1 flex-wrap">
-                                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                                        r.tipo === 'clase' ? 'bg-green-600 text-white' : 'bg-orange-600 text-white'
-                                      }`}>
-                                        {r.tipo === 'clase' ? 'Clase' : 'Examen'}
-                                      </span>
-                                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                                        r.modalidad === 'virtual' ? 'bg-purple-600 text-white' : 'bg-blue-600 text-white'
-                                      }`}>
-                                        {r.modalidad === 'virtual' ? 'Virtual' : 'Presencial'}
-                                      </span>
-                                    </div>
-                                    {r.curso && (
-                                      <div className="mt-1 text-[10px] font-semibold text-gray-700 truncate">
-                                        {r.curso}
-                                      </div>
-                                    )}
-                                  </div>
-                                ))}
-                              </div>
-                            )
-                          })}
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              )}
-            </section>
-            
             <section className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-2xl p-6 shadow-xl border-2 border-blue-200">
               <div className="flex items-center gap-3 mb-3">
                 <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -532,6 +362,178 @@ export default function ZonaEstudiantes() {
               </div>
             </section>
           </div>
+
+          {/* Calendario Semanal - Abajo de todo */}
+          <section className="mt-6 bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 rounded-2xl p-6 shadow-xl border-2 border-purple-200">
+            <div className="flex items-center gap-3 mb-4">
+              <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Mis Clases - Vista Semanal</h2>
+            </div>
+            
+            {reservas.length === 0 ? (
+              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-8 text-center border border-purple-200">
+                <svg className="w-16 h-16 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <p className="text-sm text-gray-600 font-semibold">Aún no tienes clases agendadas</p>
+                <p className="text-xs text-gray-500 mt-1">Agenda tu primera clase en la sección de arriba 👆</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto -mx-6 px-6">
+                <div className="min-w-[900px] bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 rounded-2xl shadow-2xl overflow-hidden border-2 border-purple-200">
+                  {/* Header con días de la semana */}
+                  <div className="grid grid-cols-8 bg-gradient-to-r from-brand-purple via-purple-600 to-brand-pink shadow-lg">
+                    <div className="p-4 text-center text-white font-extrabold text-sm border-r border-white/30 bg-purple-800/50">
+                      <div className="flex items-center justify-center mb-1">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div>HORA</div>
+                    </div>
+                    {(() => {
+                      const today = new Date()
+                      today.setHours(0, 0, 0, 0)
+                      
+                      let startDate = new Date(today)
+                      if (reservas.length > 0) {
+                        const reservationDates = reservas.map(r => parseLocalDateTime(r.datetime))
+                        const minDate = new Date(Math.min(...reservationDates.map(d => d.getTime())))
+                        minDate.setHours(0, 0, 0, 0)
+                        
+                        if (minDate < today) {
+                          startDate = minDate
+                        }
+                      }
+                      
+                      const startOfWeek = new Date(startDate)
+                      startOfWeek.setDate(startDate.getDate() - startDate.getDay())
+                      
+                      const daysConfig = [
+                        { name: 'DOMINGO', dayOfWeek: 0 },
+                        { name: 'LUNES', dayOfWeek: 1 },
+                        { name: 'MARTES', dayOfWeek: 2 },
+                        { name: 'MIÉRCOLES', dayOfWeek: 3 },
+                        { name: 'JUEVES', dayOfWeek: 4 },
+                        { name: 'VIERNES', dayOfWeek: 5 },
+                        { name: 'SÁBADO', dayOfWeek: 6 }
+                      ]
+                      
+                      return daysConfig.map((day) => {
+                        const date = new Date(startOfWeek)
+                        date.setDate(startOfWeek.getDate() + day.dayOfWeek)
+                        const dayNumber = date.getDate()
+                        const monthName = date.toLocaleDateString('es-ES', { month: 'short' })
+                        const fullDate = date.toISOString().split('T')[0]
+                        
+                        return (
+                          <div key={day.name} className="p-4 text-center text-white font-extrabold text-sm border-r border-white/30 last:border-r-0" data-date={fullDate}>
+                            <div>{day.name}</div>
+                            <div className="text-lg font-bold mt-1">{dayNumber}</div>
+                            <div className="text-xs opacity-90">{monthName}</div>
+                          </div>
+                        )
+                      })
+                    })()}
+                  </div>
+                  
+                  {/* Filas de horas */}
+                  {Array.from({ length: 19 }, (_, i) => i + 5).map((hour) => {
+                    const today = new Date()
+                    today.setHours(0, 0, 0, 0)
+                    
+                    let startDate = new Date(today)
+                    if (reservas.length > 0) {
+                      const reservationDates = reservas.map(r => parseLocalDateTime(r.datetime))
+                      const minDate = new Date(Math.min(...reservationDates.map(d => d.getTime())))
+                      minDate.setHours(0, 0, 0, 0)
+                      if (minDate < today) {
+                        startDate = minDate
+                      }
+                    }
+                    
+                    const startOfWeek = new Date(startDate)
+                    startOfWeek.setDate(startDate.getDate() - startDate.getDay())
+                    
+                    return (
+                      <div key={hour} className="grid grid-cols-8 border-t border-purple-200">
+                        <div className="p-3 text-center bg-gradient-to-r from-purple-100 to-pink-100 border-r border-purple-200 flex flex-col items-center justify-center">
+                          <div className="text-lg font-extrabold text-purple-700">
+                            {hour.toString().padStart(2, '0')}:00
+                          </div>
+                          <div className="text-xs text-purple-600 font-semibold">
+                            {hour < 12 ? 'a.m.' : 'p.m.'}
+                          </div>
+                        </div>
+                        
+                        {[0, 1, 2, 3, 4, 5, 6].map((dayOffset) => {
+                          const cellDate = new Date(startOfWeek)
+                          cellDate.setDate(startOfWeek.getDate() + dayOffset)
+                          const cellDateStr = cellDate.toISOString().split('T')[0]
+                          
+                          const cellReservations = reservas.filter(r => {
+                            const rDate = parseLocalDateTime(r.datetime)
+                            const rDateStr = rDate.toISOString().split('T')[0]
+                            const rHour = rDate.getHours()
+                            return rDateStr === cellDateStr && rHour === hour
+                          })
+                          
+                          return (
+                            <div 
+                              key={dayOffset} 
+                              className="p-2 border-r border-purple-200 last:border-r-0 min-h-[80px] bg-white/50 hover:bg-purple-50/50 transition-colors"
+                            >
+                              {cellReservations.map((r) => (
+                                <div 
+                                  key={r.id} 
+                                  className={`rounded-lg p-2 mb-1 shadow-md border-2 ${
+                                    r.tipo === 'clase' 
+                                      ? 'bg-gradient-to-br from-green-100 to-green-200 border-green-400' 
+                                      : 'bg-gradient-to-br from-orange-100 to-orange-200 border-orange-400'
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-1 mb-1">
+                                    <span className="text-xs font-bold text-gray-800">
+                                      {parseLocalDateTime(r.datetime).toLocaleTimeString('es-ES', { 
+                                        hour: '2-digit', 
+                                        minute: '2-digit',
+                                        hour12: true 
+                                      })}
+                                    </span>
+                                  </div>
+                                  <div className="flex gap-1 flex-wrap">
+                                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                      r.tipo === 'clase' ? 'bg-green-600 text-white' : 'bg-orange-600 text-white'
+                                    }`}>
+                                      {r.tipo === 'clase' ? 'Clase' : 'Examen'}
+                                    </span>
+                                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                      r.modalidad === 'virtual' ? 'bg-purple-600 text-white' : 'bg-blue-600 text-white'
+                                    }`}>
+                                      {r.modalidad === 'virtual' ? 'Virtual' : 'Presencial'}
+                                    </span>
+                                  </div>
+                                  {r.curso && (
+                                    <div className="mt-1 text-[10px] font-semibold text-gray-700 truncate">
+                                      {r.curso}
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+          </section>
+
+          </>
           )}
         </>
       )}
