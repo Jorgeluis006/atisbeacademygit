@@ -1,5 +1,5 @@
 export default function WhatsAppButton() {
-  const phone = '573000000000' // TODO: reemplazar con número real
+  const phone = '573227850345' // Número de WhatsApp de Atisbe Academy
   const message = encodeURIComponent('Hola Atisbe, me gustaría obtener más información.')
   const href = `https://wa.me/${phone}?text=${message}`
   return (

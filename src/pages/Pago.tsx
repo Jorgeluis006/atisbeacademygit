@@ -1,5 +1,5 @@
 export default function Pago() {
-  const whatsappNumber = '573162967105' // Número con código de país
+  const whatsappNumber = '573227850345' // Número con código de país
   const whatsappMessage = encodeURIComponent('Hola! Deseo solicitar un QR de pago para realizar una compra.')
 
   const openWhatsApp = () => {
@@ -35,7 +35,7 @@ export default function Pago() {
               <h2 className="text-3xl font-bold mb-2">💬 Escríbenos para generar tu QR de pago</h2>
               <p className="text-white/90 mb-6">Contacta a este número de WhatsApp y proporciona la siguiente información:</p>
               <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 mb-6">
-                <p className="text-5xl font-bold mb-2">3162967105</p>
+                <p className="text-5xl font-bold mb-2">3227850345</p>
                 <p className="text-white/80">Horario de atención: 24/7</p>
               </div>
               <button 
@@ -90,7 +90,7 @@ export default function Pago() {
                 <div className="flex-shrink-0 w-12 h-12 bg-brand-purple text-white rounded-full flex items-center justify-center font-bold text-xl">1</div>
                 <div className="flex-1">
                   <h4 className="font-bold text-lg text-gray-900 mb-1">Contacta por WhatsApp</h4>
-                  <p className="text-gray-600">Escribe al 3162967105</p>
+                  <p className="text-gray-600">Escribe al 3227850345</p>
                 </div>
               </div>
               {/* Step 2 */}
