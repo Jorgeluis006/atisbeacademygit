@@ -18,7 +18,8 @@ if (!$user || !$user['teacher_id']) {
 
 $teacher_id = (int)$user['teacher_id'];
 
-// Obtener los slots disponibles del profesor
+// Obtener todos los slots del profesor (permitir clases grupales)
+// Ya no filtramos por is_available para permitir múltiples estudiantes
 $stmt = $pdo->prepare('
     SELECT 
         id,
@@ -29,7 +30,6 @@ $stmt = $pdo->prepare('
         is_available
     FROM teacher_slots
     WHERE teacher_id = ? 
-      AND is_available = TRUE
       AND datetime > NOW()
     ORDER BY datetime ASC
 ');

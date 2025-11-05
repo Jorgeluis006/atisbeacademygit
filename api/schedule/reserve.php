@@ -33,9 +33,9 @@ $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 $teacher_id = $user ? (int)$user['teacher_id'] : null;
 
-// Si se proporciona slot_id, verificar que pertenezca al profesor del estudiante y esté disponible
+// Si se proporciona slot_id, verificar que pertenezca al profesor del estudiante
 if ($slot_id) {
-    $stmt = $pdo->prepare('SELECT teacher_id, is_available FROM teacher_slots WHERE id = ?');
+    $stmt = $pdo->prepare('SELECT teacher_id FROM teacher_slots WHERE id = ?');
     $stmt->execute([$slot_id]);
     $slot = $stmt->fetch();
     
@@ -43,9 +43,8 @@ if ($slot_id) {
         json_error('Slot no encontrado', 404);
     }
     
-    if (!$slot['is_available']) {
-        json_error('Este horario ya no está disponible', 409);
-    }
+    // Permitir múltiples estudiantes en el mismo horario (clases grupales)
+    // Ya no verificamos is_available para permitir reservas grupales
     
     if ($teacher_id && (int)$slot['teacher_id'] !== $teacher_id) {
         json_error('Este horario no pertenece a tu profesor asignado', 403);
@@ -70,11 +69,9 @@ $stmt->execute([
     $notas,
 ]);
 
-// Marcar el slot como no disponible si se reservó
-if ($slot_id) {
-    $stmt = $pdo->prepare('UPDATE teacher_slots SET is_available = FALSE WHERE id = ?');
-    $stmt->execute([$slot_id]);
-}
+// NO marcar el slot como no disponible para permitir clases grupales
+// Los slots permanecen disponibles para que múltiples estudiantes puedan reservar
+// Si quieres limitar el número de estudiantes por clase, implementa una verificación de cupo aquí
 
 json_ok(['id' => (int)$pdo->lastInsertId()]);
 
