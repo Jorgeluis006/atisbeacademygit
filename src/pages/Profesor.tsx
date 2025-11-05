@@ -836,9 +836,9 @@ export default function Profesor() {
 
         {prog && (
           <div className="space-y-6">
-            {/* Asistencia y Nivel */}
+            {/* Asistencia, Nivel y Curso */}
             <div className="bg-white rounded-xl p-6 shadow-lg border border-purple-200">
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-3 gap-6">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
                     <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -854,6 +854,30 @@ export default function Profesor() {
                     value={prog.asistencia} 
                     onChange={e => setProg({ ...prog, asistencia: Math.max(0, Math.min(100, Number(e.target.value)||0)) })} 
                   />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                    <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                    Curso
+                  </label>
+                  <select 
+                    className="w-full px-4 py-3 border-2 border-indigo-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-indigo-200 focus:border-indigo-500 transition-all shadow-sm hover:border-indigo-400 font-bold text-lg" 
+                    value={prog.curso || ''} 
+                    onChange={e => setProg({ ...prog, curso: e.target.value })}
+                  >
+                    <option value="">— Seleccionar curso —</option>
+                    <option value="Inglés">Inglés</option>
+                    <option value="Francés">Francés</option>
+                    <option value="Español para extranjeros">Español para extranjeros</option>
+                    <option value="Club Conversacional">Club Conversacional</option>
+                    <option value="ConversArte">ConversArte</option>
+                    <option value="Tour Cafetero">Tour Cafetero</option>
+                    <option value="Cursos para niños">Cursos para niños</option>
+                    <option value="Clases personalizadas">Clases personalizadas</option>
+                    <option value="General">General</option>
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">

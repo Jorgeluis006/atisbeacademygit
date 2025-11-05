@@ -215,6 +215,19 @@ export default function ZonaEstudiantes() {
                     </div>
                   </div>
 
+                  {/* Tipo de Curso */}
+                  {progress.curso && (
+                    <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-4 shadow-md border-2 border-indigo-300">
+                      <div className="flex items-center gap-2 mb-2">
+                        <svg className="w-6 h-6 text-indigo-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                        <span className="font-bold text-gray-800">Tipo de Curso</span>
+                      </div>
+                      <div className="text-2xl font-extrabold text-indigo-600">{progress.curso}</div>
+                    </div>
+                  )}
+
                   {/* Nivel MCER */}
                   <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 shadow-md border-2 border-green-300">
                     <div className="flex items-center gap-2 mb-2">
@@ -385,11 +398,14 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
   const [error, setError] = useState('')
   const [ok, setOk] = useState('')
   const [modalidadFilter, setModalidadFilter] = useState<'todas' | 'virtual' | 'presencial'>('todas')
+  const [cursoFilter, setCursoFilter] = useState<string>('todos')
 
-  // Filtrar slots por modalidad
-  const filteredSlots = modalidadFilter === 'todas' 
-    ? slots 
-    : slots.filter(s => s.modalidad === modalidadFilter)
+  // Filtrar slots por modalidad y curso
+  const filteredSlots = slots.filter(s => {
+    const matchModalidad = modalidadFilter === 'todas' || s.modalidad === modalidadFilter
+    const matchCurso = cursoFilter === 'todos' || s.curso === cursoFilter
+    return matchModalidad && matchCurso
+  })
 
   async function reservar() {
     if (!selected) { setError('Selecciona un horario'); return }
@@ -427,42 +443,83 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
 
   return (
     <div className="mt-3">
-      {/* Filtros de modalidad */}
-      <div className="mb-4">
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-sm font-bold text-gray-800">Filtrar por modalidad:</span>
+      {/* Filtros de modalidad y curso */}
+      <div className="mb-4 space-y-4">
+        {/* Filtro de Modalidad */}
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            <span className="text-sm font-bold text-gray-800">Modalidad:</span>
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            <button
+              onClick={() => setModalidadFilter('todas')}
+              className={`px-4 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${
+                modalidadFilter === 'todas'
+                  ? 'bg-gradient-to-r from-brand-purple to-purple-600 text-white shadow-lg scale-105'
+                  : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-purple-400 hover:shadow-md'
+              }`}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+              </svg>
+              Todas ({slots.length})
+            </button>
+            <button
+              onClick={() => setModalidadFilter('virtual')}
+              className={`px-4 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${
+                modalidadFilter === 'virtual'
+                  ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg scale-105'
+                  : 'bg-white text-gray-700 border-2 border-purple-300 hover:border-purple-500 hover:shadow-md'
+              }`}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+              </svg>
+              Virtual ({slots.filter(s => s.modalidad === 'virtual').length})
+            </button>
+            <button
+              onClick={() => setModalidadFilter('presencial')}
+              className={`px-4 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${
+                modalidadFilter === 'presencial'
+                  ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg scale-105'
+                  : 'bg-white text-gray-700 border-2 border-green-300 hover:border-green-500 hover:shadow-md'
+              }`}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+              Presencial ({slots.filter(s => s.modalidad === 'presencial').length})
+            </button>
+          </div>
         </div>
-        <div className="flex gap-2 flex-wrap">
-          <button
-            onClick={() => setModalidadFilter('todas')}
-            className={`px-4 py-2.5 rounded-xl font-bold text-sm transition-all ${
-              modalidadFilter === 'todas'
-                ? 'bg-gradient-to-r from-brand-purple to-purple-600 text-white shadow-lg scale-105'
-                : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-purple-400 hover:shadow-md'
-            }`}
+
+        {/* Filtro de Curso */}
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            <span className="text-sm font-bold text-gray-800">Tipo de curso:</span>
+          </div>
+          <select
+            value={cursoFilter}
+            onChange={e => setCursoFilter(e.target.value)}
+            className="w-full px-4 py-3 border-2 border-indigo-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-indigo-200 focus:border-indigo-500 transition-all shadow-sm hover:border-indigo-400 font-semibold bg-white"
           >
-            📚 Todas ({slots.length})
-          </button>
-          <button
-            onClick={() => setModalidadFilter('virtual')}
-            className={`px-4 py-2.5 rounded-xl font-bold text-sm transition-all ${
-              modalidadFilter === 'virtual'
-                ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg scale-105'
-                : 'bg-white text-gray-700 border-2 border-purple-300 hover:border-purple-500 hover:shadow-md'
-            }`}
-          >
-            🌐 Virtual ({slots.filter(s => s.modalidad === 'virtual').length})
-          </button>
-          <button
-            onClick={() => setModalidadFilter('presencial')}
-            className={`px-4 py-2.5 rounded-xl font-bold text-sm transition-all ${
-              modalidadFilter === 'presencial'
-                ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg scale-105'
-                : 'bg-white text-gray-700 border-2 border-green-300 hover:border-green-500 hover:shadow-md'
-            }`}
-          >
-            🏫 Presencial ({slots.filter(s => s.modalidad === 'presencial').length})
-          </button>
+            <option value="todos">Todos los cursos</option>
+            <option value="Inglés">Inglés</option>
+            <option value="Francés">Francés</option>
+            <option value="Español para extranjeros">Español para extranjeros</option>
+            <option value="Club Conversacional">Club Conversacional</option>
+            <option value="ConversArte">ConversArte</option>
+            <option value="Tour Cafetero">Tour Cafetero</option>
+            <option value="Cursos para niños">Cursos para niños</option>
+            <option value="Clases personalizadas">Clases personalizadas</option>
+            <option value="General">General</option>
+          </select>
         </div>
       </div>
 

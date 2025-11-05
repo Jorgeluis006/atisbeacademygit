@@ -42,6 +42,7 @@ export type StudentProgress = {
   nivel: { mcer: string; descripcion: string }
   fortalezas: string[]
   debilidades: string[]
+  curso?: string
 }
 export async function getStudentProgress(): Promise<StudentProgress> {
   const res = await api.get('/student/progreso.php')
