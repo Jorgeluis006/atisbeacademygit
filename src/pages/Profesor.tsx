@@ -52,13 +52,22 @@ export default function Profesor() {
   }
 
   async function handleDeleteSlot(id: number) {
-    if (!confirm('¿Eliminar este horario?')) return
+    const confirmed = confirm('⚠️ ¿Estás seguro de eliminar este horario?\n\nNota: Si hay estudiantes reservados en este horario, no podrás eliminarlo.')
+    if (!confirmed) return
+    
     try {
       await deleteTeacherSlot(id)
       const updated = await getTeacherSlots()
       setSlots(updated)
+      alert('✅ Horario eliminado exitosamente')
     } catch (err: any) {
-      alert(err?.response?.data?.error || 'No se pudo eliminar')
+      const errorMsg = err?.response?.data?.error || 'No se pudo eliminar'
+      
+      if (errorMsg.includes('reservas activas') || errorMsg.includes('reservas')) {
+        alert('❌ No se puede eliminar este horario\n\n📌 Razón: Hay estudiantes que ya lo reservaron.\n\n💡 Sugerencia: Cancela primero las reservas de los estudiantes o espera a que termine la clase.')
+      } else {
+        alert('❌ Error al eliminar: ' + errorMsg)
+      }
     }
   }
 
