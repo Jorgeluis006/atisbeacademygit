@@ -320,6 +320,25 @@ export default function ZonaEstudiantes() {
   )
 }
 
+// Helper function to parse MySQL datetime as local time (not UTC)
+function parseLocalDateTime(mysqlDatetime: string): Date {
+  // MySQL datetime format: "2025-11-05 20:54:00"
+  // Replace space with 'T' to make it ISO-like, then parse as local
+  const [datePart, timePart] = mysqlDatetime.split(' ')
+  const [year, month, day] = datePart.split('-')
+  const [hour, minute, second] = timePart.split(':')
+  
+  // Create date with local timezone
+  return new Date(
+    parseInt(year),
+    parseInt(month) - 1, // months are 0-indexed
+    parseInt(day),
+    parseInt(hour),
+    parseInt(minute),
+    parseInt(second || '0')
+  )
+}
+
 function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: ScheduleSlot[]; reservas: Reservation[]; onBooked: () => void; onCancel: () => void }) {
   const [selected, setSelected] = useState<ScheduleSlot | null>(null)
   const [notas, setNotas] = useState<string>('')
@@ -425,7 +444,7 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
             >
               <option value="">Selecciona un horario</option>
               {filteredSlots.map((s) => {
-                const dateTime = new Date(s.datetime)
+                const dateTime = parseLocalDateTime(s.datetime)
                 const formattedDate = dateTime.toLocaleDateString('es-ES', {
                   day: '2-digit',
                   month: '2-digit',
@@ -522,13 +541,14 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
                       </span>
                     </div>
                     <div className="text-sm font-bold text-gray-800 flex items-center gap-2">
-                      <span>🕐</span> {new Date(r.datetime).toLocaleString('es-ES', {
+                      <span>🕐</span> {parseLocalDateTime(r.datetime).toLocaleString('es-ES', {
                         weekday: 'long',
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric',
                         hour: '2-digit',
-                        minute: '2-digit'
+                        minute: '2-digit',
+                        hour12: true
                       })}
                     </div>
                     {r.notas && (

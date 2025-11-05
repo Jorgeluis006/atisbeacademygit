@@ -16,6 +16,24 @@ import {
   type Reservation
 } from '../services/api'
 
+// Helper function to parse MySQL datetime as local time (not UTC)
+function parseLocalDateTime(mysqlDatetime: string): Date {
+  // MySQL datetime format: "2025-11-05 20:54:00"
+  const [datePart, timePart] = mysqlDatetime.split(' ')
+  const [year, month, day] = datePart.split('-')
+  const [hour, minute, second] = (timePart || '00:00:00').split(':')
+  
+  // Create date with local timezone
+  return new Date(
+    parseInt(year),
+    parseInt(month) - 1, // months are 0-indexed
+    parseInt(day),
+    parseInt(hour),
+    parseInt(minute),
+    parseInt(second || '0')
+  )
+}
+
 export default function Profesor() {
   const navigate = useNavigate()
   const [auth, setAuth] = useState<{ username: string; name: string; role: string } | null>(null)
@@ -255,7 +273,7 @@ export default function Profesor() {
               </thead>
               <tbody>
                 {slots.map((slot, index) => {
-                  const dt = new Date(slot.datetime)
+                  const dt = parseLocalDateTime(slot.datetime)
                   const formattedDateTime = dt.toLocaleDateString('es-ES', {
                     day: '2-digit',
                     month: '2-digit',
@@ -339,7 +357,7 @@ export default function Profesor() {
                     
                     let startDate = new Date(today)
                     if (reservations.length > 0) {
-                      const reservationDates = reservations.map(r => new Date(r.datetime))
+                      const reservationDates = reservations.map(r => parseLocalDateTime(r.datetime))
                       const minDate = new Date(Math.min(...reservationDates.map(d => d.getTime())))
                       minDate.setHours(0, 0, 0, 0)
                       
@@ -391,7 +409,7 @@ export default function Profesor() {
                   
                   let startDate = new Date(today)
                   if (reservations.length > 0) {
-                    const reservationDates = reservations.map(r => new Date(r.datetime))
+                    const reservationDates = reservations.map(r => parseLocalDateTime(r.datetime))
                     const minDate = new Date(Math.min(...reservationDates.map(d => d.getTime())))
                     minDate.setHours(0, 0, 0, 0)
                     if (minDate < today) {
@@ -409,7 +427,7 @@ export default function Profesor() {
                     const targetDateStr = targetDate.toISOString().split('T')[0]
                     
                     return reservations.filter(res => {
-                      const dt = new Date(res.datetime)
+                      const dt = parseLocalDateTime(res.datetime)
                       const resDateStr = dt.toISOString().split('T')[0]
                       return dt.getHours() === hour && resDateStr === targetDateStr
                     })
@@ -453,7 +471,7 @@ export default function Profesor() {
                               </div>
                             ) : (
                               dayReservations.map((res) => {
-                                const resDateTime = new Date(res.datetime)
+                                const resDateTime = parseLocalDateTime(res.datetime)
                                 const timeStr = resDateTime.toLocaleTimeString('es-ES', { 
                                   hour: '2-digit', 
                                   minute: '2-digit',
@@ -524,7 +542,7 @@ export default function Profesor() {
                   </thead>
                   <tbody>
                     {reservations.map(res => {
-                      const dt = new Date(res.datetime)
+                      const dt = parseLocalDateTime(res.datetime)
                       const formattedDateTime = dt.toLocaleDateString('es-ES', {
                         day: '2-digit',
                         month: '2-digit',
