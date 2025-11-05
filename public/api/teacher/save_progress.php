@@ -28,7 +28,14 @@ if (!$student) json_error('Estudiante no encontrado o no asignado al profesor', 
 $userId = (int)$student['id'];
 $json = json_encode($progress, JSON_UNESCAPED_UNICODE);
 
-// UPSERT
+// Actualizar el nivel en la tabla users si está presente en el progreso
+if (isset($progress['nivel']['mcer']) && !empty($progress['nivel']['mcer'])) {
+    $nivelMcer = trim((string)$progress['nivel']['mcer']);
+    $pdo->prepare('UPDATE users SET level=? WHERE id=?')
+        ->execute([$nivelMcer, $userId]);
+}
+
+// UPSERT en student_progress
 $pdo->prepare('INSERT INTO student_progress (user_id, data) VALUES (?, ?) ON DUPLICATE KEY UPDATE data=VALUES(data), updated_at=CURRENT_TIMESTAMP')
     ->execute([$userId, $json]);
 
