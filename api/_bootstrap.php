@@ -75,15 +75,30 @@ function ensure_schema() {
 }
 
 function ensure_users_schema() {
+    $pdo = get_pdo();
     $sql = "CREATE TABLE IF NOT EXISTS users (
         id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
         username VARCHAR(80) NOT NULL UNIQUE,
         password_hash VARCHAR(255) NOT NULL,
         name VARCHAR(150) DEFAULT NULL,
         role VARCHAR(50) DEFAULT 'student',
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        email VARCHAR(255) DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE KEY idx_email (email)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
-    get_pdo()->exec($sql);
+    $pdo->exec($sql);
+    
+    // Agregar email si la tabla ya existe pero no tiene el campo
+    try {
+        $pdo->exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR(255) DEFAULT NULL");
+    } catch (Throwable $e) {
+        // Ignorar si ya existe
+    }
+    try {
+        $pdo->exec("ALTER TABLE users ADD UNIQUE INDEX IF NOT EXISTS idx_email (email)");
+    } catch (Throwable $e) {
+        // Ignorar si ya existe
+    }
 }
 
 function seed_demo_user_if_empty() {
