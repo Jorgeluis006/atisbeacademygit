@@ -27,6 +27,17 @@ if (strlen($newPassword) < 6) {
 try {
     $pdo = get_pdo();
     
+    // Asegurar que existe la tabla de tokens
+    $pdo->exec("CREATE TABLE IF NOT EXISTS password_reset_tokens (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT UNSIGNED NOT NULL,
+        token VARCHAR(64) NOT NULL UNIQUE,
+        expires_at DATETIME NOT NULL,
+        used TINYINT(1) DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )");
+    
     // Buscar token válido y no usado
     $stmt = $pdo->prepare('
         SELECT t.id, t.user_id, t.expires_at, u.username, u.email
