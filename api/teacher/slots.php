@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // Listar todos los slots del profesor
     $pdo = get_pdo();
     $stmt = $pdo->prepare('
-        SELECT id, datetime, tipo, modalidad, duration_minutes, curso, nivel, is_available, created_at
+        SELECT id, datetime, tipo, modalidad, duration_minutes, curso, nivel, meeting_link, is_available, created_at
         FROM teacher_slots
         WHERE teacher_id = ?
         ORDER BY datetime ASC
@@ -33,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $duration = (int)($input['duration_minutes'] ?? 60);
     $curso = trim($input['curso'] ?? 'Inglés');
     $nivel = trim($input['nivel'] ?? '');
+    $meeting_link = trim($input['meeting_link'] ?? '');
 
     if (!$datetime) {
         json_error('Fecha y hora requeridas');
@@ -47,12 +48,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $stmt = $pdo->prepare('
-        INSERT INTO teacher_slots (teacher_id, datetime, tipo, modalidad, duration_minutes, curso, nivel)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO teacher_slots (teacher_id, datetime, tipo, modalidad, duration_minutes, curso, nivel, meeting_link)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     ');
-    $stmt->execute([$teacher_id, $datetime, $tipo, $modalidad, $duration, $curso, $nivel !== '' ? $nivel : null]);
+    $stmt->execute([$teacher_id, $datetime, $tipo, $modalidad, $duration, $curso, $nivel !== '' ? $nivel : null, $meeting_link !== '' ? $meeting_link : null]);
     
     json_ok(['id' => (int)$pdo->lastInsertId()]);
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+    // Actualizar meeting_link de un slot
+    $input = json_decode(file_get_contents('php://input'), true);
+    $slot_id = (int)($input['id'] ?? 0);
+    $meeting_link = trim($input['meeting_link'] ?? '');
+
+    if (!$slot_id) {
+        json_error('ID de slot requerido');
+    }
+
+    // Verificar que el slot pertenezca al profesor
+    $pdo = get_pdo();
+    $stmt = $pdo->prepare('SELECT teacher_id FROM teacher_slots WHERE id = ?');
+    $stmt->execute([$slot_id]);
+    $slot = $stmt->fetch();
+
+    if (!$slot) {
+        json_error('Slot no encontrado', 404);
+    }
+
+    if ((int)$slot['teacher_id'] !== $teacher_id) {
+        json_error('No autorizado para actualizar este slot', 403);
+    }
+
+    // Actualizar el meeting_link
+    $stmt = $pdo->prepare('UPDATE teacher_slots SET meeting_link = ? WHERE id = ?');
+    $stmt->execute([$meeting_link !== '' ? $meeting_link : null, $slot_id]);
+    
+    json_ok(['message' => 'Enlace de reunión actualizado']);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {

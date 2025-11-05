@@ -176,6 +176,14 @@ function ensure_schedule_schema() {
         $pdo->exec("ALTER TABLE teacher_slots ADD COLUMN nivel VARCHAR(10) DEFAULT NULL AFTER curso"); 
     } catch (Throwable $e) {}
     
+    // Agregar campo meeting_link para Zoom/Teams
+    try {
+        $columns = $pdo->query("SHOW COLUMNS FROM teacher_slots LIKE 'meeting_link'")->fetchAll();
+        if (empty($columns)) {
+            $pdo->exec("ALTER TABLE teacher_slots ADD COLUMN meeting_link VARCHAR(500) DEFAULT NULL AFTER nivel");
+        }
+    } catch (Throwable $e) {}
+    
     // Agregar campos de curso y nivel a schedule_reservations
     try { 
         $pdo->exec("ALTER TABLE schedule_reservations ADD COLUMN curso VARCHAR(100) DEFAULT NULL AFTER modalidad"); 
