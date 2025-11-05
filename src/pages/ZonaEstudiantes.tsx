@@ -180,7 +180,8 @@ export default function ZonaEstudiantes() {
             </div>
           ) : (
             <>
-            <div className="mt-6 grid gap-6 md:grid-cols-3">
+            {/* Primera fila: Progreso solo */}
+            <div className="mt-6">
             <section className="bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 rounded-2xl p-6 shadow-xl border-2 border-purple-200">
               <div className="flex items-center gap-3 mb-4">
                 <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -330,7 +331,10 @@ export default function ZonaEstudiantes() {
                 </div>
               )}
             </section>
+            </div>
 
+            {/* Segunda fila: Horarios y Mascota en horizontal */}
+            <div className="mt-6 grid gap-6 md:grid-cols-2">
             <section className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-2xl p-6 shadow-xl border-2 border-blue-200">
               <div className="flex items-center gap-3 mb-3">
                 <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
