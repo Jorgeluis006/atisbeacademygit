@@ -331,7 +331,7 @@ export default function ZonaEstudiantes() {
               )}
             </section>
 
-            <div className="md:col-span-2 space-y-6">
+            <div className="md:col-span-2">
             <section className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-2xl p-6 shadow-xl border-2 border-blue-200">
               <div className="flex items-center gap-3 mb-3">
                 <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -342,16 +342,25 @@ export default function ZonaEstudiantes() {
               <p className="text-sm text-gray-600 mb-4">Agenda clases personalizadas y exámenes.</p>
               <ScheduleSection slots={slots} reservas={reservas} onBooked={async () => setReservas(await getMyReservations())} onCancel={async () => setReservas(await getMyReservations())} />
             </section>
+            </div>
+          </div>
+
+          {/* Mascota MCER - Abajo ocupando todo el ancho */}
+          <section className="mt-6 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 rounded-2xl p-8 shadow-xl border-2 border-purple-300">
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <svg className="w-10 h-10 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Mascota MCER</h2>
+              <svg className="w-10 h-10 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
             
-            <section className="rounded-2xl p-6 flex flex-col h-full">
-              <div className="flex items-center gap-3 mb-4">
-                <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Mascota MCER</h2>
-              </div>
-              <div className="relative flex-1 rounded-2xl overflow-hidden bg-white min-h-[600px]">
-                <div className="absolute inset-0 flex items-center justify-center p-4">
+            <div className="grid md:grid-cols-2 gap-8 items-center">
+              {/* Imagen de la mascota */}
+              <div className="relative w-full h-96 rounded-2xl overflow-hidden bg-white/50 backdrop-blur-sm shadow-lg border-2 border-purple-200">
+                <div className="absolute inset-0 flex items-center justify-center p-6">
                   {progress?.nivel?.mcer && ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'].includes(progress.nivel.mcer) ? (
                     <img 
                       src={`/images/${progress.nivel.mcer}.png`} 
@@ -367,26 +376,67 @@ export default function ZonaEstudiantes() {
                   )}
                 </div>
               </div>
-              <div className="mt-4 bg-white/80 backdrop-blur-sm rounded-xl p-4 text-center border border-purple-200">
-                <p className="text-sm font-semibold text-gray-700">
-                  {progress?.nivel?.mcer ? `Nivel ${progress.nivel.mcer} - Tu mascota está creciendo 🌱` : 'Tu mascota está creciendo 🌱'}
-                </p>
-                <div className="mt-2 bg-gray-200 rounded-full h-3 overflow-hidden">
-                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 h-full rounded-full transition-all duration-500" style={{ 
-                    width: progress?.nivel?.mcer ? 
-                      (progress.nivel.mcer === 'A1' ? '20%' : 
-                       progress.nivel.mcer === 'A2' ? '35%' :
-                       progress.nivel.mcer === 'B1' ? '50%' :
-                       progress.nivel.mcer === 'B2' ? '65%' :
-                       progress.nivel.mcer === 'C1' ? '85%' : 
-                       progress.nivel.mcer === 'C2' ? '100%' : '10%') 
-                      : '10%' 
-                  }} />
+              
+              {/* Información del nivel */}
+              <div className="space-y-6">
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border-2 border-purple-300">
+                  <div className="flex items-center gap-3 mb-4">
+                    <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                    </svg>
+                    <h3 className="text-2xl font-bold text-gray-800">
+                      {progress?.nivel?.mcer ? `Nivel ${progress.nivel.mcer}` : 'Tu Nivel'}
+                    </h3>
+                  </div>
+                  <p className="text-lg font-semibold text-purple-700 mb-4">
+                    {progress?.nivel?.mcer ? `¡Tu mascota está creciendo! 🌱` : '¡Comienza tu aventura! 🌱'}
+                  </p>
+                  {progress?.nivel?.descripcion && (
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      {progress.nivel.descripcion}
+                    </p>
+                  )}
+                </div>
+
+                {/* Barra de progreso */}
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border-2 border-pink-300">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm font-bold text-gray-700">Progreso MCER</span>
+                    <span className="text-2xl font-extrabold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                      {progress?.nivel?.mcer ? 
+                        (progress.nivel.mcer === 'A1' ? '20%' : 
+                         progress.nivel.mcer === 'A2' ? '35%' :
+                         progress.nivel.mcer === 'B1' ? '50%' :
+                         progress.nivel.mcer === 'B2' ? '65%' :
+                         progress.nivel.mcer === 'C1' ? '85%' : 
+                         progress.nivel.mcer === 'C2' ? '100%' : '10%') 
+                        : '10%'}
+                    </span>
+                  </div>
+                  <div className="bg-gray-200 rounded-full h-4 overflow-hidden shadow-inner">
+                    <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 h-full rounded-full transition-all duration-500 shadow-md" style={{ 
+                      width: progress?.nivel?.mcer ? 
+                        (progress.nivel.mcer === 'A1' ? '20%' : 
+                         progress.nivel.mcer === 'A2' ? '35%' :
+                         progress.nivel.mcer === 'B1' ? '50%' :
+                         progress.nivel.mcer === 'B2' ? '65%' :
+                         progress.nivel.mcer === 'C1' ? '85%' : 
+                         progress.nivel.mcer === 'C2' ? '100%' : '10%') 
+                        : '10%' 
+                    }} />
+                  </div>
+                  <div className="mt-3 flex justify-between text-xs text-gray-600">
+                    <span>A1</span>
+                    <span>A2</span>
+                    <span>B1</span>
+                    <span>B2</span>
+                    <span>C1</span>
+                    <span>C2</span>
+                  </div>
                 </div>
               </div>
-            </section>
             </div>
-          </div>
+          </section>
 
           {/* Calendario Semanal - Abajo de todo */}
           <section className="mt-6 bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 rounded-2xl p-6 shadow-xl border-2 border-purple-200">
