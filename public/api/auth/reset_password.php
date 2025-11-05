@@ -62,7 +62,7 @@ try {
     
     // Actualizar contraseña
     $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
-    $stmt = $pdo->prepare('UPDATE users SET password = ? WHERE id = ?');
+    $stmt = $pdo->prepare('UPDATE users SET password_hash = ? WHERE id = ?');
     $stmt->execute([$hashedPassword, $tokenData['user_id']]);
     
     // Marcar token como usado
