@@ -128,72 +128,159 @@ export default function Profesor() {
       </div>
 
       {/* Gestión de horarios */}
-      <section className="card mt-6">
-        <h2 className="section-title">Gestión de horarios</h2>
-        <p className="text-sm text-brand-black/70 mb-4">Crea horarios disponibles para que tus estudiantes los reserven.</p>
+      <section className="bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 rounded-2xl p-8 shadow-2xl border-2 border-purple-200 mt-6">
+        <div className="flex items-center gap-3 mb-3">
+          <span className="text-4xl">📅</span>
+          <h2 className="text-3xl font-extrabold bg-gradient-to-r from-brand-purple to-brand-pink bg-clip-text text-transparent">
+            Gestión de horarios
+          </h2>
+        </div>
+        <p className="text-sm text-gray-600 mb-6 flex items-center gap-2">
+          <span className="text-lg">✨</span>
+          Crea horarios disponibles para que tus estudiantes los reserven.
+        </p>
         
-        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end mb-6">
-          <div className="lg:col-span-2">
-            <label className="label">Fecha y hora</label>
-            <input 
-              type="datetime-local" 
-              className="input-control" 
-              value={newSlot.datetime} 
-              onChange={e => setNewSlot({ ...newSlot, datetime: e.target.value })} 
-            />
-          </div>
-          <div>
-            <label className="label">Tipo</label>
-            <select className="select-control" value={newSlot.tipo} onChange={e => setNewSlot({ ...newSlot, tipo: e.target.value })}>
-              <option value="clase">Clase</option>
-              <option value="examen">Examen</option>
-            </select>
-          </div>
-          <div>
-            <label className="label">Modalidad</label>
-            <select className="select-control" value={newSlot.modalidad} onChange={e => setNewSlot({ ...newSlot, modalidad: e.target.value })}>
-              <option value="virtual">Virtual</option>
-              <option value="presencial">Presencial</option>
-            </select>
-          </div>
-          <div>
-            <button 
-              className="btn-primary w-full" 
-              disabled={creatingSlot || !newSlot.datetime} 
-              onClick={handleCreateSlot}
-            >
-              {creatingSlot ? 'Creando...' : 'Crear horario'}
-            </button>
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-purple-200 mb-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+            <div className="lg:col-span-2">
+              <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                <span className="text-base">🕐</span>
+                Fecha y hora
+              </label>
+              <input 
+                type="datetime-local" 
+                className="w-full px-4 py-3 border-2 border-purple-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-brand-purple transition-all shadow-sm hover:border-purple-400" 
+                value={newSlot.datetime} 
+                onChange={e => setNewSlot({ ...newSlot, datetime: e.target.value })} 
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                <span className="text-base">📚</span>
+                Tipo
+              </label>
+              <select className="w-full px-4 py-3 border-2 border-blue-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all shadow-sm hover:border-blue-400 font-semibold" value={newSlot.tipo} onChange={e => setNewSlot({ ...newSlot, tipo: e.target.value })}>
+                <option value="clase">📖 Clase</option>
+                <option value="examen">📝 Examen</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                <span className="text-base">💻</span>
+                Modalidad
+              </label>
+              <select className="w-full px-4 py-3 border-2 border-green-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-200 focus:border-green-500 transition-all shadow-sm hover:border-green-400 font-semibold" value={newSlot.modalidad} onChange={e => setNewSlot({ ...newSlot, modalidad: e.target.value })}>
+                <option value="virtual">🌐 Virtual</option>
+                <option value="presencial">🏫 Presencial</option>
+              </select>
+            </div>
+            <div>
+              <button 
+                className="btn-primary w-full h-12 font-bold text-base shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2" 
+                disabled={creatingSlot || !newSlot.datetime} 
+                onClick={handleCreateSlot}
+              >
+                {creatingSlot ? (
+                  <>
+                    <span className="animate-spin">⏳</span> Creando...
+                  </>
+                ) : (
+                  <>
+                    <span>➕</span> Crear horario
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
 
         {slots.length === 0 ? (
-          <p className="text-sm text-brand-black/70">No tienes horarios creados aún.</p>
+          <div className="bg-white/60 backdrop-blur-sm rounded-xl p-8 text-center border-2 border-dashed border-purple-300">
+            <div className="text-6xl mb-4">📭</div>
+            <p className="text-gray-600 font-semibold">No tienes horarios creados aún.</p>
+            <p className="text-sm text-gray-500 mt-2">¡Crea tu primer horario arriba!</p>
+          </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="table-clean">
+          <div className="overflow-x-auto bg-white rounded-xl shadow-lg border border-purple-200">
+            <table className="w-full">
               <thead>
-                <tr>
-                  <th>Fecha y hora</th>
-                  <th>Tipo</th>
-                  <th>Modalidad</th>
-                  <th>Duración</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
+                <tr className="bg-gradient-to-r from-brand-purple to-purple-600 text-white">
+                  <th className="px-6 py-4 text-left font-bold border-r border-white/20">
+                    <div className="flex items-center gap-2">
+                      <span>📅</span> Fecha y hora
+                    </div>
+                  </th>
+                  <th className="px-6 py-4 text-left font-bold border-r border-white/20">
+                    <div className="flex items-center gap-2">
+                      <span>📚</span> Tipo
+                    </div>
+                  </th>
+                  <th className="px-6 py-4 text-left font-bold border-r border-white/20">
+                    <div className="flex items-center gap-2">
+                      <span>💻</span> Modalidad
+                    </div>
+                  </th>
+                  <th className="px-6 py-4 text-left font-bold border-r border-white/20">
+                    <div className="flex items-center gap-2">
+                      <span>⏱️</span> Duración
+                    </div>
+                  </th>
+                  <th className="px-6 py-4 text-left font-bold border-r border-white/20">
+                    <div className="flex items-center gap-2">
+                      <span>✅</span> Estado
+                    </div>
+                  </th>
+                  <th className="px-6 py-4 text-left font-bold">
+                    <div className="flex items-center gap-2">
+                      <span>⚙️</span> Acciones
+                    </div>
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {slots.map(slot => {
+                {slots.map((slot, index) => {
                   const dt = new Date(slot.datetime)
+                  const isEven = index % 2 === 0
                   return (
-                    <tr key={slot.id}>
-                      <td>{dt.toLocaleString('es-ES')}</td>
-                      <td><span className={`inline-block px-2 py-1 rounded text-xs font-semibold ${slot.tipo === 'examen' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'}`}>{slot.tipo}</span></td>
-                      <td>{slot.modalidad}</td>
-                      <td>{slot.duration_minutes || 60} min</td>
-                      <td><span className="inline-block px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-700">Disponible</span></td>
-                      <td>
-                        <button className="btn-ghost text-sm" onClick={() => handleDeleteSlot(slot.id!)}>Eliminar</button>
+                    <tr key={slot.id} className={`border-b border-gray-200 hover:bg-purple-50 transition-colors ${isEven ? 'bg-gray-50/50' : 'bg-white'}`}>
+                      <td className="px-6 py-4 font-semibold text-gray-800">{dt.toLocaleString('es-ES')}</td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-bold shadow-sm ${
+                          slot.tipo === 'examen' 
+                            ? 'bg-gradient-to-r from-red-100 to-red-200 text-red-700 border border-red-300' 
+                            : 'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 border border-blue-300'
+                        }`}>
+                          <span>{slot.tipo === 'examen' ? '📝' : '📖'}</span>
+                          {slot.tipo}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-bold shadow-sm ${
+                          slot.modalidad === 'virtual' 
+                            ? 'bg-gradient-to-r from-purple-100 to-purple-200 text-purple-700 border border-purple-300' 
+                            : 'bg-gradient-to-r from-green-100 to-green-200 text-green-700 border border-green-300'
+                        }`}>
+                          <span>{slot.modalidad === 'virtual' ? '🌐' : '🏫'}</span>
+                          {slot.modalidad}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 font-semibold text-gray-700">
+                        <span className="flex items-center gap-1">
+                          ⏱️ {slot.duration_minutes || 60} min
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-bold bg-gradient-to-r from-green-100 to-green-200 text-green-700 border border-green-300 shadow-sm">
+                          <span>✅</span> Disponible
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <button 
+                          className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white font-bold rounded-lg hover:from-red-600 hover:to-red-700 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center gap-2" 
+                          onClick={() => handleDeleteSlot(slot.id!)}
+                        >
+                          <span>🗑️</span> Eliminar
+                        </button>
                       </td>
                     </tr>
                   )
