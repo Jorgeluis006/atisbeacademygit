@@ -54,18 +54,41 @@ export default function Admin() {
 
   if (loading) return <main className="container-padded py-12"><p>Cargando…</p></main>
   if (!auth) return (
-    <main className="container-padded py-12">
-      <h1 className="text-3xl font-extrabold">Admin</h1>
-      <p className="mt-4 text-brand-black/70">No autorizado. Inicia sesión con una cuenta admin.</p>
+    <main className="bg-brand-beige">
+      <div className="bg-gradient-to-r from-purple-600 to-pink-600 py-12">
+        <div className="container-padded">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white text-center">
+            Panel de administración
+          </h1>
+          <p className="text-white/90 text-center mt-3 text-lg">
+            Administra usuarios, contenido y configuración
+          </p>
+        </div>
+      </div>
+      <div className="container-padded py-12">
+        <p className="text-center text-brand-black/70">No autorizado. Inicia sesión con una cuenta admin.</p>
+      </div>
     </main>
   )
 
   return (
-    <main className="container-padded py-12">
-      <div className="flex items-center justify-between gap-4 mb-6">
-        <h1 className="text-3xl font-extrabold">Panel de administración</h1>
-        <button className="btn-secondary" onClick={async () => { try { await apiLogout() } finally { navigate('/', { replace: true }) } }}>Salir</button>
+    <main className="bg-brand-beige">
+      {/* Header con título */}
+      <div className="bg-gradient-to-r from-purple-600 to-pink-600 py-12">
+        <div className="container-padded">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white text-center">
+            Panel de administración
+          </h1>
+          <p className="text-white/90 text-center mt-3 text-lg">
+            Administra usuarios, contenido y configuración
+          </p>
+        </div>
       </div>
+
+      <div className="container-padded py-12">
+        <div className="flex items-center justify-end gap-4 mb-6">
+          <button className="btn-secondary" onClick={async () => { try { await apiLogout() } finally { navigate('/', { replace: true }) } }}>Salir</button>
+        </div>
 
       {/* Tabs */}
       <div className="flex gap-2 border-b border-brand-black/10 mb-6">
@@ -169,6 +192,7 @@ export default function Admin() {
           {err && <p className="text-red-600">{err}</p>}
         </div>
       )}
+      </div>
     </main>
   )
 }

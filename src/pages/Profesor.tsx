@@ -161,23 +161,46 @@ export default function Profesor() {
 
   if (loading) return <main className="container-padded py-12"><p>Cargando…</p></main>
   if (!auth) return (
-    <main className="container-padded py-12">
-      <h1 className="text-3xl font-extrabold">Panel de profesor</h1>
-      <p className="mt-4 text-brand-black/70">No autorizado. Inicia sesión con una cuenta de profesor.</p>
+    <main className="bg-brand-cream">
+      <div className="bg-brand-purple py-12">
+        <div className="container-padded">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white text-center">
+            Panel de profesor
+          </h1>
+          <p className="text-brand-cream text-center mt-3 text-lg">
+            Gestiona tus clases y estudiantes
+          </p>
+        </div>
+      </div>
+      <div className="container-padded py-12">
+        <p className="text-center text-brand-black/70">No autorizado. Inicia sesión con una cuenta de profesor.</p>
+      </div>
     </main>
   )
 
   const levels = Object.keys(groups)
 
   return (
-    <main className="container-padded py-12">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold">Panel de profesor</h1>
-          <p className="text-sm text-brand-black/70 mt-1">Sesión: {auth.name || auth.username}</p>
+    <main className="bg-brand-cream">
+      {/* Header con título */}
+      <div className="bg-brand-purple py-12">
+        <div className="container-padded">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white text-center">
+            Panel de profesor
+          </h1>
+          <p className="text-brand-cream text-center mt-3 text-lg">
+            Gestiona tus clases y estudiantes
+          </p>
         </div>
-        <button className="btn-secondary" onClick={async () => { try { await apiLogout() } finally { navigate('/', { replace: true }) } }}>Salir</button>
       </div>
+
+      <div className="container-padded py-12">
+        <div className="flex items-center justify-between gap-4 mb-8">
+          <div className="text-sm text-brand-black/70">
+            Sesión: <span className="font-semibold">{auth.name || auth.username}</span>
+          </div>
+          <button className="btn-secondary" onClick={async () => { try { await apiLogout() } finally { navigate('/', { replace: true }) } }}>Salir</button>
+        </div>
 
       {/* Gestión de horarios */}
       <section className="bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 rounded-2xl p-8 shadow-2xl border-2 border-purple-200 mt-6">
@@ -1080,6 +1103,7 @@ export default function Profesor() {
           })}
         </div>
       )}
+      </div>
     </main>
   )
 }
