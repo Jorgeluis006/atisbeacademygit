@@ -82,6 +82,7 @@ export type Reservation = {
   student_username?: string;
   curso?: string;
   nivel?: string;
+  meeting_link?: string;
 }
 
 export async function getScheduleSlots(): Promise<ScheduleSlot[]> {
