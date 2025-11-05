@@ -232,6 +232,12 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [ok, setOk] = useState('')
+  const [modalidadFilter, setModalidadFilter] = useState<'todas' | 'virtual' | 'presencial'>('todas')
+
+  // Filtrar slots por modalidad
+  const filteredSlots = modalidadFilter === 'todas' 
+    ? slots 
+    : slots.filter(s => s.modalidad === modalidadFilter)
 
   async function reservar() {
     if (!selected) { setError('Selecciona un horario'); return }
@@ -269,17 +275,57 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
 
   return (
     <div className="mt-3">
+      {/* Filtros de modalidad */}
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-sm font-semibold text-gray-700">Filtrar por modalidad:</span>
+        </div>
+        <div className="flex gap-2 flex-wrap">
+          <button
+            onClick={() => setModalidadFilter('todas')}
+            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all shadow-sm ${
+              modalidadFilter === 'todas'
+                ? 'bg-gradient-to-r from-brand-purple to-purple-600 text-white shadow-md'
+                : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-purple-400'
+            }`}
+          >
+            📚 Todas ({slots.length})
+          </button>
+          <button
+            onClick={() => setModalidadFilter('virtual')}
+            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all shadow-sm ${
+              modalidadFilter === 'virtual'
+                ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-md'
+                : 'bg-white text-gray-700 border-2 border-purple-300 hover:border-purple-500'
+            }`}
+          >
+            🌐 Virtual ({slots.filter(s => s.modalidad === 'virtual').length})
+          </button>
+          <button
+            onClick={() => setModalidadFilter('presencial')}
+            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all shadow-sm ${
+              modalidadFilter === 'presencial'
+                ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md'
+                : 'bg-white text-gray-700 border-2 border-green-300 hover:border-green-500'
+            }`}
+          >
+            🏫 Presencial ({slots.filter(s => s.modalidad === 'presencial').length})
+          </button>
+        </div>
+      </div>
+
+      {/* Selector de horario */}
       <div className="grid gap-3">
         <select 
           className="select-control" 
           value={selected?.id || ''} 
           onChange={(e) => {
-            const slot = slots.find(s => s.id === Number(e.target.value))
+            const slot = filteredSlots.find(s => s.id === Number(e.target.value))
             setSelected(slot || null)
           }}
         >
           <option value="">Selecciona un horario</option>
-          {slots.map((s) => (
+          {filteredSlots.map((s) => (
             <option key={s.id} value={s.id}>
               {new Date(s.datetime).toLocaleString()} - {s.tipo} ({s.modalidad})
             </option>
