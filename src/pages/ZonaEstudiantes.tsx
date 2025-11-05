@@ -182,12 +182,16 @@ export default function ZonaEstudiantes() {
             <div className="mt-6 grid gap-6 md:grid-cols-3">
             <section className="bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 rounded-2xl p-6 shadow-xl border-2 border-purple-200">
               <div className="flex items-center gap-3 mb-4">
-                <span className="text-3xl">📊</span>
+                <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-brand-purple to-brand-pink bg-clip-text text-transparent">Progreso</h2>
               </div>
               {!progress ? (
                 <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center border border-purple-200">
-                  <div className="animate-spin text-4xl mb-2">⏳</div>
+                  <svg className="animate-spin w-10 h-10 mx-auto mb-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
                   <p className="text-sm text-gray-600 font-semibold">Cargando progreso…</p>
                 </div>
               ) : (
@@ -196,7 +200,10 @@ export default function ZonaEstudiantes() {
                   <div className="bg-white rounded-xl p-4 shadow-md border border-blue-200">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-gray-700 flex items-center gap-2">
-                        <span className="text-xl">📈</span> Asistencia
+                        <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                        Asistencia
                       </span>
                       <span className="text-2xl font-extrabold text-blue-600">{progress.asistencia}%</span>
                     </div>
@@ -211,22 +218,28 @@ export default function ZonaEstudiantes() {
                   {/* Nivel MCER */}
                   <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 shadow-md border-2 border-green-300">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-2xl">🎯</span>
+                      <svg className="w-6 h-6 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                      </svg>
                       <span className="font-bold text-gray-800">Nivel (MCER)</span>
                     </div>
-                    <div className="text-3xl font-extrabold text-green-600 mb-2">📚 {progress.nivel.mcer}</div>
+                    <div className="text-3xl font-extrabold text-green-600 mb-2">{progress.nivel.mcer}</div>
                     <p className="text-sm text-gray-700 leading-relaxed">{progress.nivel.descripcion}</p>
                   </div>
 
                   {/* Notas */}
                   <div className="bg-white rounded-xl p-4 shadow-md border border-purple-200">
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="text-xl">📋</span>
+                      <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
                       <span className="font-bold text-gray-800">Notas</span>
                     </div>
                     {progress.notas.length === 0 ? (
                       <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
-                        <div className="text-3xl mb-1">📭</div>
+                        <svg className="w-8 h-8 mx-auto mb-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                        </svg>
                         <p className="text-xs text-gray-600">Sin notas aún</p>
                       </div>
                     ) : (
@@ -234,10 +247,25 @@ export default function ZonaEstudiantes() {
                         {progress.notas.map((n, idx) => (
                           <div key={idx} className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-3 border border-blue-200">
                             <div className="flex justify-between items-start mb-1">
-                              <span className="font-semibold text-gray-800 text-sm">📖 {n.actividad}</span>
-                              <span className="text-lg font-bold text-green-600">⭐ {n.nota}</span>
+                              <span className="font-semibold text-gray-800 text-sm flex items-center gap-1">
+                                <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                </svg>
+                                {n.actividad}
+                              </span>
+                              <span className="text-lg font-bold text-green-600 flex items-center gap-1">
+                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                {n.nota}
+                              </span>
                             </div>
-                            <span className="text-xs text-gray-600">📅 {n.fecha}</span>
+                            <span className="text-xs text-gray-600 flex items-center gap-1">
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                              </svg>
+                              {n.fecha}
+                            </span>
                           </div>
                         ))}
                       </div>
@@ -247,7 +275,9 @@ export default function ZonaEstudiantes() {
                   {/* Fortalezas */}
                   <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 shadow-md border-2 border-green-300">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xl">💪</span>
+                      <svg className="w-5 h-5 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
                       <span className="font-bold text-gray-800">Fortalezas</span>
                     </div>
                     <div className="flex flex-wrap gap-2">
@@ -256,7 +286,7 @@ export default function ZonaEstudiantes() {
                       ) : (
                         progress.fortalezas.map((f, idx) => (
                           <span key={idx} className="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-sm">
-                            ✨ {f}
+                            {f}
                           </span>
                         ))
                       )}
@@ -266,7 +296,9 @@ export default function ZonaEstudiantes() {
                   {/* Debilidades */}
                   <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4 shadow-md border-2 border-orange-300">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xl">📌</span>
+                      <svg className="w-5 h-5 text-orange-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
                       <span className="font-bold text-gray-800">Áreas de mejora</span>
                     </div>
                     <div className="flex flex-wrap gap-2">
@@ -275,7 +307,7 @@ export default function ZonaEstudiantes() {
                       ) : (
                         progress.debilidades.map((d, idx) => (
                           <span key={idx} className="bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-sm">
-                            🎯 {d}
+                            {d}
                           </span>
                         ))
                       )}
@@ -287,7 +319,9 @@ export default function ZonaEstudiantes() {
             
             <section className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-2xl p-6 shadow-xl border-2 border-blue-200">
               <div className="flex items-center gap-3 mb-3">
-                <span className="text-3xl">📅</span>
+                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Horarios / Agendar</h2>
               </div>
               <p className="text-sm text-gray-600 mb-4">Agenda clases personalizadas y exámenes.</p>
@@ -296,7 +330,9 @@ export default function ZonaEstudiantes() {
             
             <section className="bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100 rounded-2xl p-6 shadow-xl border-2 border-purple-300">
               <div className="flex items-center gap-3 mb-4">
-                <span className="text-3xl">🐾</span>
+                <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Mascota MCER</h2>
               </div>
               <div className="relative aspect-square rounded-2xl bg-gradient-to-br from-brand-purple via-pink-400 to-brand-amber shadow-lg overflow-hidden">
