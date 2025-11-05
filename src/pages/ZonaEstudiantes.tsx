@@ -349,19 +349,19 @@ export default function ZonaEstudiantes() {
                 </svg>
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Mascota MCER</h2>
               </div>
-              <div className="relative aspect-square rounded-2xl bg-gradient-to-br from-brand-purple via-pink-400 to-brand-amber shadow-lg overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center p-6">
+              <div className="relative aspect-square rounded-2xl overflow-hidden">
+                <div className="absolute inset-0 flex items-center justify-center">
                   {progress?.nivel?.mcer && ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'].includes(progress.nivel.mcer) ? (
                     <img 
                       src={`/images/${progress.nivel.mcer}.png`} 
                       alt={`Mascota nivel ${progress.nivel.mcer}`}
-                      className="w-full h-full object-contain animate-bounce"
+                      className="w-full h-full object-contain"
                     />
                   ) : (
                     <img 
                       src="/images/Mascota[1].png" 
                       alt="Mascota por defecto"
-                      className="w-full h-full object-contain animate-bounce"
+                      className="w-full h-full object-contain"
                     />
                   )}
                 </div>
