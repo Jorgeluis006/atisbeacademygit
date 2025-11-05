@@ -174,9 +174,15 @@ export default function ZonaEstudiantes() {
         })
         
         if (reservation) {
-          const tipo = reservation.tipo === 'clase' ? '📚 Clase' : '📝 Examen'
-          const modalidad = reservation.modalidad === 'virtual' ? '💻' : '🏫'
-          row.push(`${tipo} ${modalidad}`)
+          // Formato: Tipo (Modalidad) - Hora
+          const tipo = reservation.tipo === 'clase' ? 'Clase' : 'Examen'
+          const modalidad = reservation.modalidad === 'virtual' ? 'Virtual' : 'Presencial'
+          const hora = parseLocalDateTime(reservation.datetime).toLocaleTimeString('es-ES', { 
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: false 
+          })
+          row.push(`${tipo}\n(${modalidad})\n${hora}`)
         } else {
           row.push('')
         }
@@ -195,15 +201,23 @@ export default function ZonaEstudiantes() {
         fillColor: [121, 30, 186], // brand-purple
         textColor: [255, 255, 255],
         fontStyle: 'bold',
-        halign: 'center'
+        halign: 'center',
+        fontSize: 9
       },
       bodyStyles: {
-        fontSize: 8,
+        fontSize: 7,
         halign: 'center',
-        valign: 'middle'
+        valign: 'middle',
+        cellPadding: 2,
+        minCellHeight: 12
       },
       columnStyles: {
-        0: { fillColor: [191, 166, 164], fontStyle: 'bold', textColor: [255, 255, 255] } // Primera columna (horas) con brand-mauve
+        0: { 
+          fillColor: [191, 166, 164], 
+          fontStyle: 'bold', 
+          textColor: [255, 255, 255],
+          cellWidth: 20
+        } // Primera columna (horas) con brand-mauve
       },
       alternateRowStyles: {
         fillColor: [255, 254, 241] // brand-cream
