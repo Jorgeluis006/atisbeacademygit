@@ -152,31 +152,6 @@ export default function Admin() {
               <a className="btn-secondary" href={EXPORT_RESERVATIONS_URL}>Descargar reservas CSV</a>
             </div>
           </section>
-
-          <section className="card mt-6 max-w-xl bg-red-50 border-red-300">
-            <h2 className="section-title text-red-800">⚠️ Zona de peligro</h2>
-            <p className="text-sm text-red-700 mb-4">Esta acción eliminará TODOS los usuarios excepto las cuentas admin. No se puede deshacer.</p>
-            <button 
-              className="bg-red-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-700 transition-colors"
-              onClick={async () => {
-                if (!confirm('¿Estás COMPLETAMENTE seguro de eliminar todos los usuarios (estudiantes y profesores)?\n\nEsta acción NO se puede deshacer.')) return
-                try {
-                  const res = await fetch('/api/admin/clear_users.php', { method: 'POST' })
-                  const data = await res.json()
-                  if (data.ok) {
-                    setMsg(`✓ ${data.deleted_count} usuarios eliminados correctamente`)
-                    setTimeout(() => window.location.reload(), 2000)
-                  } else {
-                    setErr(data.message || 'Error al eliminar usuarios')
-                  }
-                } catch (e) {
-                  setErr('Error al eliminar usuarios')
-                }
-              }}
-            >
-              Eliminar todos los usuarios (excepto admin)
-            </button>
-          </section>
         </>
       )}
 
