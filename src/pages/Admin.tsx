@@ -131,13 +131,13 @@ export default function Admin() {
       {/* Tab Content */}
       {activeTab === 'users' && (
         <>
-          <section className="card mt-6 max-w-xl">
-            <h2 className="section-title">Crear usuario</h2>
+          <section className="rounded-xl shadow-lg p-8 mt-6 max-w-xl bg-gradient-to-br from-brand-mauve/20 via-brand-cream to-brand-purple/10 border border-brand-mauve/30">
+            <h2 className="section-title text-brand-purple">Crear usuario</h2>
             <CreateUserForm onDone={(m) => { setMsg(m); setErr('') }} onError={(e) => { setErr(e); setMsg('') }} />
           </section>
 
-          <section className="card mt-6 max-w-2xl">
-            <h2 className="section-title">Asignar estudiante a profesor</h2>
+          <section className="rounded-xl shadow-lg p-8 mt-6 max-w-2xl bg-gradient-to-br from-brand-purple/10 via-brand-cream to-brand-mauve/20 border border-brand-purple/30">
+            <h2 className="section-title text-brand-purple">Asignar estudiante a profesor</h2>
             <AssignStudentForm onDone={(m) => { setMsg(m); setErr('') }} onError={(e) => { setErr(e); setMsg('') }} />
           </section>
 
@@ -349,17 +349,22 @@ function UsersList() {
   }
 
   return (
-    <section className="card mt-6">
-      <h2 className="section-title">Usuarios</h2>
-      <div className="flex gap-3 items-center mb-3 flex-wrap">
-        <input className="input-control w-full max-w-sm" placeholder="Buscar por usuario o nombre" value={q} onChange={e => { setPage(1); setQ(e.target.value) }} />
-        <button className="btn-secondary" onClick={load}>Buscar</button>
+    <section className="rounded-xl shadow-lg p-8 mt-6 bg-gradient-to-br from-brand-orange/10 via-brand-cream to-brand-yellow/10 border border-brand-orange/30">
+      <h2 className="section-title text-brand-purple mb-6">Usuarios</h2>
+      <div className="flex gap-3 items-center mb-6 flex-wrap">
+        <input 
+          className="input-control w-full max-w-sm border-brand-mauve/50 focus:border-brand-purple focus:ring-brand-purple/20" 
+          placeholder="Buscar por usuario o nombre" 
+          value={q} 
+          onChange={e => { setPage(1); setQ(e.target.value) }} 
+        />
+        <button className="btn-secondary bg-brand-purple hover:bg-brand-purple/90 text-white" onClick={load}>Buscar</button>
       </div>
-      {loading ? <p>Cargando…</p> : (
+      {loading ? <p className="text-brand-purple">Cargando…</p> : (
         <div className="overflow-auto">
           <table className="table-clean">
             <thead>
-              <tr>
+              <tr className="bg-brand-purple/10">
                 <th>Usuario</th>
                 <th>Nombre</th>
                 <th>Correo</th>
@@ -464,18 +469,18 @@ function TestimonialsManager() {
   }
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="section-title">Testimonios</h2>
-        <button className="btn-primary" onClick={() => setEditing({ author_name: '', content: '', rating: 5, is_published: true, display_order: 0 })}>
+    <div className="rounded-xl shadow-lg p-8 bg-gradient-to-br from-brand-mauve/20 via-brand-cream to-brand-purple/10 border border-brand-mauve/30">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="section-title text-brand-purple">Testimonios</h2>
+        <button className="btn-primary bg-brand-purple hover:bg-brand-purple/90 text-white" onClick={() => setEditing({ author_name: '', content: '', rating: 5, is_published: true, display_order: 0 })}>
           Nuevo testimonio
         </button>
       </div>
 
       {editing && (
-        <div className="card mb-6">
-          <h3 className="font-serif text-lg mb-3">{editing.id ? 'Editar' : 'Nuevo'} Testimonio</h3>
-          <div className="grid gap-3">
+        <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-md p-6 mb-6 border border-brand-purple/20">
+          <h3 className="font-serif text-lg mb-4 text-brand-purple">{editing.id ? 'Editar' : 'Nuevo'} Testimonio</h3>
+          <div className="grid gap-4">
             <div>
               <label className="label">Nombre del autor</label>
               <input className="input-control" value={editing.author_name} onChange={e => setEditing({ ...editing, author_name: e.target.value })} />
@@ -635,24 +640,24 @@ function CoursesManager() {
   }
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="section-title">Cursos</h2>
-        <button className="btn-primary" onClick={() => setEditing({ title: '', description: '', modality: 'virtual', course_type: 'general', is_published: true, display_order: 0 })}>
+    <div className="rounded-xl shadow-lg p-8 bg-gradient-to-br from-brand-purple/10 via-brand-cream to-brand-orange/10 border border-brand-purple/30">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="section-title text-brand-purple">Cursos</h2>
+        <button className="btn-primary bg-brand-purple hover:bg-brand-purple/90 text-white" onClick={() => setEditing({ title: '', description: '', modality: 'virtual', course_type: 'general', is_published: true, display_order: 0 })}>
           Nuevo curso
         </button>
       </div>
 
       {editing && (
-        <div className="card mb-6">
-          <h3 className="font-serif text-lg mb-3">{editing.id ? 'Editar' : 'Nuevo'} Curso</h3>
-          <div className="grid gap-3">
+        <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-md p-6 mb-6 border border-brand-orange/20">
+          <h3 className="font-serif text-lg mb-4 text-brand-purple">{editing.id ? 'Editar' : 'Nuevo'} Curso</h3>
+          <div className="grid gap-4">
             <div>
-              <label className="label">Título</label>
-              <input className="input-control" value={editing.title} onChange={e => setEditing({ ...editing, title: e.target.value })} />
+              <label className="label text-brand-purple">Título</label>
+              <input className="input-control border-brand-mauve/50 focus:border-brand-purple focus:ring-brand-purple/20" value={editing.title} onChange={e => setEditing({ ...editing, title: e.target.value })} />
             </div>
             <div>
-              <label className="label">Descripción</label>
+              <label className="label text-brand-purple">Descripción</label>
               <textarea className="input-control" rows={4} value={editing.description} onChange={e => setEditing({ ...editing, description: e.target.value })} />
             </div>
             <div className="grid sm:grid-cols-2 gap-3">
@@ -849,25 +854,25 @@ function BlogManager() {
   }
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="section-title">Blog</h2>
-        <button className="btn-primary" onClick={() => setEditing({ title: '', content: '', is_published: false })}>
+    <div className="rounded-xl shadow-lg p-8 bg-gradient-to-br from-brand-yellow/10 via-brand-cream to-brand-mauve/10 border border-brand-yellow/30">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="section-title text-brand-purple">Blog</h2>
+        <button className="btn-primary bg-brand-purple hover:bg-brand-purple/90 text-white" onClick={() => setEditing({ title: '', content: '', is_published: false })}>
           Nuevo post
         </button>
       </div>
 
       {editing && (
-        <div className="card mb-6">
-          <h3 className="font-serif text-lg mb-3">{editing.id ? 'Editar' : 'Nuevo'} Post</h3>
-          <div className="grid gap-3">
+        <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-md p-6 mb-6 border border-brand-yellow/20">
+          <h3 className="font-serif text-lg mb-4 text-brand-purple">{editing.id ? 'Editar' : 'Nuevo'} Post</h3>
+          <div className="grid gap-4">
             <div>
-              <label className="label">Título</label>
-              <input className="input-control" value={editing.title} onChange={e => setEditing({ ...editing, title: e.target.value })} />
+              <label className="label text-brand-purple">Título</label>
+              <input className="input-control border-brand-mauve/50 focus:border-brand-purple focus:ring-brand-purple/20" value={editing.title} onChange={e => setEditing({ ...editing, title: e.target.value })} />
             </div>
             <div>
-              <label className="label">Slug (URL amigable, opcional - se genera automáticamente)</label>
-              <input className="input-control" value={editing.slug || ''} onChange={e => setEditing({ ...editing, slug: e.target.value })} />
+              <label className="label text-brand-purple">Slug (URL amigable, opcional - se genera automáticamente)</label>
+              <input className="input-control border-brand-mauve/50 focus:border-brand-purple focus:ring-brand-purple/20" value={editing.slug || ''} onChange={e => setEditing({ ...editing, slug: e.target.value })} />
             </div>
             <div>
               <label className="label">Extracto / Resumen (opcional)</label>
@@ -1037,17 +1042,17 @@ function VideosManager() {
   }
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="section-title">Videos de Testimonios</h2>
-        <button className="btn-primary" onClick={() => setEditing({ video_url: '', is_published: true, display_order: 0 })}>
+    <div className="rounded-xl shadow-lg p-8 bg-gradient-to-br from-brand-orange/10 via-brand-cream to-brand-yellow/10 border border-brand-orange/30">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="section-title text-brand-purple">Videos de Testimonios</h2>
+        <button className="btn-primary bg-brand-purple hover:bg-brand-purple/90 text-white" onClick={() => setEditing({ video_url: '', is_published: true, display_order: 0 })}>
           Nuevo video
         </button>
       </div>
 
       {editing && (
-        <div className="card mb-6">
-          <h3 className="font-serif text-lg mb-3">{editing.id ? 'Editar' : 'Nuevo'} Video</h3>
+        <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-md p-6 mb-6 border border-brand-orange/20">
+          <h3 className="font-serif text-lg mb-4 text-brand-purple">{editing.id ? 'Editar' : 'Nuevo'} Video</h3>
           <div className="grid gap-3">
             <div>
               <label className="label">Video</label>
@@ -1241,21 +1246,21 @@ function ProductsManager() {
   }
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="section-title">Productos</h2>
-        <button className="btn-primary" onClick={() => setEditing({ name: '', description: '', price: 0, image_url: '', category: 'general', stock: 0, is_active: true })}>
+    <div className="rounded-xl shadow-lg p-8 bg-gradient-to-br from-brand-mauve/20 via-brand-cream to-brand-yellow/10 border border-brand-mauve/30">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="section-title text-brand-purple">Productos</h2>
+        <button className="btn-primary bg-brand-purple hover:bg-brand-purple/90 text-white" onClick={() => setEditing({ name: '', description: '', price: 0, image_url: '', category: 'general', stock: 0, is_active: true })}>
           Nuevo producto
         </button>
       </div>
 
       {editing && (
-        <div className="card mb-6">
-          <h3 className="font-serif text-lg mb-3">{editing.id ? 'Editar' : 'Nuevo'} Producto</h3>
-          <div className="grid gap-3">
+        <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-md p-6 mb-6 border border-brand-mauve/20">
+          <h3 className="font-serif text-lg mb-4 text-brand-purple">{editing.id ? 'Editar' : 'Nuevo'} Producto</h3>
+          <div className="grid gap-4">
             <div>
-              <label className="label">Nombre</label>
-              <input className="input-control" value={editing.name} onChange={e => setEditing({ ...editing, name: e.target.value })} />
+              <label className="label text-brand-purple">Nombre</label>
+              <input className="input-control border-brand-mauve/50 focus:border-brand-purple focus:ring-brand-purple/20" value={editing.name} onChange={e => setEditing({ ...editing, name: e.target.value })} />
             </div>
             <div>
               <label className="label">Descripción</label>
