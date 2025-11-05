@@ -734,48 +734,58 @@ export default function Profesor() {
 
       {/* Lista de estudiantes agrupados */}
       {levels.length === 0 ? (
-        <p className="mt-6">Aún no tienes estudiantes asignados.</p>
+        <div className="mt-6 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 text-center border-2 border-dashed border-gray-300">
+          <div className="text-6xl mb-3">👥</div>
+          <p className="text-lg font-semibold text-gray-600">Aún no tienes estudiantes asignados.</p>
+        </div>
       ) : (
         <div className="mt-6 space-y-6">
-          {levels.map(level => (
-            <section key={level} className="card">
-              <h2 className="section-title">Nivel {level}</h2>
-              <div className="grid md:grid-cols-2 gap-6">
-                <StudentList title="Virtual" items={groups[level]?.virtual || []} />
-                <StudentList title="Presencial" items={groups[level]?.presencial || []} />
-              </div>
-            </section>
-          ))}
+          {levels.map(level => {
+            const allStudents = [
+              ...(groups[level]?.virtual || []),
+              ...(groups[level]?.presencial || []),
+              ...(groups[level]?.['sin-definir'] || [])
+            ]
+            
+            return (
+              <section key={level} className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-2xl p-6 shadow-xl border-2 border-indigo-200">
+                <div className="flex items-center gap-3 mb-5">
+                  <span className="text-3xl">📚</span>
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                    Nivel {level}
+                  </h2>
+                  <span className="ml-auto bg-indigo-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow-md">
+                    {allStudents.length} {allStudents.length === 1 ? 'estudiante' : 'estudiantes'}
+                  </span>
+                </div>
+                
+                {allStudents.length === 0 ? (
+                  <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center border border-indigo-200">
+                    <div className="text-4xl mb-2">📭</div>
+                    <p className="text-sm text-gray-600 font-semibold">Sin estudiantes en este nivel</p>
+                  </div>
+                ) : (
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    {allStudents.map((s) => (
+                      <div key={s.id} className="bg-white rounded-xl p-4 shadow-lg border border-indigo-200 hover:shadow-xl hover:scale-105 transition-all duration-200">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
+                            {(s.name || s.username).substring(0,1).toUpperCase()}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-bold text-gray-800 truncate">{s.name || s.username}</div>
+                            <div className="text-gray-500 text-xs truncate">👤 {s.username}</div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </section>
+            )
+          })}
         </div>
       )}
     </main>
-  )
-}
-
-function StudentList({ title, items }: { title: string; items: any[] }) {
-  return (
-    <div>
-      <h3 className="font-serif text-lg mb-2">{title}</h3>
-      {items.length === 0 ? (
-        <p className="text-sm text-brand-black/70">Sin estudiantes</p>
-      ) : (
-        <ul className="space-y-2">
-          {items.map((s) => (
-            <li key={s.id} className="rounded-xl p-3 flex items-center justify-between bg-gradient-to-r from-brand-black/[0.05] to-transparent">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-brand-purple/20 flex items-center justify-center text-brand-purple font-semibold">
-                  {(s.name || s.username).substring(0,1).toUpperCase()}
-                </div>
-                <div className="text-sm">
-                  <div className="font-semibold">{s.name || s.username}</div>
-                  <div className="text-brand-black/70 text-xs">{s.username}</div>
-                </div>
-              </div>
-              {/* acciones futuras: ver progreso, contactar, etc. */}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
   )
 }
