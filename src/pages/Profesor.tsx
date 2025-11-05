@@ -249,10 +249,19 @@ export default function Profesor() {
               <tbody>
                 {slots.map((slot, index) => {
                   const dt = new Date(slot.datetime)
+                  const formattedDateTime = dt.toLocaleDateString('es-ES', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                  }) + ', ' + dt.toLocaleTimeString('es-ES', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                  })
                   const isEven = index % 2 === 0
                   return (
                     <tr key={slot.id} className={`border-b border-gray-200 hover:bg-purple-50 transition-colors ${isEven ? 'bg-gray-50/50' : 'bg-white'}`}>
-                      <td className="px-6 py-4 font-semibold text-gray-800">{dt.toLocaleString('es-ES')}</td>
+                      <td className="px-6 py-4 font-semibold text-gray-800">{formattedDateTime}</td>
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-bold shadow-sm ${
                           slot.tipo === 'examen' 
@@ -509,13 +518,22 @@ export default function Profesor() {
                   <tbody>
                     {reservations.map(res => {
                       const dt = new Date(res.datetime)
+                      const formattedDateTime = dt.toLocaleDateString('es-ES', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                      }) + ', ' + dt.toLocaleTimeString('es-ES', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                      })
                       return (
                         <tr key={res.id}>
                           <td>
                             <div className="font-semibold">{res.student_name || res.student_username}</div>
                             <div className="text-xs text-brand-black/70">{res.student_username}</div>
                           </td>
-                          <td>{dt.toLocaleString('es-ES')}</td>
+                          <td>{formattedDateTime}</td>
                           <td><span className={`inline-block px-2 py-1 rounded text-xs font-semibold ${res.tipo === 'examen' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'}`}>{res.tipo}</span></td>
                           <td>{res.modalidad}</td>
                           <td className="text-sm text-brand-black/70">{res.notas || '—'}</td>

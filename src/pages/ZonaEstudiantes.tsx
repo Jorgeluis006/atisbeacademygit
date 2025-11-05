@@ -424,11 +424,24 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
               }}
             >
               <option value="">Selecciona un horario</option>
-              {filteredSlots.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {new Date(s.datetime).toLocaleString()} - {s.tipo} ({s.modalidad})
-                </option>
-              ))}
+              {filteredSlots.map((s) => {
+                const dateTime = new Date(s.datetime)
+                const formattedDate = dateTime.toLocaleDateString('es-ES', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric'
+                })
+                const formattedTime = dateTime.toLocaleTimeString('es-ES', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: true
+                })
+                return (
+                  <option key={s.id} value={s.id}>
+                    {formattedDate}, {formattedTime} - {s.tipo} ({s.modalidad})
+                  </option>
+                )
+              })}
             </select>
           </div>
           
