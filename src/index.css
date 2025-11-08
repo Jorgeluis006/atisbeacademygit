@@ -8,7 +8,7 @@
     scroll-behavior: smooth;
   }
   body {
-    @apply bg-brand-surface text-brand-black font-sans antialiased min-h-screen;
+    @apply bg-brand-beige text-brand-black font-sans antialiased min-h-screen;
   }
   .dark body { @apply bg-[#0b0b0b] text-white/90; }
   h1, h2, h3, h4, h5, h6 {
