@@ -47,7 +47,7 @@ export default function Cursos() {
       })
 
   return (
-    <main className="bg-gradient-to-b from-brand-beige via-purple-50/20 to-brand-beige">
+  <main className="bg-brand-beige">
       {/* Hero Header */}
       <div className="bg-gradient-to-r from-brand-purple to-purple-600 text-white py-20">
         <div className="container-padded text-center">

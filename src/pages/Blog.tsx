@@ -32,7 +32,7 @@ export default function Blog() {
   }, [])
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-brand-beige to-brand-beige/80">
+  <main className="min-h-screen bg-brand-beige">
       {/* Header Section */}
       <div className="bg-brand-purple text-white py-16">
         <div className="container-padded text-center">

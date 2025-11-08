@@ -7,7 +7,7 @@ export default function Pago() {
   }
 
   return (
-    <main className="bg-gradient-to-b from-white via-purple-50/20 to-white">
+  <main className="bg-brand-beige">
       {/* Hero Header */}
       <div className="bg-gradient-to-r from-brand-purple to-purple-600 text-white py-20">
         <div className="container-padded text-center">
