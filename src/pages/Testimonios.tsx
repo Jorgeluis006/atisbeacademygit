@@ -210,7 +210,7 @@ export default function Testimonios() {
       {/* CTA Section */}
       <div className="bg-brand-purple text-white py-16">
         <div className="container-padded text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
             ¿Listo para ser nuestro próximo testimonio de éxito?
           </h2>
           <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">

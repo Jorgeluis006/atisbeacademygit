@@ -49,7 +49,9 @@ try {
                 '<p><strong>Idioma:</strong> ' . htmlspecialchars($data['idioma']) . '</p>' .
                 '<p><strong>Modalidad:</strong> ' . htmlspecialchars($data['modalidad']) . '</p>' .
                 '<p><strong>Franja:</strong> ' . htmlspecialchars($data['franja']) . '</p>';
-        @send_mail(MAIL_TO, 'Nuevo contacto Atisbe', $body);
+    @send_mail(MAIL_TO, 'Nuevo contacto Atisbe', $body);
+    // Enviar copia a automatic@atisbeacademy.com
+    @send_mail('automatic@atisbeacademy.com', 'Copia de nuevo contacto Atisbe', $body);
     }
 
     // Enviar correo de confirmación al usuario
