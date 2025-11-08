@@ -35,16 +35,7 @@ import {
 } from '../services/api'
 
 import AdminContacts from './AdminContacts'
-// Mostrar sección de contactos recibidos al inicio del panel admin
-// Puedes mover este bloque donde prefieras dentro del layout admin
-export default function AdminPageWithContacts() {
-  return (
-    <>
-      <AdminContacts />
-      {/* Aquí iría el resto del panel admin existente */}
-    </>
-  )
-}
+
 
 function ChangePasswordModal({ onClose }: { onClose: () => void }) {
   const [currentPassword, setCurrentPassword] = useState('')
@@ -217,7 +208,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true)
   const [msg, setMsg] = useState('')
   const [err, setErr] = useState('')
-  const [activeTab, setActiveTab] = useState<'users' | 'testimonials' | 'courses' | 'blog' | 'videos' | 'products'>('users')
+  const [activeTab, setActiveTab] = useState<'contacts' | 'users' | 'testimonials' | 'courses' | 'blog' | 'videos' | 'products'>('users')
   const [showChangePassword, setShowChangePassword] = useState(false)
 
   useEffect(() => {
@@ -279,6 +270,12 @@ export default function Admin() {
       {/* Tabs */}
       <div className="flex gap-2 border-b border-brand-black/10 mb-6">
         <button 
+          className={`px-4 py-2 font-semibold transition-colors ${activeTab === 'contacts' ? 'border-b-2 border-brand-purple text-brand-purple' : 'text-brand-black/60 hover:text-brand-black'}`}
+          onClick={() => setActiveTab('contacts')}
+        >
+          Contactos
+        </button>
+        <button 
           className={`px-4 py-2 font-semibold transition-colors ${activeTab === 'users' ? 'border-b-2 border-brand-purple text-brand-purple' : 'text-brand-black/60 hover:text-brand-black'}`}
           onClick={() => setActiveTab('users')}
         >
@@ -316,8 +313,9 @@ export default function Admin() {
         </button>
       </div>
 
-      {/* Tab Content */}
-      {activeTab === 'users' && (
+  {/* Tab Content */}
+  {activeTab === 'contacts' && <AdminContacts />}
+  {activeTab === 'users' && (
         <>
           <section className="rounded-xl shadow-lg p-8 mt-6 max-w-xl bg-gradient-to-br from-brand-mauve/20 via-brand-cream to-brand-purple/10 border border-brand-mauve/30">
             <h2 className="section-title text-brand-purple">Crear usuario</h2>
