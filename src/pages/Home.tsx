@@ -265,35 +265,6 @@ export default function Home() {
         )}
         </div>
       </section>
-
-      {/* Pago QR */}
-      <section className="bg-brand-beige py-20">
-        <div className="container-padded">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
-              Realiza tu pago
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Pago seguro y certificado
-            </p>
-          </div>
-          <div className="max-w-4xl mx-auto bg-white rounded-2xl p-8 md:p-12 shadow-lg border border-gray-100">
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">Escanea el código QR</h3>
-                <p className="text-gray-700 mb-4">Realiza tu pago de forma rápida y segura escaneando el código QR.</p>
-                <div className="flex items-center gap-2 text-green-600">
-                  <span className="text-2xl">🔒</span>
-                  <span className="font-semibold">Certificación HTTPS activada</span>
-                </div>
-              </div>
-              <div className="aspect-square bg-gradient-to-br from-brand-yellow to-amber-400 rounded-2xl shadow-md flex items-center justify-center">
-                <span className="text-white text-6xl">📱</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
     </main>
   )
 }
