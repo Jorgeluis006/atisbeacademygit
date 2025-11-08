@@ -34,6 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $curso = trim($input['curso'] ?? 'Inglés');
     $nivel = trim($input['nivel'] ?? '');
     $meeting_link = trim($input['meeting_link'] ?? '');
+    $max_alumnos = isset($input['max_alumnos']) ? (int)$input['max_alumnos'] : 1;
 
     if (!$datetime) {
         json_error('Fecha y hora requeridas');
@@ -48,10 +49,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $stmt = $pdo->prepare('
-        INSERT INTO teacher_slots (teacher_id, datetime, tipo, modalidad, duration_minutes, curso, nivel, meeting_link)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO teacher_slots (teacher_id, datetime, tipo, modalidad, duration_minutes, curso, nivel, meeting_link, max_alumnos)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     ');
-    $stmt->execute([$teacher_id, $datetime, $tipo, $modalidad, $duration, $curso, $nivel !== '' ? $nivel : null, $meeting_link !== '' ? $meeting_link : null]);
+    $stmt->execute([$teacher_id, $datetime, $tipo, $modalidad, $duration, $curso, $nivel !== '' ? $nivel : null, $meeting_link !== '' ? $meeting_link : null, $max_alumnos]);
     
     json_ok(['id' => (int)$pdo->lastInsertId()]);
 }
