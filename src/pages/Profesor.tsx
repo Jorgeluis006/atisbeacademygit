@@ -226,7 +226,8 @@ export default function Profesor() {
     duration_minutes: 60,
     curso: 'Inglés',
     nivel: '',
-    meeting_link: ''
+    meeting_link: '',
+    max_alumnos: 1
   })
   const [creatingSlot, setCreatingSlot] = useState(false)
   const [editingMeetingLink, setEditingMeetingLink] = useState<{ slotId: number; currentLink: string } | null>(null)
@@ -246,7 +247,8 @@ export default function Profesor() {
       
       await createTeacherSlot({
         ...newSlot,
-        datetime: datetimeFormatted
+        datetime: datetimeFormatted,
+        max_alumnos: newSlot.max_alumnos
       })
       const updated = await getTeacherSlots()
       setSlots(updated)
@@ -257,7 +259,8 @@ export default function Profesor() {
         duration_minutes: 60,
         curso: 'Inglés',
         nivel: '',
-        meeting_link: ''
+        meeting_link: '',
+        max_alumnos: 1
       })
       alert('Horario creado exitosamente')
     } catch (err: any) {
@@ -475,6 +478,22 @@ export default function Profesor() {
           </div>
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                <svg className="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7a3 3 0 01-3-3V7a3 3 0 013-3h10a3 3 0 013 3v10a3 3 0 01-3 3z" />
+                </svg>
+                Número de alumnos
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="30"
+                className="w-full px-4 py-3 border-2 border-pink-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-pink-200 focus:border-pink-500 transition-all shadow-sm hover:border-pink-400 font-semibold"
+                value={newSlot.max_alumnos}
+                onChange={e => setNewSlot({ ...newSlot, max_alumnos: parseInt(e.target.value) || 1 })}
+              />
+            </div>
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
                 <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
