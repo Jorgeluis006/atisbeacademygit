@@ -20,6 +20,8 @@ $teacher_id = (int)$user['teacher_id'];
 
 // Obtener todos los slots del profesor (permitir clases grupales)
 // Ya no filtramos por is_available para permitir múltiples estudiantes
+
+// Traer también max_alumnos
 $stmt = $pdo->prepare('
     SELECT 
         id,
@@ -29,7 +31,8 @@ $stmt = $pdo->prepare('
         duration_minutes,
         curso,
         nivel,
-        is_available
+        is_available,
+        max_alumnos
     FROM teacher_slots
     WHERE teacher_id = ? 
       AND datetime > NOW()
@@ -38,5 +41,15 @@ $stmt = $pdo->prepare('
 $stmt->execute([$teacher_id]);
 $slots = $stmt->fetchAll();
 
-// No necesitamos formatear - enviar datetime tal como está en MySQL
-json_ok(['slots' => $slots]);
+// Filtrar slots llenos
+$filtered = [];
+foreach ($slots as $slot) {
+    $stmt2 = $pdo->prepare('SELECT COUNT(*) FROM schedule_reservations WHERE slot_id = ?');
+    $stmt2->execute([$slot['id']]);
+    $num_reservas = (int)$stmt2->fetchColumn();
+    $max_alumnos = isset($slot['max_alumnos']) ? (int)$slot['max_alumnos'] : 1;
+    if ($num_reservas < $max_alumnos) {
+        $filtered[] = $slot;
+    }
+}
+json_ok(['slots' => $filtered]);
