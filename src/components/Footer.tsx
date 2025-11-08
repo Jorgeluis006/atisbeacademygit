@@ -41,7 +41,7 @@ export default function Footer() {
             <h4 className="font-serif font-bold text-lg mb-4" style={{ color: '#fffef1' }}>Síguenos</h4>
             <div className="flex gap-4 justify-center md:justify-start">
               <a 
-                href="https://www.instagram.com/atisbeacademy" 
+                href="https://www.instagram.com/atisbeacademiadeidiomas/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 aria-label="Instagram"
