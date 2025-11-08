@@ -34,6 +34,18 @@ import {
   uploadVideo
 } from '../services/api'
 
+import AdminContacts from './AdminContacts'
+// Mostrar sección de contactos recibidos al inicio del panel admin
+// Puedes mover este bloque donde prefieras dentro del layout admin
+export default function AdminPageWithContacts() {
+  return (
+    <>
+      <AdminContacts />
+      {/* Aquí iría el resto del panel admin existente */}
+    </>
+  )
+}
+
 function ChangePasswordModal({ onClose }: { onClose: () => void }) {
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
