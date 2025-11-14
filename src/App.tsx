@@ -10,6 +10,7 @@ import Testimonios from './pages/Testimonios'
 import Blog from './pages/Blog'
 import Contacto from './pages/Contacto'
 import Pago from './pages/Pago'
+import PoliticasPrivacidad from './pages/PoliticasPrivacidad'
 import ZonaEstudiantes from './pages/ZonaEstudiantes'
 import Tienda from './pages/Tienda'
 import Influencers from './pages/Influencers'
@@ -31,6 +32,7 @@ function App() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/pago" element={<Pago />} />
+          <Route path="/politicas-privacidad" element={<PoliticasPrivacidad />} />
           <Route path="/zona-estudiantes" element={<ZonaEstudiantes />} />
           <Route path="/tienda" element={<Tienda />} />
           <Route path="/influencers" element={<Influencers />} />
