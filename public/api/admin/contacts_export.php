@@ -8,6 +8,9 @@ ensure_schema();
 header('Content-Type: text/csv; charset=utf-8');
 header('Content-Disposition: attachment; filename=contacts.csv');
 
+// Write UTF-8 BOM so Excel on Windows detects UTF-8 correctly
+echo "\xEF\xBB\xBF"; // using escaped bytes to ensure BOM
+
 $out = fopen('php://output', 'w');
 fputcsv($out, ['id','nombre','edad','nacionalidad','email','telefono','idioma','modalidad','franja','created_at']);
 
