@@ -35,6 +35,8 @@ import {
 } from '../services/api'
 
 import AdminContacts from './AdminContacts'
+import { getBookingSettings, saveBookingSettings } from '../services/api'
+import { useEffect } from 'react'
 
 
 function ChangePasswordModal({ onClose }: { onClose: () => void }) {
@@ -311,6 +313,12 @@ export default function Admin() {
         >
           Productos
         </button>
+        <button 
+          className={`px-4 py-2 font-semibold transition-colors ${activeTab === 'config' ? 'border-b-2 border-brand-purple text-brand-purple' : 'text-brand-black/60 hover:text-brand-black'}`}
+          onClick={() => setActiveTab('config')}
+        >
+          Configuración
+        </button>
       </div>
 
   {/* Tab Content */}
@@ -336,6 +344,7 @@ export default function Admin() {
       {activeTab === 'blog' && <BlogManager />}
       {activeTab === 'videos' && <VideosManager />}
       {activeTab === 'products' && <ProductsManager />}
+      {activeTab === 'config' && <BookingSettingsManager />}
 
       {(msg || err) && (
         <div className="mt-4">
@@ -489,6 +498,58 @@ function AssignStudentForm({ onDone, onError }: { onDone: (msg: string) => void;
         </>
       )}
     </form>
+  )
+}
+
+function BookingSettingsManager() {
+  const [allowed, setAllowed] = useState<string[] | null>(null)
+  const [saving, setSaving] = useState(false)
+  const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await getBookingSettings()
+        setAllowed(res.allowed_days ?? [])
+      } catch (e) {
+        setAllowed([])
+      }
+    })()
+  }, [])
+
+  function toggleDay(day: string) {
+    setAllowed((prev) => {
+      const cur = prev ?? []
+      if (cur.includes(day)) return cur.filter(d => d !== day)
+      return [...cur, day]
+    })
+  }
+
+  async function save() {
+    setSaving(true)
+    try {
+      await saveBookingSettings({ allowed_days: allowed ?? [] })
+      alert('Guardado')
+    } catch (e) {
+      alert('Error guardando')
+    } finally { setSaving(false) }
+  }
+
+  return (
+    <section className="rounded-xl shadow-lg p-8 mt-6 bg-white">
+      <h2 className="section-title text-brand-purple">Configuración de reservas</h2>
+      <p className="text-sm text-gray-600 mb-4">Selecciona los días en los que los estudiantes pueden agendar clases.</p>
+      <div className="flex flex-wrap gap-3 mb-6">
+        {days.map(d => (
+          <button key={d} onClick={() => toggleDay(d)} className={`px-4 py-2 rounded-full border ${ (allowed ?? []).includes(d) ? 'bg-brand-purple text-white' : 'bg-white text-gray-700 border-gray-200' }`}>
+            {d}
+          </button>
+        ))}
+      </div>
+      <div className="flex gap-3">
+        <button className="btn-primary" onClick={save} disabled={saving}>{saving ? 'Guardando…' : 'Guardar cambios'}</button>
+      </div>
+    </section>
   )
 }
 

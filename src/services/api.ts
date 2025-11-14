@@ -166,6 +166,17 @@ export async function getTeacherReservations(): Promise<Reservation[]> {
   return res.data?.reservations ?? []
 }
 
+// Admin: booking settings (días permitidos)
+export async function getBookingSettings(): Promise<{ allowed_days: string[] | null }> {
+  const res = await api.get('/admin/booking_settings.php')
+  return res.data
+}
+
+export async function saveBookingSettings(input: { allowed_days: string[] }) {
+  const res = await api.post('/admin/booking_settings.php', input)
+  return res.data
+}
+
 // CMS: Testimonials
 export type Testimonial = {
   id?: number
