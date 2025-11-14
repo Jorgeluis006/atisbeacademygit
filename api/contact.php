@@ -43,12 +43,14 @@ try {
     // Opcional: enviar correo de notificación (SMTP con PHPMailer si disponible)
     if (defined('MAIL_TO') && MAIL_TO !== '') {
         $body = '<h3>Nuevo contacto Atisbe</h3>' .
-                '<p><strong>Nombre:</strong> ' . htmlspecialchars($data['nombre']) . '</p>' .
-                '<p><strong>Email:</strong> ' . htmlspecialchars($data['email']) . '</p>' .
-                '<p><strong>Teléfono:</strong> ' . htmlspecialchars($data['telefono']) . '</p>' .
-                '<p><strong>Idioma:</strong> ' . htmlspecialchars($data['idioma']) . '</p>' .
-                '<p><strong>Modalidad:</strong> ' . htmlspecialchars($data['modalidad']) . '</p>' .
-                '<p><strong>Franja:</strong> ' . htmlspecialchars($data['franja']) . '</p>';
+            '<p><strong>Nombre:</strong> ' . htmlspecialchars($data['nombre']) . '</p>' .
+            '<p><strong>Email:</strong> ' . htmlspecialchars($data['email']) . '</p>' .
+            '<p><strong>Teléfono:</strong> ' . htmlspecialchars($data['telefono']) . '</p>' .
+            '<p><strong>Idioma:</strong> ' . htmlspecialchars($data['idioma']) . '</p>' .
+            '<p><strong>Modalidad:</strong> ' . htmlspecialchars($data['modalidad']) . '</p>' .
+            '<p><strong>Franja:</strong> ' . htmlspecialchars($data['franja']) . '</p>' .
+            '<p><strong>Curso (usuario):</strong> ' . (isset($data['curso']) ? htmlspecialchars($data['curso']) : '') . '</p>' .
+            '<p><strong>Día de interés (usuario):</strong> ' . (isset($data['dia_interes']) ? htmlspecialchars($data['dia_interes']) : '') . '</p>';
     @send_mail(MAIL_TO, 'Nuevo contacto Atisbe', $body);
     // Enviar copia a automatic@atisbeacademy.com
     @send_mail('automatic@atisbeacademy.com', 'Copia de nuevo contacto Atisbe', $body);
