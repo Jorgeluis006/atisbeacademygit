@@ -1356,10 +1356,14 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel, showCalendar, se
       <CalendarModal 
         open={showCalendar} 
         onClose={() => setShowCalendar(false)} 
-        reservations={reservas.map(r => ({
-          date: parseLocalDateTime(r.datetime).toISOString().split('T')[0],
-          ...r
-        }))}
+        reservations={reservas.map(r => {
+          const dt = parseLocalDateTime(r.datetime)
+          const dateStr = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`
+          return {
+            date: dateStr,
+            ...r
+          }
+        })}
       />
     </div>
   )
