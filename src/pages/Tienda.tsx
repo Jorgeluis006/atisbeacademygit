@@ -202,20 +202,21 @@ export default function Tienda() {
                         {product.stock === 0 ? 'Agotado' : 'Ir a Pago'}
                       </button>
 
-                        {/* Payment Drawer */}
-                        {drawerOpen && selectedProduct && (
-                          <PaymentDrawer
-                            open={drawerOpen}
-                            onClose={() => { setDrawerOpen(false); setSelectedProduct(null) }}
-                            productName={selectedProduct.name}
-                            price={selectedProduct.price}
-                          />
-                        )}
+                        
                     </div>
                   </div>
                 </article>
               ))}
             </div>
+            {/* Payment Drawer outside loop */}
+            {drawerOpen && selectedProduct && (
+              <PaymentDrawer
+                open={drawerOpen}
+                onClose={() => { setDrawerOpen(false); setSelectedProduct(null) }}
+                productName={selectedProduct.name}
+                price={selectedProduct.price}
+              />
+            )}
           </>
         )}
       </div>
