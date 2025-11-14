@@ -54,24 +54,14 @@ export default function PaymentDrawer({ open, onClose, productName, price, phone
             <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
               <span>📋</span> Información requerida:
             </h3>
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-4">
               <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-200">
-                <div className="flex items-start gap-3">
-                  <span className="text-2xl">🏷️</span>
-                  <div>
-                    <h4 className="font-bold text-gray-900 mb-2">Nombre del producto</h4>
-                    <input value={nombreProducto} onChange={e => setNombreProducto(e.target.value)} placeholder="Especifica qué curso o producto te interesa adquirir" className="w-full text-sm bg-white border border-gray-300 rounded px-3 py-2" />
-                  </div>
-                </div>
+                <div className="font-bold text-purple-900 text-sm mb-2 flex items-center gap-2">🏷️ Nombre del producto</div>
+                <input value={nombreProducto} onChange={e => setNombreProducto(e.target.value)} placeholder="Especifica qué curso o producto te interesa adquirir" className="w-full text-sm bg-white border border-gray-300 rounded px-3 py-2" />
               </div>
               <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-4 border border-blue-200">
-                <div className="flex items-start gap-3">
-                  <span className="text-2xl">📧</span>
-                  <div>
-                    <h4 className="font-bold text-gray-900 mb-1">Datos de contacto</h4>
-                    <p className="text-sm text-gray-600">Nombre completo y correo electrónico para el registro</p>
-                  </div>
-                </div>
+                <div className="font-bold text-blue-900 text-sm mb-2 flex items-center gap-2">🎨 Color preferido</div>
+                <input value={colorPreferido} onChange={e => setColorPreferido(e.target.value)} placeholder="Indica el color que deseas (si aplica al producto)" className="w-full text-sm bg-white border border-gray-300 rounded px-3 py-2" />
               </div>
             </div>
           </div>
@@ -84,10 +74,10 @@ export default function PaymentDrawer({ open, onClose, productName, price, phone
             <div className="space-y-4">
               {[
                 { n: 1, t: 'Contacta por WhatsApp', d: `Escribe al ${phone}` },
-                { n: 2, t: 'Proporciona información', d: 'Nombre del producto y color' },
-                { n: 3, t: 'Recibe tu QR', d: 'Te enviaremos el código personalizado' },
+                { n: 2, t: 'Proporciona información', d: 'Nombre del producto y tus datos de contacto' },
+                { n: 3, t: 'Recibe tu QR', d: 'Te enviaremos el código QR personalizado' },
                 { n: 4, t: 'Realiza el pago', d: 'Escanéalo desde tu app bancaria' },
-                { n: 5, t: 'Recibe credenciales de acceso', d: 'Usuario y contraseña para estudiar' }
+                { n: 5, t: 'Recibe credenciales de acceso', d: 'Una vez confirmado el pago, te enviaremos tu usuario y contraseña para acceder a la Zona de Estudiantes' }
               ].map(step => (
                 <div key={step.n} className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-10 h-10 bg-brand-purple text-white rounded-full flex items-center justify-center font-bold">{step.n}</div>

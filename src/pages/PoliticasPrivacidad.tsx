@@ -2,8 +2,7 @@ export default function PoliticasPrivacidad() {
   return (
     <div className="container-padded py-16 max-w-4xl mx-auto">
       <h1 className="text-3xl font-serif font-bold mb-6">Políticas de privacidad</h1>
-      <p className="mb-4">Esta página contiene las políticas de privacidad del sitio. Puedes editar este archivo en <code>src/pages/PoliticasPrivacidad.tsx</code> para poner el texto definitivo que quieras mostrar.</p>
-
+      
       <section className="bg-white/5 p-6 rounded-lg">
         <h2 className="font-bold mb-2">1. Información que recogemos</h2>
         <p className="mb-4">Recogemos información que nos proporcionas directamente cuando te registras, envías formularios de contacto o reservas clases (nombre, email, teléfono, datos de pago cuando corresponda, etc.).</p>
