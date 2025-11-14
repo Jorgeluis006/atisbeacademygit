@@ -86,9 +86,9 @@ export type Reservation = {
   meeting_link?: string;
 }
 
-export async function getScheduleSlots(): Promise<ScheduleSlot[]> {
+export async function getScheduleSlots(): Promise<{ slots: ScheduleSlot[]; blocked_days?: string[] | null }> {
   const res = await api.get('/schedule/slots.php')
-  return res.data?.slots ?? []
+  return { slots: res.data?.slots ?? [], blocked_days: res.data?.blocked_days ?? null }
 }
 
 export async function getMyReservations(): Promise<Reservation[]> {

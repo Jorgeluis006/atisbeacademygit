@@ -53,3 +53,30 @@ foreach ($slots as $slot) {
     }
 }
 json_ok(['slots' => $filtered]);
+// También incluir los días bloqueados para este profesor (si aplica) o globales
+$blocked = null;
+try {
+    // Primero intentar obtener bloqueos a nivel de profesor
+    $stmt = $pdo->prepare("SELECT booking_blocked_days FROM users WHERE id = ? LIMIT 1");
+    $stmt->execute([$teacher_id]);
+    $r = $stmt->fetch();
+    if ($r && $r['booking_blocked_days']) {
+        $blocked = json_decode($r['booking_blocked_days'], true);
+    } else {
+        // Fallback a configuración global (booking_settings)
+        $row = $pdo->query("SELECT blocked_days, allowed_days FROM booking_settings WHERE id = 1 LIMIT 1")->fetch();
+        if ($row) {
+            if (!empty($row['blocked_days'])) $blocked = json_decode($row['blocked_days'], true);
+            elseif (!empty($row['allowed_days'])) {
+                $all = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+                $allowed = json_decode($row['allowed_days'], true) ?: [];
+                $blocked = array_values(array_filter($all, function($d) use ($allowed){ return !in_array($d, $allowed, true); }));
+            }
+        }
+    }
+} catch (Throwable $e) {
+    // ignore and leave blocked as null
+}
+
+// Re-emit JSON incluyendo blocked days
+json_ok(['slots' => $filtered, 'blocked_days' => $blocked]);

@@ -351,6 +351,7 @@ export default function ZonaEstudiantes() {
   const [progress, setProgress] = useState<StudentProgress | null>(null)
   const [slots, setSlots] = useState<ScheduleSlot[]>([])
   const [reservas, setReservas] = useState<Reservation[]>([])
+  const [blockedDays, setBlockedDays] = useState<string[] | null>(null)
   const [loading, setLoading] = useState(true)
   const [loadingData, setLoadingData] = useState(false)
   const [showChangePassword, setShowChangePassword] = useState(false)
@@ -358,13 +359,14 @@ export default function ZonaEstudiantes() {
   async function loadStudentData() {
     setLoadingData(true)
     try {
-      const [prog, slotsData, reservasData] = await Promise.all([
+      const [prog, scheduleData, reservasData] = await Promise.all([
         getStudentProgress(),
         getScheduleSlots(),
         getMyReservations()
       ])
       setProgress(prog)
-      setSlots(slotsData)
+      setSlots(scheduleData.slots)
+      setBlockedDays(scheduleData.blocked_days ?? null)
       setReservas(reservasData)
     } catch (err) {
       console.error('Error loading student data:', err)
@@ -733,7 +735,7 @@ export default function ZonaEstudiantes() {
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-brand-purple to-brand-orange bg-clip-text text-transparent">Horarios / Agendar</h2>
               </div>
               <p className="text-sm text-gray-600 mb-4">Agenda clases personalizadas y exámenes.</p>
-              <ScheduleSection slots={slots} reservas={reservas} onBooked={async () => setReservas(await getMyReservations())} onCancel={async () => setReservas(await getMyReservations())} />
+              <ScheduleSection slots={slots} reservas={reservas} blockedDays={blockedDays} onBooked={async () => setReservas(await getMyReservations())} onCancel={async () => setReservas(await getMyReservations())} />
             </section>
             </div>
           </div>
@@ -1042,7 +1044,7 @@ function parseLocalDateTime(mysqlDatetime: string): Date {
   )
 }
 
-function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: ScheduleSlot[]; reservas: Reservation[]; onBooked: () => void; onCancel: () => void }) {
+function ScheduleSection({ slots, reservas, blockedDays, onBooked, onCancel }: { slots: ScheduleSlot[]; reservas: Reservation[]; blockedDays?: string[] | null; onBooked: () => void; onCancel: () => void }) {
   const [selected, setSelected] = useState<ScheduleSlot | null>(null)
   const [notas, setNotas] = useState<string>('')
   const [loading, setLoading] = useState(false)
@@ -1057,6 +1059,13 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
     const matchCurso = cursoFilter === 'todos' || s.curso === cursoFilter
     return matchModalidad && matchCurso
   })
+
+  function isDateBlocked(dt: Date) {
+    if (!blockedDays || !Array.isArray(blockedDays)) return false
+    const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+    const name = dayNames[dt.getDay()]
+    return blockedDays.includes(name)
+  }
 
   async function reservar() {
     if (!selected) { setError('Selecciona un horario'); return }
@@ -1205,10 +1214,10 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
                 
                 const cursoInfo = s.curso ? ` - ${s.curso}` : ''
                 const nivelInfo = s.nivel ? ` [${s.nivel}]` : ''
-                
+                const blocked = isDateBlocked(dateTime)
                 return (
-                  <option key={s.id} value={s.id}>
-                    {formattedDate}, {formattedTime} - {s.tipo} ({s.modalidad}){cursoInfo}{nivelInfo}
+                  <option key={s.id} value={s.id} disabled={blocked}>
+                    {formattedDate}, {formattedTime} - {s.tipo} ({s.modalidad}){cursoInfo}{nivelInfo}{blocked ? ' - (Bloqueado)' : ''}
                   </option>
                 )
               })}
