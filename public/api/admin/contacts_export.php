@@ -4,8 +4,9 @@ require_admin();
 
 ensure_schema();
 
+// Exportamos CSV pero sugerimos nombre .xlsx para que Excel lo abra directamente
 header('Content-Type: text/csv; charset=utf-8');
-header('Content-Disposition: attachment; filename=contacts.csv');
+header('Content-Disposition: attachment; filename=contacts.xlsx');
 
 $out = fopen('php://output', 'w');
 fputcsv($out, ['id','nombre','edad','nacionalidad','email','telefono','idioma','modalidad','franja','created_at']);

@@ -29,7 +29,17 @@ export default function AdminContacts() {
 
   return (
     <div className="rounded-xl shadow-lg p-8 bg-gradient-to-br from-brand-mauve/20 via-brand-cream to-brand-yellow/10 border border-brand-mauve/30">
-      <h2 className="section-title text-brand-purple mb-6">Contactos recibidos</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="section-title text-brand-purple">Contactos recibidos</h2>
+        <div>
+          <a
+            href="/api/admin/contacts_export.php"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-brand-purple to-purple-600 text-white rounded-lg shadow-md hover:opacity-95"
+          >
+            ⬇️ Descargar Excel
+          </a>
+        </div>
+      </div>
       {loading ? (
         <p className="text-gray-500">Cargando...</p>
       ) : error ? (
