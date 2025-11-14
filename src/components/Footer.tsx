@@ -72,10 +72,8 @@ export default function Footer() {
                 className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all hover:scale-110"
                 style={{ color: '#fffef1' }}
               >
-                {/* TikTok icon — monochrome to match other social icons */}
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                  <path d="M16.5 3c-.28.17-.58.32-.9.44-.62.25-1.28.38-1.95.38V11a3.5 3.5 0 1 1-1.5-2.9V5.5c1.1 0 2.16-.24 3.12-.7 1.02-.49 1.88-1.27 2.73-2.31V3h-2.5z" />
-                </svg>
+                {/* Use uploaded TikTok SVG asset from public/images */}
+                <img src="/images/tiktok-svgrepo-com.svg" alt="TikTok" className="w-5 h-5" />
               </a>
             </div>
           </div>
