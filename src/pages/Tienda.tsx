@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+// removed unused useNavigate import
 import axios from 'axios'
 import PaymentDrawer from '../components/PaymentDrawer'
 
@@ -17,7 +17,7 @@ export default function Tienda() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
-  const navigate = useNavigate()
+  
 
   useEffect(() => {
     const fetchProducts = async () => {
