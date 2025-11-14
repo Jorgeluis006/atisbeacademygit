@@ -8,7 +8,7 @@ interface Props {
   phone?: string
 }
 
-export default function PaymentDrawer({ open, onClose, productName, price, phone = '3162967105' }: Props) {
+export default function PaymentDrawer({ open, onClose, productName, price, phone = '3227850345' }: Props) {
   if (!open) return null
   const [colorPreferido, setColorPreferido] = useState('')
   const [nombreProducto, setNombreProducto] = useState(productName || '')
@@ -22,96 +22,139 @@ export default function PaymentDrawer({ open, onClose, productName, price, phone
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <aside className="relative w-full max-w-lg bg-[#101015] text-white rounded-2xl shadow-2xl flex flex-col overflow-hidden max-h-[85vh]">
+      <aside className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden max-h-[90vh]">
         {/* Header */}
-        <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between">
-          <h3 className="text-lg font-bold flex items-center gap-2"><span className="text-sky-400">💳</span> Formas de Pago</h3>
-          <button onClick={onClose} className="text-white/60 hover:text-white" aria-label="Cerrar">✕</button>
+        <div className="px-6 py-4 bg-gradient-to-r from-brand-purple to-purple-600 text-white flex items-center justify-between sticky top-0 z-10">
+          <h3 className="text-xl font-bold">📱 Proceso de Pago por QR</h3>
+          <button onClick={onClose} className="text-white/80 hover:text-white text-2xl" aria-label="Cerrar">✕</button>
         </div>
+        
         {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto space-y-8 px-6 py-6 scrollbar-thin">
-          {/* Proceso título */}
-          <div>
-            <h4 className="text-sm font-semibold text-sky-300 mb-1 flex items-center gap-2">📱 Proceso de Pago por QR</h4>
-            <p className="text-xs text-white/60 max-w-md">Para procesar tu compra, sigue estos sencillos pasos:</p>
-          </div>
-
-          {/* WhatsApp Card */}
-          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 shadow-lg">
-            <h5 className="font-bold text-center mb-3 text-sm flex flex-col items-center gap-1"><span>💬 Escríbenos para generar tu QR de pago</span></h5>
-            <p className="text-xs text-white/90 text-center mb-4">Contacta a este número de WhatsApp y proporciona la siguiente información:</p>
-            <div className="bg-white rounded-xl p-4 mb-4 flex items-center justify-center">
-              <div className="flex items-center gap-3">
-                <span className="text-xl">📱</span>
-                <span className="font-bold text-green-600 text-lg tracking-wide">{phone}</span>
-              </div>
-            </div>
+        <div className="flex-1 overflow-y-auto space-y-6 px-6 py-6">
+          
+          {/* WhatsApp Contact Card */}
+          <div className="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-2xl p-6 shadow-lg">
             <div className="text-center">
-              <button onClick={openWhatsApp} className="bg-white text-green-600 px-6 py-2 rounded-md font-semibold text-sm shadow hover:shadow-lg hover:scale-[1.03] transition inline-flex items-center gap-2">
+              <h2 className="text-2xl font-bold mb-3">💬 Escríbenos para generar tu QR de pago</h2>
+              <p className="text-green-50 mb-4">Contacta a este número de WhatsApp y proporciona la siguiente información:</p>
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 mb-4">
+                <p className="text-3xl font-bold mb-1">{phone}</p>
+                <p className="text-green-100 text-sm">Horario de atención: 24/7</p>
+              </div>
+              <button 
+                onClick={openWhatsApp}
+                className="bg-white text-green-600 px-6 py-2 rounded-lg font-semibold text-sm shadow hover:shadow-lg hover:scale-105 transition inline-flex items-center gap-2"
+              >
                 Abrir WhatsApp
               </button>
             </div>
           </div>
 
-          {/* Información requerida */}
-          <div className="bg-white text-gray-900 rounded-2xl p-5 shadow divide-y divide-gray-200">
-            <h5 className="font-semibold text-sm mb-3 flex items-center gap-2">✧ Información requerida:</h5>
-            <div className="py-4 flex items-start gap-4">
-              <div className="w-1 h-10 bg-teal-400 rounded-full" />
-              <div className="flex-1">
-                <div className="font-semibold text-xs mb-1 flex items-center gap-2">🏷️ Nombre del producto</div>
-                <input value={nombreProducto} onChange={e => setNombreProducto(e.target.value)} placeholder="Ej: Curso Intensivo A2" className="w-full text-xs bg-gray-50 border border-gray-300 rounded-md px-3 py-2" />
-                <p className="text-[11px] text-gray-500 mt-1">Especifica qué curso / bicicleta / material te interesa.</p>
+          {/* Información Requerida */}
+          <div className="bg-gray-50 rounded-2xl p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <span>📋</span> Información requerida:
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-200">
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">🏷️</span>
+                  <div>
+                    <h4 className="font-bold text-gray-900 mb-1">Nombre del producto</h4>
+                    <input value={nombreProducto} onChange={e => setNombreProducto(e.target.value)} placeholder="Ej: Curso Intensivo A2" className="w-full text-xs bg-white border border-gray-300 rounded px-2 py-1 mb-1" />
+                    <p className="text-xs text-gray-600">Especifica qué curso o producto</p>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="py-4 flex items-start gap-4">
-              <div className="w-1 h-10 bg-pink-400 rounded-full" />
-              <div className="flex-1">
-                <div className="font-semibold text-xs mb-1 flex items-center gap-2">🎨 Color preferido</div>
-                <input value={colorPreferido} onChange={e => setColorPreferido(e.target.value)} placeholder="Ej: Rojo" className="w-full text-xs bg-gray-50 border border-gray-300 rounded-md px-3 py-2" />
-                <p className="text-[11px] text-gray-500 mt-1">Indica el color que deseas (si aplica al producto).</p>
+              <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-4 border border-blue-200">
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">🎨</span>
+                  <div>
+                    <h4 className="font-bold text-gray-900 mb-1">Color preferido</h4>
+                    <input value={colorPreferido} onChange={e => setColorPreferido(e.target.value)} placeholder="Ej: Rojo" className="w-full text-xs bg-white border border-gray-300 rounded px-2 py-1 mb-1" />
+                    <p className="text-xs text-gray-600">Si aplica al producto</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Proceso rápido */}
-          <div className="bg-[#0d0d12] border border-white/10 rounded-2xl p-5">
-            <h5 className="text-sm font-semibold mb-4 flex items-center gap-2">⚡ Proceso rápido:</h5>
-            <div className="space-y-4 text-xs">
+          {/* Proceso Rápido - Timeline */}
+          <div className="bg-white rounded-2xl p-6 border border-gray-200">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <span>⚡</span> Proceso rápido:
+            </h3>
+            <div className="space-y-4">
               {[
                 { n: 1, t: 'Contacta por WhatsApp', d: `Escribe al ${phone}` },
-                { n: 2, t: 'Proporciona la información', d: 'Producto y color preferido' },
-                { n: 3, t: 'Recibe tu QR', d: 'Generamos tu código personalizado' },
+                { n: 2, t: 'Proporciona información', d: 'Nombre del producto y color' },
+                { n: 3, t: 'Recibe tu QR', d: 'Te enviaremos el código personalizado' },
                 { n: 4, t: 'Realiza el pago', d: 'Escanéalo desde tu app bancaria' },
-                { n: 5, t: 'Recibe credenciales', d: 'Te enviamos usuario y contraseña' }
+                { n: 5, t: 'Recibe credenciales de acceso', d: 'Usuario y contraseña para estudiar' }
               ].map(step => (
-                <div key={step.n} className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-brand-purple text-white rounded-full flex items-center justify-center font-bold text-xs">{step.n}</div>
-                  <div>
-                    <div className="font-semibold">{step.t}</div>
-                    <div className="text-white/60">{step.d}</div>
+                <div key={step.n} className="flex gap-4 items-start">
+                  <div className="flex-shrink-0 w-10 h-10 bg-brand-purple text-white rounded-full flex items-center justify-center font-bold">{step.n}</div>
+                  <div className="flex-1">
+                    <h4 className="font-bold text-gray-900 text-sm">{step.t}</h4>
+                    <p className="text-xs text-gray-600">{step.d}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Barra inferior estilo estado */}
-          <div className="bg-[#0d0d12] border border-white/10 rounded-xl p-4 flex items-center gap-3 text-xs">
-            <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">i</div>
-            <div className="flex-1">
-              <div className="font-semibold text-white">Contacto por WhatsApp</div>
-              <div className="text-white/60">Escribe al {phone}</div>
+          {/* Security Badge */}
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-4 flex items-center gap-3 justify-center">
+            <div className="text-3xl">🛡️</div>
+            <div>
+              <h3 className="font-bold text-green-900 text-sm">Pago 100% Seguro</h3>
+              <p className="text-xs text-green-700">Transacciones protegidas y verificadas</p>
+            </div>
+          </div>
+
+          {/* Student Access Info */}
+          <div className="bg-gradient-to-br from-purple-100 via-pink-50 to-purple-100 border-2 border-purple-300 rounded-xl p-6">
+            <div className="text-center">
+              <div className="inline-block p-3 bg-purple-500 text-white rounded-full mb-3">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-purple-900 mb-2">
+                🎓 Acceso a la Zona de Estudiantes
+              </h3>
+              <p className="text-purple-800 text-sm mb-3 max-w-md mx-auto">
+                Una vez confirmado el pago, recibirás tus credenciales personales:
+              </p>
+              <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto">
+                <div className="bg-white/80 rounded-lg p-3 border border-purple-200">
+                  <div className="text-2xl mb-1">👤</div>
+                  <h4 className="font-bold text-purple-900 text-xs">Usuario</h4>
+                  <p className="text-xs text-purple-700">Nombre único</p>
+                </div>
+                <div className="bg-white/80 rounded-lg p-3 border border-purple-200">
+                  <div className="text-2xl mb-1">🔑</div>
+                  <h4 className="font-bold text-purple-900 text-xs">Contraseña</h4>
+                  <p className="text-xs text-purple-700">Acceso seguro</p>
+                </div>
+              </div>
+              <p className="text-purple-700 mt-3 text-xs">
+                ⚡ <span className="font-bold">Menos de 1 hora</span> después de confirmar el pago
+              </p>
             </div>
           </div>
 
           {/* CTA Final */}
-          <div className="text-center">
-            <button onClick={openWhatsApp} className="bg-brand-purple text-white px-8 py-3 rounded-full font-bold text-sm shadow-lg hover:shadow-xl hover:scale-105 transition inline-flex items-center gap-2">
+          <div className="text-center py-2">
+            <button 
+              onClick={openWhatsApp}
+              className="bg-brand-purple text-white px-8 py-3 rounded-full font-bold shadow-lg hover:shadow-xl hover:scale-105 transition inline-flex items-center gap-2"
+            >
               Solicitar QR de Pago Ahora
             </button>
-            <p className="text-white/50 mt-2 text-[11px]">Respuesta en menos de 5 minutos</p>
+            <p className="text-gray-500 mt-2 text-xs">Respuesta en menos de 5 minutos</p>
           </div>
+
         </div>
       </aside>
     </div>
