@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import PaymentDrawer from '../components/PaymentDrawer'
 
 interface Product {
   id: number
@@ -55,6 +56,9 @@ export default function Tienda() {
   const filteredProducts = selectedCategory === 'all' 
     ? products 
     : products.filter(p => p.category === selectedCategory)
+
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
 
   return (
     <main className="bg-brand-beige">
@@ -184,7 +188,7 @@ export default function Tienda() {
                         </p>
                       </div>
                       <button
-                        onClick={() => navigate('/pago')}
+                        onClick={() => { setSelectedProduct(product); setDrawerOpen(true) }}
                         disabled={product.stock === 0}
                         className={`w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${
                           product.stock === 0
@@ -197,6 +201,16 @@ export default function Tienda() {
                         </svg>
                         {product.stock === 0 ? 'Agotado' : 'Ir a Pago'}
                       </button>
+
+                        {/* Payment Drawer */}
+                        {drawerOpen && selectedProduct && (
+                          <PaymentDrawer
+                            open={drawerOpen}
+                            onClose={() => { setDrawerOpen(false); setSelectedProduct(null) }}
+                            productName={selectedProduct.name}
+                            price={selectedProduct.price}
+                          />
+                        )}
                     </div>
                   </div>
                 </article>
