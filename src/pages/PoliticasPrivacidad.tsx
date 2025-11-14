@@ -1,5 +1,3 @@
-import React from 'react'
-
 export default function PoliticasPrivacidad() {
   return (
     <div className="container-padded py-16 max-w-4xl mx-auto">
