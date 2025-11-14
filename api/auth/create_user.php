@@ -110,6 +110,29 @@ try {
     }
     
     json_ok(['created' => ['username' => $username, 'role' => $role, 'email' => $email]]);
+    // Si es estudiante, asegurarnos de que no tenga notas automáticas: crear fila de progreso vacía
+    if ($role === 'student') {
+        try {
+            ensure_student_progress_schema();
+            $default = [
+                'asistencia' => 0,
+                'notas' => [],
+                'nivel' => [ 'mcer' => '', 'descripcion' => '' ],
+                'fortalezas' => [],
+                'debilidades' => [],
+            ];
+            $json = json_encode($default, JSON_UNESCAPED_UNICODE);
+            $lastId = (int)$pdo->lastInsertId();
+            if ($lastId) {
+                // Insertar o actualizar la fila de progreso para el nuevo usuario
+                $pdo->prepare('INSERT INTO student_progress (user_id, data) VALUES (?, ?) ON DUPLICATE KEY UPDATE data=VALUES(data), updated_at=CURRENT_TIMESTAMP')
+                    ->execute([$lastId, $json]);
+            }
+        } catch (Throwable $e) {
+            // No fallar la creación de usuario por errores al crear progreso
+            error_log('Warning: no se pudo inicializar student_progress: ' . $e->getMessage());
+        }
+    }
 } catch (Throwable $e) {
     if (str_contains($e->getMessage(), 'Duplicate')) {
         json_error('El usuario o correo ya existe', 409);
