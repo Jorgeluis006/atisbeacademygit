@@ -72,7 +72,7 @@ try {
             .header { background: linear-gradient(135deg, #791eba 0%, #bfa6a4 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
             .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
             .alert-box { background: #fff3cd; border: 2px solid #fcb500; padding: 15px; margin: 20px 0; border-radius: 8px; }
-            .button { display: inline-block; background: #791eba; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; margin: 20px 0; font-weight: bold; }
+            .button { display: inline-block; background: #791eba; color: white !important; padding: 15px 30px; text-decoration: none; border-radius: 8px; margin: 20px 0; font-weight: bold; }
             .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
         </style>
     </head>
