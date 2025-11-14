@@ -562,7 +562,7 @@ function BookingSettingsManager() {
   return (
     <section className="rounded-xl shadow-lg p-8 mt-6 bg-white">
       <h2 className="section-title text-brand-purple">Configuración de reservas</h2>
-      <p className="text-sm text-gray-600 mb-4">Selecciona los días en los que los estudiantes pueden agendar clases (global o por profesor).</p>
+      <p className="text-sm text-gray-600 mb-4">Por defecto todos los días están disponibles. Marca los días que deseas <strong>bloquear</strong> (no podrán recibir reservas) para el alcance seleccionado.</p>
 
       <div className="mb-4">
         <label className="label">Seleccionar alcance</label>
@@ -576,7 +576,7 @@ function BookingSettingsManager() {
 
       <div className="flex flex-wrap gap-3 mb-6">
         {days.map(d => (
-          <button key={d} type="button" onClick={() => toggleDay(d)} className={`px-4 py-2 rounded-full border ${ (allowed ?? []).includes(d) ? 'bg-brand-purple text-white' : 'bg-white text-gray-700 border-gray-200' }`}>
+          <button key={d} type="button" onClick={() => toggleDay(d)} className={`px-4 py-2 rounded-full border ${ (allowed ?? []).includes(d) ? 'bg-red-500 text-white' : 'bg-white text-gray-700 border-gray-200' }`}>
             {d}
           </button>
         ))}

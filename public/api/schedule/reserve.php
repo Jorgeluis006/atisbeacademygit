@@ -61,40 +61,43 @@ if ($check->fetch()) {
     json_error('Ya tienes una reserva en ese horario', 409);
 }
 
-// Verificar reglas de booking (días permitidos) si existen
+// Verificar reglas de booking: usamos listas de días BLOQUEADOS (por profesor priority sobre global)
 try {
-    $row = $pdo->query("SELECT allowed_days FROM booking_settings WHERE id = 1 LIMIT 1")->fetch();
-    if ($row && $row['allowed_days']) {
-        $allowed = json_decode($row['allowed_days'], true);
-        if (is_array($allowed)) {
-            $dayName = $dt->format('l'); // Ej: Monday, Tuesday
-            if (!in_array($dayName, $allowed, true)) {
+    $dayName = $dt->format('l'); // Ej: Monday, Tuesday
+
+    // Primero verificar configuración por profesor (booking_blocked_days)
+    if ($teacher_id) {
+        $stmt = $pdo->prepare("SELECT booking_blocked_days FROM users WHERE id = ? LIMIT 1");
+        $stmt->execute([$teacher_id]);
+        $r = $stmt->fetch();
+        if ($r && $r['booking_blocked_days']) {
+            $blocked = json_decode($r['booking_blocked_days'], true);
+            if (is_array($blocked) && in_array($dayName, $blocked, true)) {
+                json_error('No se permiten reservas en el día seleccionado para este profesor', 409);
+            }
+        }
+    }
+
+    // Luego verificar configuración global (booking_settings.blocked_days)
+    $row = $pdo->query("SELECT blocked_days, allowed_days FROM booking_settings WHERE id = 1 LIMIT 1")->fetch();
+    if ($row) {
+        if (!empty($row['blocked_days'])) {
+            $globalBlocked = json_decode($row['blocked_days'], true);
+            if (is_array($globalBlocked) && in_array($dayName, $globalBlocked, true)) {
+                json_error('No se permiten reservas en el día seleccionado', 409);
+            }
+        } elseif (!empty($row['allowed_days'])) {
+            // compatibility: if allowed_days present, convert to blocked set
+            $all = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+            $allowed = json_decode($row['allowed_days'], true) ?: [];
+            $globalBlocked = array_values(array_filter($all, function($d) use ($allowed){ return !in_array($d, $allowed, true); }));
+            if (in_array($dayName, $globalBlocked, true)) {
                 json_error('No se permiten reservas en el día seleccionado', 409);
             }
         }
     }
 } catch (Throwable $e) {
     // Si hay error leyendo configuraciones, no bloquear la reserva
-}
-
-// Priorizar configuración por profesor si existe
-try {
-    if ($teacher_id) {
-        $stmt = $pdo->prepare("SELECT booking_allowed_days FROM users WHERE id = ? LIMIT 1");
-        $stmt->execute([$teacher_id]);
-        $r = $stmt->fetch();
-        if ($r && $r['booking_allowed_days']) {
-            $allowed = json_decode($r['booking_allowed_days'], true);
-            if (is_array($allowed)) {
-                $dayName = $dt->format('l');
-                if (!in_array($dayName, $allowed, true)) {
-                    json_error('No se permiten reservas en el día seleccionado para este profesor', 409);
-                }
-            }
-        }
-    }
-} catch (Throwable $e) {
-    // ignorar
 }
 
 $stmt = $pdo->prepare('INSERT INTO schedule_reservations (user_id, teacher_id, slot_id, datetime, tipo, modalidad, notas) VALUES (?,?,?,?,?,?,?)');
