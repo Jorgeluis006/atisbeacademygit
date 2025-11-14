@@ -61,24 +61,11 @@ if ($check->fetch()) {
     json_error('Ya tienes una reserva en ese horario', 409);
 }
 
-// Verificar reglas de booking: usamos listas de días BLOQUEADOS (por profesor priority sobre global)
+// Verificar reglas de booking: usamos sólo la configuración global (blocked_days o allowed_days)
 try {
     $dayName = $dt->format('l'); // Ej: Monday, Tuesday
 
-    // Primero verificar configuración por profesor (booking_blocked_days)
-    if ($teacher_id) {
-        $stmt = $pdo->prepare("SELECT booking_blocked_days FROM users WHERE id = ? LIMIT 1");
-        $stmt->execute([$teacher_id]);
-        $r = $stmt->fetch();
-        if ($r && $r['booking_blocked_days']) {
-            $blocked = json_decode($r['booking_blocked_days'], true);
-            if (is_array($blocked) && in_array($dayName, $blocked, true)) {
-                json_error('No se permiten reservas en el día seleccionado para este profesor', 409);
-            }
-        }
-    }
-
-    // Luego verificar configuración global (booking_settings.blocked_days)
+    // Verificar configuración global (booking_settings.blocked_days)
     $row = $pdo->query("SELECT blocked_days, allowed_days FROM booking_settings WHERE id = 1 LIMIT 1")->fetch();
     if ($row) {
         if (!empty($row['blocked_days'])) {

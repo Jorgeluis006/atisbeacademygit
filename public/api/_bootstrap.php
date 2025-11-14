@@ -225,7 +225,6 @@ function ensure_teacher_fields() {
     try { $pdo->exec("CREATE INDEX IF NOT EXISTS idx_users_teacher ON users(teacher_id)"); } catch (Throwable $e) { try { $pdo->exec("CREATE INDEX idx_users_teacher ON users(teacher_id)"); } catch (Throwable $e2) {} }
     // Agregar columnas para configuraciones de reserva por profesor (permitir bloqueos)
     try { $pdo->exec("ALTER TABLE users ADD COLUMN booking_allowed_days JSON DEFAULT NULL AFTER modality"); } catch (Throwable $e) {}
-    try { $pdo->exec("ALTER TABLE users ADD COLUMN booking_blocked_days JSON DEFAULT NULL AFTER booking_allowed_days"); } catch (Throwable $e) {}
 }
 
 // Tabla para progreso de estudiante editable por profesores

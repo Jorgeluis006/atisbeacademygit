@@ -86,9 +86,9 @@ export type Reservation = {
   meeting_link?: string;
 }
 
-export async function getScheduleSlots(): Promise<{ slots: ScheduleSlot[]; blocked_days?: string[] | null }> {
+export async function getScheduleSlots(): Promise<ScheduleSlot[]> {
   const res = await api.get('/schedule/slots.php')
-  return { slots: res.data?.slots ?? [], blocked_days: res.data?.blocked_days ?? null }
+  return res.data?.slots ?? []
 }
 
 export async function getMyReservations(): Promise<Reservation[]> {
@@ -167,14 +167,27 @@ export async function getTeacherReservations(): Promise<Reservation[]> {
 }
 
 // Admin: booking settings (días permitidos)
-export async function getBookingSettings(teacherId?: number): Promise<{ blocked_days: string[] | null }> {
+export async function getBookingSettings(teacherId?: number): Promise<{ blocked_days?: string[] | null; allowed_days?: string[] | null }> {
   const params = teacherId ? { params: { teacher_id: teacherId } } : undefined
   const res = await api.get('/admin/booking_settings.php', params)
-  return res.data
+  // server returns blocked_days; provide allowed_days for backwards compatibility
+  const blocked: string[] | null = res.data?.blocked_days ?? null
+  const all = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+  const allowed = blocked ? all.filter(d => !blocked.includes(d)) : null
+  return { blocked_days: blocked, allowed_days: allowed }
 }
 
-export async function saveBookingSettings(input: { blocked_days: string[]; teacher_id?: number }) {
-  const res = await api.post('/admin/booking_settings.php', input)
+export async function saveBookingSettings(input: { blocked_days?: string[]; allowed_days?: string[]; teacher_id?: number }) {
+  // API expects blocked_days; accept allowed_days from UI and convert
+  let blocked = input.blocked_days ?? null
+  if (!blocked && Array.isArray(input.allowed_days)) {
+    const all = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+    blocked = all.filter(d => !input.allowed_days!.includes(d))
+  }
+  const payload: any = { blocked_days: blocked ?? [] }
+  // teacher_id is ignored by server now, but keep for backward compatibility
+  if (input.teacher_id) payload.teacher_id = input.teacher_id
+  const res = await api.post('/admin/booking_settings.php', payload)
   return res.data
 }
 
