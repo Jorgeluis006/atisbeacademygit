@@ -72,9 +72,16 @@ export default function Footer() {
                 className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all hover:scale-110"
                 style={{ color: '#fffef1' }}
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 2v6.5a4.5 4.5 0 1 0 4.5 4.5V9a6 6 0 0 1-6-6z" />
-                  <path d="M17.5 3.5v2.1a6 6 0 0 0 2.5.5v-2a4.5 4.5 0 0 1-2.5-1.1z" opacity="0.9" />
+                {/* TikTok-style note logo with brand colors (approx) */}
+                <svg className="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                  <defs>
+                    <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+                      <stop offset="0" stopColor="#69C9D0"/>
+                      <stop offset="1" stopColor="#EE1D52"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M9 17a4 4 0 1 0 4-4V7h4V5H9v12z" fill="url(#g1)" />
+                  <path d="M9 17a4 4 0 1 0 4-4V7h4V5H9v12z" fill="rgba(0,0,0,0.12)" transform="translate(0,0) scale(0.98)"/>
                 </svg>
               </a>
             </div>
