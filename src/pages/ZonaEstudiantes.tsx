@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { login as apiLogin, logout as apiLogout, me as apiMe, getStudentProgress, type StudentProgress, getScheduleSlots, createReservation, getMyReservations, cancelReservation, type ScheduleSlot, type Reservation, forgotPassword, changePassword } from '../services/api'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import CalendarModal from '../components/CalendarModal'
 
 function Login({ onSuccess }: { onSuccess: () => void }) {
   const [showForgotPassword, setShowForgotPassword] = useState(false)
@@ -354,6 +355,7 @@ export default function ZonaEstudiantes() {
   const [loading, setLoading] = useState(true)
   const [loadingData, setLoadingData] = useState(false)
   const [showChangePassword, setShowChangePassword] = useState(false)
+  const [showCalendar, setShowCalendar] = useState(false)
 
   async function loadStudentData() {
     setLoadingData(true)
@@ -733,7 +735,7 @@ export default function ZonaEstudiantes() {
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-brand-purple to-brand-orange bg-clip-text text-transparent">Horarios / Agendar</h2>
               </div>
               <p className="text-sm text-gray-600 mb-4">Agenda clases personalizadas y exámenes.</p>
-              <ScheduleSection slots={slots} reservas={reservas} onBooked={async () => setReservas(await getMyReservations())} onCancel={async () => setReservas(await getMyReservations())} />
+              <ScheduleSection slots={slots} reservas={reservas} onBooked={async () => setReservas(await getMyReservations())} onCancel={async () => setReservas(await getMyReservations())} showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
             </section>
             </div>
           </div>
@@ -841,19 +843,28 @@ export default function ZonaEstudiantes() {
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-brand-purple to-brand-orange bg-clip-text text-transparent">Mis Clases - Vista Semanal</h2>
               </div>
               {reservas.length > 0 && (
-                <button 
-                  onClick={downloadSchedulePDF}
-                  className="flex items-center gap-2 px-4 py-2 bg-brand-purple hover:bg-brand-purple/90 text-white rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  <span className="font-semibold">Descargar PDF</span>
-                </button>
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => setShowCalendar(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-brand-orange hover:bg-brand-orange/90 text-white rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span className="font-semibold">Ver Mes</span>
+                  </button>
+                  <button 
+                    onClick={downloadSchedulePDF}
+                    className="flex items-center gap-2 px-4 py-2 bg-brand-purple hover:bg-brand-purple/90 text-white rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span className="font-semibold">Descargar PDF</span>
+                  </button>
+                </div>
               )}
-            </div>
-            
-            {reservas.length === 0 ? (
+            </div>            {reservas.length === 0 ? (
               <div className="bg-white/80 backdrop-blur-sm rounded-xl p-8 text-center border border-brand-mauve">
                 <svg className="w-16 h-16 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -1042,7 +1053,7 @@ function parseLocalDateTime(mysqlDatetime: string): Date {
   )
 }
 
-function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: ScheduleSlot[]; reservas: Reservation[]; onBooked: () => void; onCancel: () => void }) {
+function ScheduleSection({ slots, reservas, onBooked, onCancel, showCalendar, setShowCalendar }: { slots: ScheduleSlot[]; reservas: Reservation[]; onBooked: () => void; onCancel: () => void; showCalendar: boolean; setShowCalendar: (v: boolean) => void }) {
   const [selected, setSelected] = useState<ScheduleSlot | null>(null)
   const [notas, setNotas] = useState<string>('')
   const [loading, setLoading] = useState(false)
@@ -1340,6 +1351,16 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
           </div>
         )}
       </div>
+
+      {/* Calendar Modal */}
+      <CalendarModal 
+        open={showCalendar} 
+        onClose={() => setShowCalendar(false)} 
+        reservations={reservas.map(r => ({
+          date: parseLocalDateTime(r.datetime).toISOString().split('T')[0],
+          ...r
+        }))}
+      />
     </div>
   )
 }
