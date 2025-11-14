@@ -84,6 +84,7 @@ if ($slot_id) {
             SELECT 
                 u.name as student_name, 
                 u.email as student_email,
+                t.email as teacher_email,
                 t.name as teacher_name,
                 s.meeting_link,
                 s.curso,
@@ -187,6 +188,57 @@ if ($slot_id) {
             ';
             
             send_mail($info['student_email'], $emailSubject, $emailBody);
+
+            // Notificar al profesor que se ha agendado una clase (si tiene email)
+            $teacherEmail = $info['teacher_email'] ?? '';
+            if ($teacherEmail) {
+                $teacherSubject = "Nueva reserva asignada - " . htmlspecialchars($studentName);
+                $teacherBody = '
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: linear-gradient(135deg, #791eba 0%, #bfa6a4 100%); color: white; padding: 20px; text-align: center; border-radius: 10px; }
+                        .content { background: #f9f9f9; padding: 20px; border-radius: 8px; }
+                        .button { display: inline-block; background: #791eba; color: white; padding: 10px 18px; text-decoration: none; border-radius: 6px; margin: 12px 0; font-weight: bold; }
+                        .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <h2>📌 Nueva reserva asignada</h2>
+                        </div>
+                        <div class="content">
+                            <p>Hola <strong>' . htmlspecialchars($teacherName) . '</strong>,</p>
+                            <p>Se ha agendado una nueva clase contigo:</p>
+                            <ul>
+                                <li><strong>Estudiante:</strong> ' . htmlspecialchars($studentName) . '</li>
+                                <li><strong>Fecha y hora:</strong> ' . htmlspecialchars($fechaFormateada) . '</li>
+                                <li><strong>Curso:</strong> ' . htmlspecialchars($curso . $nivel) . '</li>
+                                <li><strong>Modalidad:</strong> ' . htmlspecialchars(ucfirst($modalidad)) . '</li>
+                                <li><strong>Tipo:</strong> ' . htmlspecialchars(ucfirst($tipo)) . '</li>
+                            </ul>
+                            ' . ($meetingLink ? '
+                            <p style="text-align:center;"><a href="' . htmlspecialchars($meetingLink) . '" class="button">🔗 Ir al enlace de la videollamada</a></p>
+                            <p style="font-size:12px;color:#666;text-align:center;">O copia y pega este enlace en tu navegador: ' . htmlspecialchars($meetingLink) . '</p>
+                            ' : '') . '
+                            ' . ($notas ? '<p><strong>Notas del estudiante:</strong> ' . htmlspecialchars($notas) . '</p>' : '') . '
+                            <p style="margin-top:16px;">Puedes ver más detalles en el panel de administración.</p>
+                        </div>
+                        <div class="footer">
+                            <p>Este es un correo automático.</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+                ';
+
+                send_mail($teacherEmail, $teacherSubject, $teacherBody);
+            }
         }
     } catch (Throwable $e) {
         error_log('Error enviando email de confirmación: ' . $e->getMessage());
