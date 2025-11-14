@@ -191,6 +191,21 @@ function ensure_schedule_schema() {
     try { 
         $pdo->exec("ALTER TABLE schedule_reservations ADD COLUMN nivel VARCHAR(10) DEFAULT NULL AFTER curso"); 
     } catch (Throwable $e) {}
+
+    // Tabla para configuraciones de reservas (días permitidos)
+    try {
+        $sql = "CREATE TABLE IF NOT EXISTS booking_settings (
+            id INT UNSIGNED PRIMARY KEY,
+            allowed_days JSON DEFAULT NULL,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+        $pdo->exec($sql);
+        // Insertar fila por defecto si no existe
+        $exists = $pdo->query("SELECT COUNT(*) FROM booking_settings")->fetchColumn();
+        if ((int)$exists === 0) {
+            $pdo->exec("INSERT INTO booking_settings (id, allowed_days) VALUES (1, NULL)");
+        }
+    } catch (Throwable $e) {}
 }
 
 function require_admin() {
@@ -208,6 +223,8 @@ function ensure_teacher_fields() {
     try { $pdo->exec("ALTER TABLE users ADD COLUMN modality VARCHAR(20) NULL"); } catch (Throwable $e) {}
     try { $pdo->exec("ALTER TABLE users ADD COLUMN teacher_id INT UNSIGNED NULL"); } catch (Throwable $e) {}
     try { $pdo->exec("CREATE INDEX IF NOT EXISTS idx_users_teacher ON users(teacher_id)"); } catch (Throwable $e) { try { $pdo->exec("CREATE INDEX idx_users_teacher ON users(teacher_id)"); } catch (Throwable $e2) {} }
+    // Agregar columna para configuraciones de reserva por profesor
+    try { $pdo->exec("ALTER TABLE users ADD COLUMN booking_allowed_days JSON DEFAULT NULL AFTER modality"); } catch (Throwable $e) {}
 }
 
 // Tabla para progreso de estudiante editable por profesores
