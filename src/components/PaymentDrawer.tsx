@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 interface Props {
   open: boolean
   onClose: () => void
@@ -18,9 +20,9 @@ export default function PaymentDrawer({ open, onClose, productName, price, phone
   const openWhatsApp = () => window.open(`https://wa.me/${whatsappNumber}?text=${whatsappMessage}`, '_blank')
 
   return (
-    <div className="fixed inset-0 z-50 flex">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <aside className="mx-auto mt-8 mb-8 w-full max-w-xl bg-[#101015] text-white rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+      <aside className="relative w-full max-w-lg bg-[#101015] text-white rounded-2xl shadow-2xl flex flex-col overflow-hidden max-h-[85vh]">
         {/* Header */}
         <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between">
           <h3 className="text-lg font-bold flex items-center gap-2"><span className="text-sky-400">💳</span> Formas de Pago</h3>
