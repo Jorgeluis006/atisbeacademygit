@@ -57,6 +57,19 @@ try {
     // Enviar correo de confirmación al usuario
     try {
         $userEmailSubject = '¡Gracias por contactarnos! - Atisbe Academy';
+        // Construir enlace de WhatsApp con mensaje prellenado (si el usuario proporcionó curso/día)
+        $cursoSolicitado = isset($data['curso']) ? trim((string)$data['curso']) : '';
+        $diaInteres = isset($data['dia_interes']) ? trim((string)$data['dia_interes']) : '';
+        $waNumber = '573227850345';
+        $waMessage = '';
+        if ($cursoSolicitado || $diaInteres) {
+            $waMessage = 'Hola Atisbe, me gustaría obtener más información';
+            if ($cursoSolicitado) { $waMessage .= ' sobre el curso de ' . $cursoSolicitado; }
+            if ($diaInteres) { $waMessage .= '. Estoy interesado en clases el/los ' . $diaInteres; }
+            $waMessage .= '. Mi nombre es ' . (trim((string)$data['nombre']) ?: '');
+        }
+        $waLink = $waMessage ? ('https://wa.me/' . $waNumber . '?text=' . rawurlencode($waMessage)) : '';
+
         $userEmailBody = '
         <!DOCTYPE html>
         <html>
@@ -98,11 +111,9 @@ try {
                         <p><strong>📧 Email:</strong> automatic@atisbeacademy.com</p>
                         <p><strong>⏰ Horario:</strong> Lunes a Domingo, 24/7</p>
                         
-                        <p style="text-align: center; margin-top: 20px;">
-                            <a href="https://wa.me/573227850345?text=Hola%20Atisbe,%20me%20gustaría%20obtener%20más%20información" class="whatsapp-button">
-                                💬 Chatea con nosotros por WhatsApp
-                            </a>
-                        </p>
+                            <p style="text-align: center; margin-top: 20px;">
+                                ' . ($waLink ? '<a href="' . htmlspecialchars($waLink) . '" class="whatsapp-button">💬 Chatea con nosotros por WhatsApp</a>' : '<a href="https://wa.me/573227850345?text=Hola%20Atisbe,%20me%20gustaría%20obtener%20más%20información" class="whatsapp-button">💬 Chatea con nosotros por WhatsApp</a>') . '
+                            </p>
                     </div>
                     
                     <h3 style="color: #791eba;">🌟 ¿Por qué elegir Atisbe Academy?</h3>
