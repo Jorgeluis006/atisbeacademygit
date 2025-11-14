@@ -29,14 +29,15 @@ import {
   updateVideo,
   deleteVideo,
   changePassword,
+  getBookingSettings,
+  saveBookingSettings,
   type Video,
   uploadImage,
   uploadVideo
 } from '../services/api'
 
 import AdminContacts from './AdminContacts'
-import { getBookingSettings, saveBookingSettings } from '../services/api'
-import { useEffect } from 'react'
+
 
 
 function ChangePasswordModal({ onClose }: { onClose: () => void }) {
@@ -210,7 +211,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true)
   const [msg, setMsg] = useState('')
   const [err, setErr] = useState('')
-  const [activeTab, setActiveTab] = useState<'contacts' | 'users' | 'testimonials' | 'courses' | 'blog' | 'videos' | 'products'>('users')
+  const [activeTab, setActiveTab] = useState<'contacts' | 'users' | 'testimonials' | 'courses' | 'blog' | 'videos' | 'products' | 'config'>('users')
   const [showChangePassword, setShowChangePassword] = useState(false)
 
   useEffect(() => {
@@ -504,18 +505,37 @@ function AssignStudentForm({ onDone, onError }: { onDone: (msg: string) => void;
 function BookingSettingsManager() {
   const [allowed, setAllowed] = useState<string[] | null>(null)
   const [saving, setSaving] = useState(false)
+  const [teachers, setTeachers] = useState<AdminUser[]>([])
+  const [selectedTeacher, setSelectedTeacher] = useState<number | 'global'>('global')
   const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
 
   useEffect(() => {
     (async () => {
       try {
-        const res = await getBookingSettings()
-        setAllowed(res.allowed_days ?? [])
+        // cargar lista de usuarios y filtrar profesores
+        const u = await listUsers({ limit: 1000 })
+        setTeachers(u.items.filter(it => it.role === 'teacher'))
+      } catch (e) {
+        setTeachers([])
+      }
+    })()
+  }, [])
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (selectedTeacher === 'global') {
+          const res = await getBookingSettings()
+          setAllowed(res.allowed_days ?? [])
+        } else {
+          const res = await getBookingSettings(selectedTeacher as number)
+          setAllowed(res.allowed_days ?? [])
+        }
       } catch (e) {
         setAllowed([])
       }
     })()
-  }, [])
+  }, [selectedTeacher])
 
   function toggleDay(day: string) {
     setAllowed((prev) => {
@@ -528,7 +548,11 @@ function BookingSettingsManager() {
   async function save() {
     setSaving(true)
     try {
-      await saveBookingSettings({ allowed_days: allowed ?? [] })
+      if (selectedTeacher === 'global') {
+        await saveBookingSettings({ allowed_days: allowed ?? [] })
+      } else {
+        await saveBookingSettings({ allowed_days: allowed ?? [], teacher_id: selectedTeacher as number })
+      }
       alert('Guardado')
     } catch (e) {
       alert('Error guardando')
@@ -538,10 +562,21 @@ function BookingSettingsManager() {
   return (
     <section className="rounded-xl shadow-lg p-8 mt-6 bg-white">
       <h2 className="section-title text-brand-purple">Configuración de reservas</h2>
-      <p className="text-sm text-gray-600 mb-4">Selecciona los días en los que los estudiantes pueden agendar clases.</p>
+      <p className="text-sm text-gray-600 mb-4">Selecciona los días en los que los estudiantes pueden agendar clases (global o por profesor).</p>
+
+      <div className="mb-4">
+        <label className="label">Seleccionar alcance</label>
+        <select className="select-control max-w-sm" value={selectedTeacher as any} onChange={(e) => setSelectedTeacher(e.target.value === 'global' ? 'global' : Number(e.target.value))}>
+          <option value="global">Global (todos los profesores)</option>
+          {teachers.map(t => (
+            <option key={t.id} value={t.id}>{t.name || t.username}</option>
+          ))}
+        </select>
+      </div>
+
       <div className="flex flex-wrap gap-3 mb-6">
         {days.map(d => (
-          <button key={d} onClick={() => toggleDay(d)} className={`px-4 py-2 rounded-full border ${ (allowed ?? []).includes(d) ? 'bg-brand-purple text-white' : 'bg-white text-gray-700 border-gray-200' }`}>
+          <button key={d} type="button" onClick={() => toggleDay(d)} className={`px-4 py-2 rounded-full border ${ (allowed ?? []).includes(d) ? 'bg-brand-purple text-white' : 'bg-white text-gray-700 border-gray-200' }`}>
             {d}
           </button>
         ))}

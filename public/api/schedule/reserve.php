@@ -77,6 +77,26 @@ try {
     // Si hay error leyendo configuraciones, no bloquear la reserva
 }
 
+// Priorizar configuración por profesor si existe
+try {
+    if ($teacher_id) {
+        $stmt = $pdo->prepare("SELECT booking_allowed_days FROM users WHERE id = ? LIMIT 1");
+        $stmt->execute([$teacher_id]);
+        $r = $stmt->fetch();
+        if ($r && $r['booking_allowed_days']) {
+            $allowed = json_decode($r['booking_allowed_days'], true);
+            if (is_array($allowed)) {
+                $dayName = $dt->format('l');
+                if (!in_array($dayName, $allowed, true)) {
+                    json_error('No se permiten reservas en el día seleccionado para este profesor', 409);
+                }
+            }
+        }
+    }
+} catch (Throwable $e) {
+    // ignorar
+}
+
 $stmt = $pdo->prepare('INSERT INTO schedule_reservations (user_id, teacher_id, slot_id, datetime, tipo, modalidad, notas) VALUES (?,?,?,?,?,?,?)');
 $stmt->execute([
     $user_id,

@@ -167,12 +167,13 @@ export async function getTeacherReservations(): Promise<Reservation[]> {
 }
 
 // Admin: booking settings (días permitidos)
-export async function getBookingSettings(): Promise<{ allowed_days: string[] | null }> {
-  const res = await api.get('/admin/booking_settings.php')
+export async function getBookingSettings(teacherId?: number): Promise<{ allowed_days: string[] | null }> {
+  const params = teacherId ? { params: { teacher_id: teacherId } } : undefined
+  const res = await api.get('/admin/booking_settings.php', params)
   return res.data
 }
 
-export async function saveBookingSettings(input: { allowed_days: string[] }) {
+export async function saveBookingSettings(input: { allowed_days: string[]; teacher_id?: number }) {
   const res = await api.post('/admin/booking_settings.php', input)
   return res.data
 }

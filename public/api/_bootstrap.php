@@ -223,6 +223,8 @@ function ensure_teacher_fields() {
     try { $pdo->exec("ALTER TABLE users ADD COLUMN modality VARCHAR(20) NULL"); } catch (Throwable $e) {}
     try { $pdo->exec("ALTER TABLE users ADD COLUMN teacher_id INT UNSIGNED NULL"); } catch (Throwable $e) {}
     try { $pdo->exec("CREATE INDEX IF NOT EXISTS idx_users_teacher ON users(teacher_id)"); } catch (Throwable $e) { try { $pdo->exec("CREATE INDEX idx_users_teacher ON users(teacher_id)"); } catch (Throwable $e2) {} }
+    // Agregar columna para configuraciones de reserva por profesor
+    try { $pdo->exec("ALTER TABLE users ADD COLUMN booking_allowed_days JSON DEFAULT NULL AFTER modality"); } catch (Throwable $e) {}
 }
 
 // Tabla para progreso de estudiante editable por profesores
