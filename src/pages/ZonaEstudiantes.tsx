@@ -1085,7 +1085,18 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel, showCalendar, se
       setSelected(null); setNotas('')
       await onBooked()
     } catch (e: any) {
-      setError(e?.response?.data?.error || 'No se pudo crear la reserva')
+      const data = e?.response?.data
+      if (data?.code === 'SLOT_FULL') {
+        const cap = typeof data.capacity === 'number' ? data.capacity : undefined
+        const resv = typeof data.reserved === 'number' ? data.reserved : undefined
+        setError(`Este horario ya no tiene cupos disponibles${cap!=null&&resv!=null?` (${resv}/${cap})`:''}`)
+      } else if (data?.code === 'RESERVATION_DUPLICATE') {
+        setError('Ya tienes una reserva en ese horario')
+      } else if (data?.code === 'DAY_BLOCKED') {
+        setError('Este día está bloqueado para reservas')
+      } else {
+        setError(data?.error || 'No se pudo crear la reserva')
+      }
     } finally {
       setLoading(false)
     }
