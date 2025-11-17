@@ -4,11 +4,8 @@ export default function Footer() {
   <div className="container-padded py-12">
         {/* Logo centrado arriba */}
         <div className="text-center mb-10">
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center">
-              <span className="font-bold text-xl" style={{ color: '#B872DB' }}>A</span>
-            </div>
-            <span className="font-serif text-3xl font-bold" style={{ color: '#fffef1' }}>Atisbe Academy</span>
+          <div className="flex items-center justify-center mb-3">
+            <img src="/images/logofooter.png" alt="Atisbe Academy Logo" className="h-16 w-auto" />
           </div>
           <p className="text-sm" style={{ color: '#fffef1', opacity: 0.85 }}>El mundo a través de los idiomas</p>
         </div>
