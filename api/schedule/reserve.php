@@ -50,7 +50,11 @@ if ($slot_id) {
     $num_reservas = (int)$stmt->fetchColumn();
     $max_alumnos = isset($slot['max_alumnos']) ? (int)$slot['max_alumnos'] : 1;
     if ($num_reservas >= $max_alumnos) {
-        json_error('Este horario ya no tiene cupos disponibles', 409);
+        json_error('Este horario ya no tiene cupos disponibles', 409, [
+            'code' => 'SLOT_FULL',
+            'capacity' => $max_alumnos,
+            'reserved' => $num_reservas,
+        ]);
     }
 }
 
@@ -58,7 +62,7 @@ if ($slot_id) {
 $check = $pdo->prepare('SELECT id FROM schedule_reservations WHERE user_id=? AND datetime=? LIMIT 1');
 $check->execute([$user_id, $dt->format('Y-m-d H:i:s')]);
 if ($check->fetch()) {
-    json_error('Ya tienes una reserva en ese horario', 409);
+    json_error('Ya tienes una reserva en ese horario', 409, ['code' => 'RESERVATION_DUPLICATE']);
 }
 
 // Verificar reglas de booking: usamos sólo la configuración global (blocked_days o allowed_days)
@@ -71,7 +75,7 @@ try {
         if (!empty($row['blocked_days'])) {
             $globalBlocked = json_decode($row['blocked_days'], true);
             if (is_array($globalBlocked) && in_array($dayName, $globalBlocked, true)) {
-                json_error('No se permiten reservas en el día seleccionado', 409);
+                json_error('No se permiten reservas en el día seleccionado', 409, ['code' => 'DAY_BLOCKED']);
             }
         } elseif (!empty($row['allowed_days'])) {
             // compatibility: if allowed_days present, convert to blocked set
@@ -79,7 +83,7 @@ try {
             $allowed = json_decode($row['allowed_days'], true) ?: [];
             $globalBlocked = array_values(array_filter($all, function($d) use ($allowed){ return !in_array($d, $allowed, true); }));
             if (in_array($dayName, $globalBlocked, true)) {
-                json_error('No se permiten reservas en el día seleccionado', 409);
+                json_error('No se permiten reservas en el día seleccionado', 409, ['code' => 'DAY_BLOCKED']);
             }
         }
     }
