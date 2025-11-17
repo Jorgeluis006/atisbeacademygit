@@ -50,11 +50,7 @@ if ($slot_id) {
     $num_reservas = (int)$stmt->fetchColumn();
     $max_alumnos = isset($slot['max_alumnos']) ? (int)$slot['max_alumnos'] : 1;
     if ($num_reservas >= $max_alumnos) {
-        json_error('Este horario ya no tiene cupos disponibles', 409, [
-            'code' => 'SLOT_FULL',
-            'capacity' => $max_alumnos,
-            'reserved' => $num_reservas,
-        ]);
+        json_error('Este horario ya no tiene cupos disponibles', 409);
     }
 }
 
@@ -62,30 +58,28 @@ if ($slot_id) {
 $check = $pdo->prepare('SELECT id FROM schedule_reservations WHERE user_id=? AND datetime=? LIMIT 1');
 $check->execute([$user_id, $dt->format('Y-m-d H:i:s')]);
 if ($check->fetch()) {
-    json_error('Ya tienes una reserva en ese horario', 409, ['code' => 'RESERVATION_DUPLICATE']);
+    json_error('Ya tienes una reserva en ese horario', 409);
 }
 
 // Verificar reglas de booking: usamos sólo la configuración global (blocked_days o allowed_days)
 try {
     $dayName = $dt->format('l'); // Ej: Monday, Tuesday
 
-    // Verificar configuración global (blocked_days tiene prioridad; allowed_days es compatibilidad)
+    // Verificar configuración global (booking_settings.blocked_days)
     $row = $pdo->query("SELECT blocked_days, allowed_days FROM booking_settings WHERE id = 1 LIMIT 1")->fetch();
     if ($row) {
         if (!empty($row['blocked_days'])) {
             $globalBlocked = json_decode($row['blocked_days'], true);
-            if (is_array($globalBlocked) && count($globalBlocked) > 0 && in_array($dayName, $globalBlocked, true)) {
-                json_error('No se permiten reservas en el día seleccionado', 409, ['code' => 'DAY_BLOCKED']);
+            if (is_array($globalBlocked) && in_array($dayName, $globalBlocked, true)) {
+                json_error('No se permiten reservas en el día seleccionado', 409);
             }
-        } elseif ($row['allowed_days'] !== null) {
-            // allowed_days sólo aplica si tiene elementos; si es [] o vacío => sin restricciones
+        } elseif (!empty($row['allowed_days'])) {
+            // compatibility: if allowed_days present, convert to blocked set
             $all = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-            $allowed = json_decode($row['allowed_days'], true);
-            if (is_array($allowed) && count($allowed) > 0) {
-                $globalBlocked = array_values(array_filter($all, function($d) use ($allowed){ return !in_array($d, $allowed, true); }));
-                if (in_array($dayName, $globalBlocked, true)) {
-                    json_error('No se permiten reservas en el día seleccionado', 409, ['code' => 'DAY_BLOCKED']);
-                }
+            $allowed = json_decode($row['allowed_days'], true) ?: [];
+            $globalBlocked = array_values(array_filter($all, function($d) use ($allowed){ return !in_array($d, $allowed, true); }));
+            if (in_array($dayName, $globalBlocked, true)) {
+                json_error('No se permiten reservas en el día seleccionado', 409);
             }
         }
     }

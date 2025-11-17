@@ -60,8 +60,8 @@ export default function PaymentDrawer({ open, onClose, productName, price, phone
                 <input value={nombreProducto} onChange={e => setNombreProducto(e.target.value)} placeholder="Especifica qué curso o producto te interesa adquirir" className="w-full text-sm bg-white border border-gray-300 rounded px-3 py-2" />
               </div>
               <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-4 border border-blue-200">
-                <div className="font-bold text-blue-900 text-sm mb-2 flex items-center gap-2">📧 Datos de contacto</div>
-                <p className="text-sm text-gray-600">Nombre completo y correo electrónico para el registro</p>
+                <div className="font-bold text-blue-900 text-sm mb-2 flex items-center gap-2">🎨 Color preferido</div>
+                <input value={colorPreferido} onChange={e => setColorPreferido(e.target.value)} placeholder="Indica el color que deseas (si aplica al producto)" className="w-full text-sm bg-white border border-gray-300 rounded px-3 py-2" />
               </div>
             </div>
           </div>

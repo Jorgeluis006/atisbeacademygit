@@ -192,15 +192,6 @@ function ensure_schedule_schema() {
         $pdo->exec("ALTER TABLE schedule_reservations ADD COLUMN nivel VARCHAR(10) DEFAULT NULL AFTER curso"); 
     } catch (Throwable $e) {}
 
-    // Campo para marcar cuándo se envió el recordatorio (evitar duplicados)
-    try {
-        $columns = $pdo->query("SHOW COLUMNS FROM schedule_reservations LIKE 'reminder_sent_at'")->fetchAll();
-        if (empty($columns)) {
-            $pdo->exec("ALTER TABLE schedule_reservations ADD COLUMN reminder_sent_at DATETIME NULL AFTER created_at");
-            $pdo->exec("CREATE INDEX idx_res_reminder ON schedule_reservations(reminder_sent_at)");
-        }
-    } catch (Throwable $e) {}
-
     // Tabla para configuraciones de reservas (días permitidos)
     try {
         $sql = "CREATE TABLE IF NOT EXISTS booking_settings (
