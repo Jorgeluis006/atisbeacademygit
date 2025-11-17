@@ -29,8 +29,6 @@ import {
   updateVideo,
   deleteVideo,
   changePassword,
-  getBookingSettings,
-  saveBookingSettings,
   type Video,
   uploadImage,
   uploadVideo
