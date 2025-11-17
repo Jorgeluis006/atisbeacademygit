@@ -69,21 +69,23 @@ if ($check->fetch()) {
 try {
     $dayName = $dt->format('l'); // Ej: Monday, Tuesday
 
-    // Verificar configuración global (booking_settings.blocked_days)
+    // Verificar configuración global (blocked_days tiene prioridad; allowed_days es compatibilidad)
     $row = $pdo->query("SELECT blocked_days, allowed_days FROM booking_settings WHERE id = 1 LIMIT 1")->fetch();
     if ($row) {
         if (!empty($row['blocked_days'])) {
             $globalBlocked = json_decode($row['blocked_days'], true);
-            if (is_array($globalBlocked) && in_array($dayName, $globalBlocked, true)) {
+            if (is_array($globalBlocked) && count($globalBlocked) > 0 && in_array($dayName, $globalBlocked, true)) {
                 json_error('No se permiten reservas en el día seleccionado', 409, ['code' => 'DAY_BLOCKED']);
             }
-        } elseif (!empty($row['allowed_days'])) {
-            // compatibility: if allowed_days present, convert to blocked set
+        } elseif ($row['allowed_days'] !== null) {
+            // allowed_days sólo aplica si tiene elementos; si es [] o vacío => sin restricciones
             $all = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-            $allowed = json_decode($row['allowed_days'], true) ?: [];
-            $globalBlocked = array_values(array_filter($all, function($d) use ($allowed){ return !in_array($d, $allowed, true); }));
-            if (in_array($dayName, $globalBlocked, true)) {
-                json_error('No se permiten reservas en el día seleccionado', 409, ['code' => 'DAY_BLOCKED']);
+            $allowed = json_decode($row['allowed_days'], true);
+            if (is_array($allowed) && count($allowed) > 0) {
+                $globalBlocked = array_values(array_filter($all, function($d) use ($allowed){ return !in_array($d, $allowed, true); }));
+                if (in_array($dayName, $globalBlocked, true)) {
+                    json_error('No se permiten reservas en el día seleccionado', 409, ['code' => 'DAY_BLOCKED']);
+                }
             }
         }
     }
