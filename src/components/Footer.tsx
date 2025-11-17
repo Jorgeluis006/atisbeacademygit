@@ -5,9 +5,8 @@ export default function Footer() {
         {/* Logo centrado arriba */}
         <div className="text-center mb-10">
           <div className="flex items-center justify-center mb-3">
-            <img src="/images/logofooter.png" alt="Atisbe Academy Logo" className="h-16 w-auto" />
+            <img src="/images/Logo morado con slogan - Atisbe.png" alt="Atisbe Academy Logo" className="h-20 w-auto" />
           </div>
-          <p className="text-sm" style={{ color: '#fffef1', opacity: 0.85 }}>El mundo a través de los idiomas</p>
         </div>
 
         {/* Tres columnas */}
