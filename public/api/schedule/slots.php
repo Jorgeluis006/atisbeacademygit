@@ -22,6 +22,7 @@ $teacher_id = (int)$user['teacher_id'];
 // Ya no filtramos por is_available para permitir múltiples estudiantes
 
 // Traer también max_alumnos
+// Permitir slots que comenzaron en los últimos 30 minutos (útil si clase ya está en progreso)
 $stmt = $pdo->prepare('
     SELECT 
         id,
@@ -35,7 +36,7 @@ $stmt = $pdo->prepare('
         max_alumnos
     FROM teacher_slots
     WHERE teacher_id = ? 
-      AND datetime > NOW()
+      AND datetime > DATE_SUB(NOW(), INTERVAL 30 MINUTE)
     ORDER BY datetime ASC
 ');
 $stmt->execute([$teacher_id]);
