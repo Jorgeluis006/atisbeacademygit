@@ -5,10 +5,18 @@ export default function Hero() {
   return (
     <section className="container-padded py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center">
       <div>
-        <motion.h1
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
+          className="mb-6"
+        >
+          <img src="/images/logoheader.png" alt="Atisbe Logo" className="h-16 w-auto" />
+        </motion.div>
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
           className="text-4xl md:text-5xl font-extrabold leading-tight"
         >
           El mundo a través de los idiomas.
