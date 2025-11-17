@@ -345,7 +345,6 @@ export default function Admin() {
       {activeTab === 'blog' && <BlogManager />}
       {activeTab === 'videos' && <VideosManager />}
       {activeTab === 'products' && <ProductsManager />}
-      {activeTab === 'config' && <BookingSettingsManager />}
 
       {(msg || err) && (
         <div className="mt-4">
@@ -499,92 +498,6 @@ function AssignStudentForm({ onDone, onError }: { onDone: (msg: string) => void;
         </>
       )}
     </form>
-  )
-}
-
-function BookingSettingsManager() {
-  const [allowed, setAllowed] = useState<string[] | null>(null)
-  const [saving, setSaving] = useState(false)
-  const [teachers, setTeachers] = useState<AdminUser[]>([])
-  const [selectedTeacher, setSelectedTeacher] = useState<number | 'global'>('global')
-  const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
-
-  useEffect(() => {
-    (async () => {
-      try {
-        // cargar lista de usuarios y filtrar profesores
-        const u = await listUsers({ limit: 1000 })
-        setTeachers(u.items.filter(it => it.role === 'teacher'))
-      } catch (e) {
-        setTeachers([])
-      }
-    })()
-  }, [])
-
-  useEffect(() => {
-    (async () => {
-      try {
-        if (selectedTeacher === 'global') {
-          const res = await getBookingSettings()
-          setAllowed(res.allowed_days ?? [])
-        } else {
-          const res = await getBookingSettings(selectedTeacher as number)
-          setAllowed(res.allowed_days ?? [])
-        }
-      } catch (e) {
-        setAllowed([])
-      }
-    })()
-  }, [selectedTeacher])
-
-  function toggleDay(day: string) {
-    setAllowed((prev) => {
-      const cur = prev ?? []
-      if (cur.includes(day)) return cur.filter(d => d !== day)
-      return [...cur, day]
-    })
-  }
-
-  async function save() {
-    setSaving(true)
-    try {
-      if (selectedTeacher === 'global') {
-        await saveBookingSettings({ allowed_days: allowed ?? [] })
-      } else {
-        await saveBookingSettings({ allowed_days: allowed ?? [], teacher_id: selectedTeacher as number })
-      }
-      alert('Guardado')
-    } catch (e) {
-      alert('Error guardando')
-    } finally { setSaving(false) }
-  }
-
-  return (
-    <section className="rounded-xl shadow-lg p-8 mt-6 bg-white">
-      <h2 className="section-title text-brand-purple">Configuración de reservas</h2>
-      <p className="text-sm text-gray-600 mb-4">Por defecto todos los días están disponibles. Marca los días que deseas <strong>bloquear</strong> (no podrán recibir reservas) para el alcance seleccionado.</p>
-
-      <div className="mb-4">
-        <label className="label">Seleccionar alcance</label>
-        <select className="select-control max-w-sm" value={selectedTeacher as any} onChange={(e) => setSelectedTeacher(e.target.value === 'global' ? 'global' : Number(e.target.value))}>
-          <option value="global">Global (todos los profesores)</option>
-          {teachers.map(t => (
-            <option key={t.id} value={t.id}>{t.name || t.username}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className="flex flex-wrap gap-3 mb-6">
-        {days.map(d => (
-          <button key={d} type="button" onClick={() => toggleDay(d)} className={`px-4 py-2 rounded-full border ${ (allowed ?? []).includes(d) ? 'bg-red-500 text-white' : 'bg-white text-gray-700 border-gray-200' }`}>
-            {d}
-          </button>
-        ))}
-      </div>
-      <div className="flex gap-3">
-        <button className="btn-primary" onClick={save} disabled={saving}>{saving ? 'Guardando…' : 'Guardar cambios'}</button>
-      </div>
-    </section>
   )
 }
 
