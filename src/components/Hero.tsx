@@ -9,9 +9,15 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-6"
+          className="mb-6 flex items-center gap-3"
         >
-          <img src="/images/logofooter.png" alt="Atisbe Logo" className="h-20 w-auto" />
+          <div className="w-14 h-14 rounded-full bg-brand-purple flex items-center justify-center flex-shrink-0">
+            <span className="font-bold text-2xl text-brand-cream">A</span>
+          </div>
+          <div>
+            <p className="font-serif font-bold text-xl text-brand-purple">Atisbe</p>
+            <p className="text-xs text-brand-black/60">Academy</p>
+          </div>
         </motion.div>
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
