@@ -1,11 +1,11 @@
 export default function Footer() {
   return (
-    <footer className="mt-24 bg-yellow-500 text-white">
+    <footer className="mt-24 text-white" style={{ backgroundColor: '#FFFF00' }}>
   <div className="container-padded py-12">
         {/* Logo centrado arriba */}
         <div className="text-center mb-10">
           <div className="flex items-center justify-center mb-3">
-            <img src="/images/logofoooter.png" alt="Atisbe Academy Logo" className="h-32 w-auto" />
+            <img src="/images/logoheader.png" alt="Atisbe Academy Logo" className="h-16 w-auto" />
           </div>
         </div>
 
