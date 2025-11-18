@@ -5,7 +5,7 @@ export default function Footer() {
         {/* Logo centrado arriba */}
         <div className="text-center mb-10">
           <div className="flex items-center justify-center mb-3">
-            <img src="/images/logofooter.png" alt="Atisbe Academy Logo" className="h-16 w-auto" />
+            <img src="/images/logofoooter.png" alt="Atisbe Academy Logo" className="h-16 w-auto" />
           </div>
         </div>
 
@@ -13,28 +13,28 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-4xl mx-auto">
           {/* Navegación */}
           <div className="text-center md:text-left md:border-r" style={{ borderColor: '#791eba', borderRightWidth: '2px' }}>
-            <h4 className="font-serif font-bold text-lg mb-4" style={{ color: '#791eba' }}>Navegación</h4>
-            <ul className="space-y-2 text-sm" style={{ color: '#791eba', opacity: 0.95 }}>
-              <li><a href="/quienes-somos" className="hover:underline" style={{ color: '#791eba' }}>Quiénes somos</a></li>
-              <li><a href="/cursos" className="hover:underline" style={{ color: '#791eba' }}>Cursos</a></li>
-              <li><a href="/testimonios" className="hover:underline" style={{ color: '#791eba' }}>Testimonios</a></li>
-              <li><a href="/blog" className="hover:underline" style={{ color: '#791eba' }}>Blog</a></li>
+            <h4 className="font-serif font-bold text-lg mb-4" style={{ color: '#791eba', fontWeight: '700' }}>Navegación</h4>
+            <ul className="space-y-2 text-sm" style={{ color: '#791eba', opacity: 0.95, fontWeight: '600' }}>
+              <li><a href="/quienes-somos" className="hover:underline" style={{ color: '#791eba', fontWeight: '600' }}>Quiénes somos</a></li>
+              <li><a href="/cursos" className="hover:underline" style={{ color: '#791eba', fontWeight: '600' }}>Cursos</a></li>
+              <li><a href="/testimonios" className="hover:underline" style={{ color: '#791eba', fontWeight: '600' }}>Testimonios</a></li>
+              <li><a href="/blog" className="hover:underline" style={{ color: '#791eba', fontWeight: '600' }}>Blog</a></li>
             </ul>
           </div>
 
           {/* Contacto */}
           <div className="text-center md:text-left md:border-r" style={{ borderColor: '#791eba', borderRightWidth: '2px' }}>
-            <h4 className="font-serif font-bold text-lg mb-4" style={{ color: '#791eba' }}>Contacto</h4>
-            <ul className="space-y-2 text-sm" style={{ color: '#791eba', opacity: 0.95 }}>
-              <li><a href="mailto:automatic@atisbeacademy.com" className="hover:underline" style={{ color: '#791eba' }}>automatic@atisbeacademy.com</a></li>
-              <li><a href="tel:+573227850345" className="hover:underline" style={{ color: '#791eba' }}>+57 322 785 0345</a></li>
-              <li><a href="/politicas-privacidad" className="hover:underline" style={{ color: '#791eba' }}>Políticas de privacidad</a></li>
+            <h4 className="font-serif font-bold text-lg mb-4" style={{ color: '#791eba', fontWeight: '700' }}>Contacto</h4>
+            <ul className="space-y-2 text-sm" style={{ color: '#791eba', opacity: 0.95, fontWeight: '600' }}>
+              <li><a href="mailto:automatic@atisbeacademy.com" className="hover:underline" style={{ color: '#791eba', fontWeight: '600' }}>automatic@atisbeacademy.com</a></li>
+              <li><a href="tel:+573227850345" className="hover:underline" style={{ color: '#791eba', fontWeight: '600' }}>+57 322 785 0345</a></li>
+              <li><a href="/politicas-privacidad" className="hover:underline" style={{ color: '#791eba', fontWeight: '600' }}>Políticas de privacidad</a></li>
             </ul>
           </div>
 
           {/* Redes Sociales */}
           <div className="text-center md:text-left">
-            <h4 className="font-serif font-bold text-lg mb-4" style={{ color: '#791eba' }}>Síguenos</h4>
+            <h4 className="font-serif font-bold text-lg mb-4" style={{ color: '#791eba', fontWeight: '700' }}>Síguenos</h4>
             <div className="flex gap-4 justify-center md:justify-start">
               <a 
                 href="https://www.instagram.com/atisbeacademiadeidiomas/" 
@@ -68,8 +68,8 @@ export default function Footer() {
                 className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all hover:scale-110"
                 style={{ color: '#791eba' }}
               >
-                {/* Use uploaded TikTok SVG asset from public/images */}
-                <img src="/images/tiktok-svgrepo-com.svg" alt="TikTok" className="w-5 h-5" />
+                {/* Use new purple TikTok SVG */}
+                <img src="/images/tiktok-svgrepo-com (1).svg" alt="TikTok" className="w-5 h-5" />
               </a>
             </div>
           </div>
