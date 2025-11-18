@@ -19,6 +19,10 @@ public/api/config.local.php
 public/uploads/*
 !public/uploads/.gitkeep
 
+# Keep logos
+!public/images/logoheader.jpeg
+!public/images/logofooter.jpeg
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
