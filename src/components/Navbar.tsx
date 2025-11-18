@@ -32,7 +32,7 @@ export function Navbar() {
   <header className="sticky top-0 z-50 bg-brand-surface border-b border-brand-pink/20">
       <div className="container-padded flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-2">
-          <img src="/images/logoheader.jpeg" alt="Atisbe Logo" className="h-14 w-auto" style={{ backgroundColor: 'transparent' }} />
+          <img src="/images/logoheader.png" alt="Atisbe Logo" className="h-14 w-auto" />
         </Link>
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-6">
