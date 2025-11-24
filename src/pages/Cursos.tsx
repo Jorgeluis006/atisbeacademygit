@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { getCourses, type Course } from '../services/api'
+
+const WHATSAPP_NUMBER = '573001234567' // Cambiar por el número real
 
 export default function Cursos() {
   const [cursos, setCursos] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedType, setSelectedType] = useState<string>('all')
-  const navigate = useNavigate()
 
   useEffect(() => {
     (async () => {
@@ -145,25 +145,17 @@ export default function Cursos() {
                         </div>
                       )}
                     </div>
-                    {c.price && (
-                      <div className="pt-4 border-t border-gray-100">
-                        <div className="flex items-center justify-between mb-3">
-                          <div>
-                            <span className="text-2xl font-bold text-brand-purple">${c.price}</span>
-                            <span className="text-gray-500 text-sm ml-1">/ curso</span>
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => navigate('/pago')}
-                          className="w-full bg-brand-purple text-white py-2.5 px-4 rounded-lg font-semibold hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
-                        >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                          </svg>
-                          Ir a Pago
-                        </button>
-                      </div>
-                    )}
+                    <div className="pt-4 border-t border-gray-100">
+                      <button
+                        onClick={() => window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=Hola,%20me%20interesa%20el%20curso:%20${encodeURIComponent(c.title)}`, '_blank')}
+                        className="w-full bg-brand-purple text-white py-2.5 px-4 rounded-lg font-semibold hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
+                      >
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.075-.124-.272-.198-.57-.347m-5.421-7.403h-.004c-1.445 0-2.816-.356-4.038-1.03l-.289-.17-3.053.8.816-2.979-.192-.303C2.719 4.467 2.25 3.064 2.25 1.543 2.25.534 3.059 0 4.081 0c.548 0 1.069.207 1.479.605.31.287.73.778.73 2.096 0 .626-.144 1.222-.404 1.765.737 1.355 2.226 2.563 3.83 3.251 1.604.69 3.39.859 5.138.359 1.747-.5 3.23-1.675 4.121-3.254.272.606.425 1.269.425 1.968 0 3.259-2.614 5.898-5.883 5.898z" />
+                        </svg>
+                        Contactar por WhatsApp
+                      </button>
+                    </div>
                   </div>
                 </article>
               ))}
