@@ -1075,7 +1075,7 @@ export default function ZonaEstudiantes() {
                         
                         {/* Encabezado con días de la semana */}
                         <div className="grid grid-cols-7 gap-3 mb-3 bg-gradient-to-r from-brand-purple via-purple-600 to-brand-pink rounded-lg shadow-lg p-3">
-                          {weekDays.map((day, idx) => (
+                          {weekDays.map((day) => (
                             <div 
                               key={day} 
                               className="p-3 text-center text-white font-extrabold text-sm border-r border-white/30 last:border-r-0"
