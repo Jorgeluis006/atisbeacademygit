@@ -125,7 +125,7 @@ function MobileDrawer({ children, onClose }: { children: React.ReactNode; onClos
       {/* overlay */}
   <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} />
       {/* drawer */}
-      <div className="fixed top-0 right-0 h-full w-80 max-w-[90%] bg-white z-50 shadow-soft border-l border-brand-black/10 transform transition-transform duration-300 ease-out translate-x-0">
+      <div className="fixed top-0 right-0 h-full bg-white z-50 shadow-soft border-l border-brand-black/10 transform transition-transform duration-300 ease-out translate-x-0 w-full sm:w-72">
         <div className="p-3 border-b border-brand-black/10 flex items-center justify-between">
           <span className="font-serif text-lg">Menú</span>
           <button className="rounded-md w-8 h-8 inline-flex items-center justify-center hover:text-brand-purple" onClick={onClose} aria-label="Cerrar">
