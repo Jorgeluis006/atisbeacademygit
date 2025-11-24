@@ -354,6 +354,7 @@ export default function ZonaEstudiantes() {
   const [loading, setLoading] = useState(true)
   const [loadingData, setLoadingData] = useState(false)
   const [showChangePassword, setShowChangePassword] = useState(false)
+  const [calendarView, setCalendarView] = useState<'weekly' | 'monthly'>('weekly')
 
   async function loadStudentData() {
     setLoadingData(true)
@@ -838,19 +839,45 @@ export default function ZonaEstudiantes() {
                 <svg className="w-8 h-8 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-brand-purple to-brand-orange bg-clip-text text-transparent">Mis Clases - Vista Semanal</h2>
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-brand-purple to-brand-orange bg-clip-text text-transparent">
+                  Mis Clases - Vista {calendarView === 'weekly' ? 'Semanal' : 'Mensual'}
+                </h2>
               </div>
-              {reservas.length > 0 && (
-                <button 
-                  onClick={downloadSchedulePDF}
-                  className="flex items-center gap-2 px-4 py-2 bg-brand-purple hover:bg-brand-purple/90 text-white rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  <span className="font-semibold">Descargar PDF</span>
-                </button>
-              )}
+              <div className="flex items-center gap-3">
+                <div className="flex gap-2 bg-gray-200 rounded-lg p-1">
+                  <button
+                    onClick={() => setCalendarView('weekly')}
+                    className={`px-4 py-2 rounded-md font-semibold transition-all ${
+                      calendarView === 'weekly'
+                        ? 'bg-brand-purple text-white shadow-md'
+                        : 'bg-transparent text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    Semanal
+                  </button>
+                  <button
+                    onClick={() => setCalendarView('monthly')}
+                    className={`px-4 py-2 rounded-md font-semibold transition-all ${
+                      calendarView === 'monthly'
+                        ? 'bg-brand-purple text-white shadow-md'
+                        : 'bg-transparent text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    Mensual
+                  </button>
+                </div>
+                {reservas.length > 0 && (
+                  <button 
+                    onClick={downloadSchedulePDF}
+                    className="flex items-center gap-2 px-4 py-2 bg-brand-purple hover:bg-brand-purple/90 text-white rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span className="font-semibold">Descargar PDF</span>
+                  </button>
+                )}
+              </div>
             </div>
             
             {reservas.length === 0 ? (
@@ -861,7 +888,7 @@ export default function ZonaEstudiantes() {
                 <p className="text-sm text-gray-600 font-semibold">Aún no tienes clases agendadas</p>
                 <p className="text-xs text-gray-500 mt-1">Agenda tu primera clase en la sección de arriba 👆</p>
               </div>
-            ) : (
+            ) : calendarView === 'weekly' ? (
               <div className="overflow-x-auto -mx-6 px-6">
                 <div className="min-w-[900px] bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 rounded-2xl shadow-2xl overflow-hidden border-2 border-purple-200">
                   {/* Header con días de la semana */}
@@ -1005,6 +1032,16 @@ export default function ZonaEstudiantes() {
                       </div>
                     )
                   })}
+                </div>
+              </div>
+            ) : (
+              <div className="bg-white rounded-xl p-6 border border-purple-200">
+                <div className="text-center py-12">
+                  <svg className="w-16 h-16 mx-auto mb-3 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <p className="text-gray-600 font-semibold">Vista mensual en desarrollo</p>
+                  <p className="text-sm text-gray-500 mt-1">Por ahora usa la vista semanal para ver tu horario</p>
                 </div>
               </div>
             )}
