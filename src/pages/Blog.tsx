@@ -5,6 +5,16 @@ export default function Blog() {
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
   const [expandedPosts, setExpandedPosts] = useState<Set<number>>(new Set())
+  const [selectedCategory, setSelectedCategory] = useState<string>('all')
+
+  const blogCategories = [
+    { value: 'all', label: 'Todos los artículos' },
+    { value: 'consejos', label: 'Consejos' },
+    { value: 'gramatica', label: 'Gramática' },
+    { value: 'vocabulario', label: 'Vocabulario' },
+    { value: 'cultura', label: 'Cultura' },
+    { value: 'recursos', label: 'Recursos' }
+  ]
 
   const toggleExpanded = (id: number) => {
     setExpandedPosts(prev => {
@@ -43,6 +53,29 @@ export default function Blog() {
         </div>
       </div>
 
+      {/* Category Filters */}
+      {!loading && posts.length > 0 && (
+        <div className="bg-brand-surface border-b border-brand-black/10">
+          <div className="container-padded py-6">
+            <div className="flex flex-wrap gap-3 justify-center">
+              {blogCategories.map(cat => (
+                <button
+                  key={cat.value}
+                  onClick={() => setSelectedCategory(cat.value)}
+                  className={`px-5 py-2.5 rounded-full font-semibold transition-all ${
+                    selectedCategory === cat.value
+                      ? 'bg-brand-purple text-white shadow-lg scale-105'
+                      : 'bg-white text-brand-black hover:bg-brand-purple/10 border border-brand-black/10 hover:border-brand-purple'
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Content Section */}
       <div className="container-padded py-12">
         {loading ? (
@@ -55,16 +88,18 @@ export default function Blog() {
           </div>
         ) : (
           <div className="max-w-4xl mx-auto space-y-12">
-            {posts.map((p) => {
-              const postId = p.id || 0
-              const isExpanded = expandedPosts.has(postId)
-              const isLongText = p.content && p.content.length > 500
-              
-              return (
-              <article 
-                key={p.id} 
-                className="group relative bg-white border-b-2 border-gray-100 pb-12 last:border-b-0 hover:bg-gray-50/50 transition-all duration-300 rounded-2xl p-6"
-              >
+            {posts
+              .filter(p => selectedCategory === 'all' || p.category === selectedCategory)
+              .map((p) => {
+                const postId = p.id || 0
+                const isExpanded = expandedPosts.has(postId)
+                const isLongText = p.content && p.content.length > 500
+                
+                return (
+                <article 
+                  key={p.id} 
+                  className="group relative bg-white border-b-2 border-gray-100 pb-12 last:border-b-0 hover:bg-gray-50/50 transition-all duration-300 rounded-2xl p-6"
+                >
                 {/* Category & Date */}
                 <div className="flex items-center gap-4 mb-4 text-sm">
                   {p.category && (
@@ -150,8 +185,8 @@ export default function Blog() {
                   )}
                 </div>
               </article>
-              )
-            })}
+                )
+              })}
           </div>
         )}
       </div>

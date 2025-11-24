@@ -1079,7 +1079,18 @@ function BlogManager() {
             <div className="grid sm:grid-cols-2 gap-3">
               <div>
                 <label className="label">Categoría (opcional)</label>
-                <input className="input-control" placeholder="Ej: Gramática, Tips" value={editing.category || ''} onChange={e => setEditing({ ...editing, category: e.target.value })} />
+                <select 
+                  className="input-control" 
+                  value={editing.category || ''} 
+                  onChange={e => setEditing({ ...editing, category: e.target.value })}
+                >
+                  <option value="">Seleccionar categoría</option>
+                  <option value="consejos">Consejos</option>
+                  <option value="gramatica">Gramática</option>
+                  <option value="vocabulario">Vocabulario</option>
+                  <option value="cultura">Cultura</option>
+                  <option value="recursos">Recursos</option>
+                </select>
               </div>
               <div>
                 <label className="label">Tags / Etiquetas (separados por coma, opcional)</label>
