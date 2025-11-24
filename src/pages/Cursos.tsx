@@ -28,10 +28,9 @@ export default function Cursos() {
     { value: 'espanol', label: 'Español para extranjeros' },
     { value: 'club-conversacional', label: 'Club Conversacional' },
     { value: 'conversarte', label: 'ConversArte' },
-    { value: 'tour-cafetero', label: 'Tour Cafetero' },
     { value: 'ninos', label: 'Cursos para niños' },
     { value: 'personalizadas', label: 'Clases personalizadas' },
-    { value: 'general', label: 'General' }
+    { value: 'general', label: 'Otros' }
   ]
 
   const getCourseTypeLabel = (type: string) => {
