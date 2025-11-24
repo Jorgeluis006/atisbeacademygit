@@ -1,11 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
+import { Navigation } from 'swiper/modules'
 import 'swiper/css'
 import { getCourses, type Course } from '../services/api'
 
 export default function CoursesCarousel() {
   const [courses, setCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
+  const prevRef = useRef(null)
+  const nextRef = useRef(null)
 
   useEffect(() => {
     (async () => {
@@ -45,7 +48,25 @@ export default function CoursesCarousel() {
         <span className="text-sm font-semibold text-brand-black/70">Cupos limitados por curso</span>
       </div>
       <div className="mt-6">
-        <Swiper slidesPerView={1.1} spaceBetween={16} breakpoints={{ 640: { slidesPerView: 2.2 }, 1024: { slidesPerView: 3.2 } }}>
+        <Swiper 
+          slidesPerView={1.1} 
+          spaceBetween={16} 
+          modules={[Navigation]}
+          navigation={{ prevEl: prevRef.current, nextEl: nextRef.current }}
+          onSwiper={(swiper) => {
+            setTimeout(() => {
+              if (prevRef.current && nextRef.current) {
+                swiper.params.navigation = {
+                  prevEl: prevRef.current,
+                  nextEl: nextRef.current,
+                };
+                swiper.navigation.init();
+                swiper.navigation.update();
+              }
+            });
+          }}
+          breakpoints={{ 640: { slidesPerView: 2.2 }, 1024: { slidesPerView: 3.2 } }}
+        >
           {courses.map((c) => (
             <SwiperSlide key={c.id}>
               <article className="bg-white rounded-2xl overflow-hidden shadow-soft hover:shadow-lg transition-shadow">
@@ -69,6 +90,26 @@ export default function CoursesCarousel() {
             </SwiperSlide>
           ))}
         </Swiper>
+        <div className="flex justify-center gap-4 mt-6">
+          <button 
+            ref={prevRef}
+            className="w-10 h-10 rounded-full bg-brand-purple text-white flex items-center justify-center hover:bg-purple-700 transition-colors"
+            aria-label="Previous slide"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button 
+            ref={nextRef}
+            className="w-10 h-10 rounded-full bg-brand-purple text-white flex items-center justify-center hover:bg-purple-700 transition-colors"
+            aria-label="Next slide"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
       </div>
     </section>
   )
