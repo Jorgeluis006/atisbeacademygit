@@ -32,7 +32,7 @@ export default function QuienesSomos() {
             <div className="bg-gradient-to-br from-brand-purple/5 to-purple-100/30 rounded-2xl p-8 shadow-md hover:shadow-xl transition-shadow">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-12 h-12 bg-brand-purple rounded-full flex items-center justify-center text-white text-2xl">
-                  <img src="/images/value-cercana.svg" alt="Origen del nombre" className="w-6 h-6" />
+                  <img src="/images/value-cercana.svg" alt="Origen del nombre" className="w-6 h-6 text-white" style={{ filter: 'brightness(0) invert(1)' }} />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900">Origen del nombre</h2>
               </div>
@@ -47,7 +47,7 @@ export default function QuienesSomos() {
             <div className="bg-gradient-to-br from-pink-50 to-purple-100/30 rounded-2xl p-8 shadow-md hover:shadow-xl transition-shadow">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-12 h-12 bg-brand-pink rounded-full flex items-center justify-center text-white text-2xl">
-                  <img src="/images/value-motivadora.svg" alt="Método ATIKA" className="w-6 h-6" />
+                  <img src="/images/value-motivadora.svg" alt="Método ATIKA" className="w-6 h-6 text-white" style={{ filter: 'brightness(0) invert(1)' }} />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900">Método ATIKA</h2>
               </div>
