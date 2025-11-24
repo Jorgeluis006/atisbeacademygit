@@ -17,7 +17,21 @@ export default function Hero() {
           Aprende con el método ATIKA: progresivo, activo y personalizado. Sin presión, con acompañamiento real.
         </p>
         <div className="mt-8 flex flex-wrap gap-4">
-          <Link to="/contacto" className="btn-primary">¿QUIERES SABER TU NIVEL TOTALMENTE GRATIS?</Link>
+          <motion.div
+            animate={{
+              boxShadow: [
+                '0 0 0 0 rgba(121, 30, 186, 0.7)',
+                '0 0 0 10px rgba(121, 30, 186, 0)',
+              ]
+            }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity
+            }}
+            style={{ borderRadius: '9999px' }}
+          >
+            <Link to="/contacto" className="btn-primary">¿QUIERES SABER TU NIVEL TOTALMENTE GRATIS?</Link>
+          </motion.div>
           <Link to="/cursos" className="inline-flex items-center font-medium text-brand-purple hover:text-brand-amber">Ver cursos</Link>
         </div>
         <p className="mt-3 text-sm text-brand-black/60">Atendemos 24/7 • Cupos limitados por curso</p>
