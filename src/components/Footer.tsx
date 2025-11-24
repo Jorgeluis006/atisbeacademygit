@@ -20,8 +20,8 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Tres columnas */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-4xl mx-auto">
+        {/* Cuatro columnas */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 max-w-6xl mx-auto">
           {/* Navegación */}
           <div className="text-center md:text-left md:border-r" style={{ borderColor: '#791eba', borderRightWidth: '2px' }}>
             <h4 className="font-serif font-bold text-lg mb-4" style={{ color: '#791eba', fontWeight: '700' }}>Navegación</h4>
@@ -30,6 +30,20 @@ export default function Footer() {
               <li><a href="/cursos" className="hover:underline" style={{ color: '#791eba', fontWeight: '600' }}>Cursos</a></li>
               <li><a href="/testimonios" className="hover:underline" style={{ color: '#791eba', fontWeight: '600' }}>Testimonios</a></li>
               <li><a href="/blog" className="hover:underline" style={{ color: '#791eba', fontWeight: '600' }}>Blog</a></li>
+            </ul>
+          </div>
+
+          {/* Nuestros Cursos */}
+          <div className="text-center md:text-left md:border-r" style={{ borderColor: '#791eba', borderRightWidth: '2px' }}>
+            <h4 className="font-serif font-bold text-lg mb-4" style={{ color: '#791eba', fontWeight: '700' }}>Nuestros Cursos</h4>
+            <ul className="space-y-2 text-sm" style={{ color: '#791eba', opacity: 0.95, fontWeight: '600' }}>
+              {courseCategories.map(cat => (
+                <li key={cat.value}>
+                  <a href={`/cursos?category=${cat.value}`} className="hover:underline" style={{ color: '#791eba', fontWeight: '600' }}>
+                    {cat.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -83,29 +97,6 @@ export default function Footer() {
                 <img src="/images/tiktok-svgrepo-com (1).svg" alt="TikTok" className="w-5 h-5" />
               </a>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Categorías de Cursos */}
-      <div className="border-t border-white/20 py-8" style={{ borderColor: '#791eba' }}>
-        <div className="container-padded">
-          <h4 className="font-serif font-bold text-lg mb-6 text-center" style={{ color: '#791eba', fontWeight: '700' }}>Nuestros Cursos</h4>
-          <div className="flex flex-wrap gap-3 justify-center max-w-6xl mx-auto">
-            {courseCategories.map(cat => (
-              <a
-                key={cat.value}
-                href={`/cursos?category=${cat.value}`}
-                className="px-4 py-2 rounded-full font-semibold transition-all hover:scale-105 hover:shadow-lg"
-                style={{
-                  backgroundColor: '#791eba',
-                  color: '#FFFF00',
-                  fontWeight: '600'
-                }}
-              >
-                {cat.label}
-              </a>
-            ))}
           </div>
         </div>
       </div>
