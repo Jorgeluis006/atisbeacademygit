@@ -62,7 +62,7 @@ export default function Contacto() {
                 <option>Italiano</option>
                 <option>Portugués</option>
               </select>
-              <input className="border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" name="curso" placeholder="Curso específico (ej: Inglés A1)" required value={form.curso} onChange={onChange} />
+              <input className="border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" name="curso" placeholder="¿En qué estás interesado?" required value={form.curso} onChange={onChange} />
               <select className="border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" name="modalidad" required value={form.modalidad} onChange={onChange}>
                 <option value="">Modalidad preferida</option>
                 <option>virtual</option>
@@ -76,7 +76,12 @@ export default function Contacto() {
                   <option key={dia} value={dia}>{dia}</option>
                 ))}
               </select>
-              <input className="border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" name="franja" placeholder="Franja horaria preferida" required value={form.franja} onChange={onChange} />
+              <select className="border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" name="franja" required value={form.franja} onChange={onChange}>
+                <option value="">Franja horaria preferida</option>
+                <option>Mañana</option>
+                <option>Tarde</option>
+                <option>Noche</option>
+              </select>
             </div>
             <div className="flex gap-4 mt-4">
               <button className="btn-primary flex-1" type="submit" disabled={status==='sending'}>
