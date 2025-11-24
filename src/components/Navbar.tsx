@@ -123,7 +123,7 @@ function MobileDrawer({ children, onClose }: { children: React.ReactNode; onClos
   return (
     <div className="lg:hidden">
       {/* overlay */}
-  <div className="fixed inset-0 bg-brand-surface z-40" onClick={onClose} />
+  <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} />
       {/* drawer */}
       <div className="fixed top-0 right-0 h-full w-80 max-w-[90%] bg-white z-50 shadow-soft border-l border-brand-black/10 transform transition-transform duration-300 ease-out translate-x-0">
         <div className="p-3 border-b border-brand-black/10 flex items-center justify-between">
