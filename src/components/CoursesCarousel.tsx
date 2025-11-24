@@ -73,7 +73,6 @@ export default function CoursesCarousel() {
                   </div>
                   <div className="flex items-center justify-between mt-3">
                     <div className="text-xs text-brand-black/60">{c.modality || '24/7'} • Método ATIKA</div>
-                    {c.price && <div className="text-sm font-semibold text-brand-purple">${c.price}</div>}
                   </div>
                 </div>
               </article>
