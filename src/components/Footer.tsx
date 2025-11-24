@@ -1,4 +1,15 @@
 export default function Footer() {
+  const courseCategories = [
+    { value: 'ingles', label: 'Inglés' },
+    { value: 'frances', label: 'Francés' },
+    { value: 'espanol', label: 'Español' },
+    { value: 'club-conversacional', label: 'Club Conversacional' },
+    { value: 'conversarte', label: 'ConversArte' },
+    { value: 'ninos', label: 'Niños' },
+    { value: 'personalizadas', label: 'Personalizadas' },
+    { value: 'general', label: 'Otros' }
+  ]
+
   return (
     <footer className="mt-24 text-white" style={{ backgroundColor: '#FFFF00' }}>
   <div className="container-padded py-12">
@@ -72,6 +83,29 @@ export default function Footer() {
                 <img src="/images/tiktok-svgrepo-com (1).svg" alt="TikTok" className="w-5 h-5" />
               </a>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Categorías de Cursos */}
+      <div className="border-t border-white/20 py-8" style={{ borderColor: '#791eba' }}>
+        <div className="container-padded">
+          <h4 className="font-serif font-bold text-lg mb-6 text-center" style={{ color: '#791eba', fontWeight: '700' }}>Nuestros Cursos</h4>
+          <div className="flex flex-wrap gap-3 justify-center max-w-6xl mx-auto">
+            {courseCategories.map(cat => (
+              <a
+                key={cat.value}
+                href={`/cursos?category=${cat.value}`}
+                className="px-4 py-2 rounded-full font-semibold transition-all hover:scale-105 hover:shadow-lg"
+                style={{
+                  backgroundColor: '#791eba',
+                  color: '#FFFF00',
+                  fontWeight: '600'
+                }}
+              >
+                {cat.label}
+              </a>
+            ))}
           </div>
         </div>
       </div>

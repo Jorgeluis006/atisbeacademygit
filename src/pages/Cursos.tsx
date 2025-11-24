@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { getCourses, type Course } from '../services/api'
 
 const WHATSAPP_NUMBER = '573227850345'
 
 export default function Cursos() {
+  const [searchParams] = useSearchParams()
   const [cursos, setCursos] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedType, setSelectedType] = useState<string>('all')
+  const [selectedType, setSelectedType] = useState<string>(searchParams.get('category') || 'all')
 
   useEffect(() => {
     (async () => {
