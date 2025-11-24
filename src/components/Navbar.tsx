@@ -35,7 +35,7 @@ export function Navbar() {
           <img src="/images/logoheader.png" alt="Atisbe Logo" className="h-16 w-auto" />
         </Link>
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden lg:flex items-center gap-6">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
@@ -66,9 +66,9 @@ export function Navbar() {
           )}
         </nav>
 
-        {/* Mobile hamburger */}
+        {/* Mobile/Tablet hamburger */}
         <button
-          className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-brand-black/10 bg-white shadow-soft"
+          className="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-brand-black/10 bg-white shadow-soft"
           aria-label="Abrir menú"
           aria-expanded={mobileOpen}
           onClick={() => setMobileOpen(v => !v)}
@@ -121,11 +121,11 @@ function MobileDrawer({ children, onClose }: { children: React.ReactNode; onClos
     return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = prev }
   }, [onClose])
   return (
-    <div className="md:hidden">
+    <div className="lg:hidden">
       {/* overlay */}
-  <div className="fixed inset-0 bg-brand-surface z-[70]" onClick={onClose} />
+  <div className="fixed inset-0 bg-brand-surface z-40" onClick={onClose} />
       {/* drawer */}
-      <div className="fixed top-0 right-0 h-full w-80 max-w-[90%] bg-white z-[80] shadow-soft border-l border-brand-black/10 transform transition-transform duration-300 ease-out translate-x-0">
+      <div className="fixed top-0 right-0 h-full w-80 max-w-[90%] bg-white z-50 shadow-soft border-l border-brand-black/10 transform transition-transform duration-300 ease-out translate-x-0">
         <div className="p-3 border-b border-brand-black/10 flex items-center justify-between">
           <span className="font-serif text-lg">Menú</span>
           <button className="rounded-md w-8 h-8 inline-flex items-center justify-center hover:text-brand-purple" onClick={onClose} aria-label="Cerrar">
