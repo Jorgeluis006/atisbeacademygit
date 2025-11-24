@@ -1,14 +1,14 @@
 import { useEffect, useState, useRef } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation } from 'swiper/modules'
+import type { Swiper as SwiperType } from 'swiper'
 import 'swiper/css'
 import { getCourses, type Course } from '../services/api'
 
 export default function CoursesCarousel() {
   const [courses, setCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
-  const prevRef = useRef(null)
-  const nextRef = useRef(null)
+  const swiperRef = useRef<SwiperType | null>(null)
 
   useEffect(() => {
     (async () => {
@@ -52,18 +52,8 @@ export default function CoursesCarousel() {
           slidesPerView={1.1} 
           spaceBetween={16} 
           modules={[Navigation]}
-          navigation={{ prevEl: prevRef.current, nextEl: nextRef.current }}
           onSwiper={(swiper) => {
-            setTimeout(() => {
-              if (prevRef.current && nextRef.current) {
-                swiper.params.navigation = {
-                  prevEl: prevRef.current,
-                  nextEl: nextRef.current,
-                };
-                swiper.navigation.init();
-                swiper.navigation.update();
-              }
-            });
+            swiperRef.current = swiper
           }}
           breakpoints={{ 640: { slidesPerView: 2.2 }, 1024: { slidesPerView: 3.2 } }}
         >
@@ -92,7 +82,7 @@ export default function CoursesCarousel() {
         </Swiper>
         <div className="flex justify-center gap-4 mt-6">
           <button 
-            ref={prevRef}
+            onClick={() => swiperRef.current?.slidePrev()}
             className="w-10 h-10 rounded-full bg-brand-purple text-white flex items-center justify-center hover:bg-purple-700 transition-colors"
             aria-label="Previous slide"
           >
@@ -101,7 +91,7 @@ export default function CoursesCarousel() {
             </svg>
           </button>
           <button 
-            ref={nextRef}
+            onClick={() => swiperRef.current?.slideNext()}
             className="w-10 h-10 rounded-full bg-brand-purple text-white flex items-center justify-center hover:bg-purple-700 transition-colors"
             aria-label="Next slide"
           >
