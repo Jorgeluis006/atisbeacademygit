@@ -1035,110 +1035,115 @@ export default function ZonaEstudiantes() {
                 </div>
               </div>
             ) : (
-              <div className="bg-white rounded-xl p-6 border border-purple-200">
-                {(() => {
-                  const now = new Date()
-                  const year = now.getFullYear()
-                  const month = now.getMonth()
-                  
-                  // Primer día del mes
-                  const firstDay = new Date(year, month, 1)
-                  // Último día del mes
-                  const lastDay = new Date(year, month + 1, 0)
-                  // Día de la semana del primer día (0 = domingo)
-                  const startDayOfWeek = firstDay.getDay()
-                  
-                  // Crear array de días del mes
-                  const daysInMonth = lastDay.getDate()
-                  const calendarDays = []
-                  
-                  // Agregar días vacíos del mes anterior
-                  for (let i = 0; i < startDayOfWeek; i++) {
-                    calendarDays.push(null)
-                  }
-                  
-                  // Agregar días del mes actual
-                  for (let i = 1; i <= daysInMonth; i++) {
-                    calendarDays.push(i)
-                  }
-                  
-                  // Nombre del mes
-                  const monthName = firstDay.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })
-                  
-                  // Nombres de días de la semana
-                  const weekDays = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
-                  
-                  return (
-                    <div>
-                      <h3 className="text-xl font-bold text-brand-purple mb-4 capitalize">{monthName}</h3>
-                      
-                      {/* Encabezado con días de la semana */}
-                      <div className="grid grid-cols-7 gap-2 mb-2">
-                        {weekDays.map(day => (
-                          <div key={day} className="text-center font-bold text-purple-700 py-2">
-                            {day}
-                          </div>
-                        ))}
-                      </div>
-                      
-                      {/* Días del mes */}
-                      <div className="grid grid-cols-7 gap-2">
-                        {calendarDays.map((day, index) => {
-                          if (!day) {
-                            return <div key={`empty-${index}`} className="bg-gray-100 rounded-lg p-3"></div>
-                          }
-                          
-                          const currentDate = new Date(year, month, day)
-                          const dateStr = currentDate.toISOString().split('T')[0]
-                          
-                          // Encontrar reservas para este día
-                          const dayReservations = reservas.filter(r => {
-                            const rDate = parseLocalDateTime(r.datetime)
-                            const rDateStr = rDate.toISOString().split('T')[0]
-                            return rDateStr === dateStr
-                          })
-                          
-                          const isToday = currentDate.toDateString() === new Date().toDateString()
-                          
-                          return (
+              <div className="overflow-x-auto -mx-6 px-6">
+                <div className="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 rounded-2xl shadow-2xl overflow-hidden border-2 border-purple-200 p-6">
+                  {(() => {
+                    const now = new Date()
+                    const year = now.getFullYear()
+                    const month = now.getMonth()
+                    
+                    // Primer día del mes
+                    const firstDay = new Date(year, month, 1)
+                    // Último día del mes
+                    const lastDay = new Date(year, month + 1, 0)
+                    // Día de la semana del primer día (0 = domingo)
+                    const startDayOfWeek = firstDay.getDay()
+                    
+                    // Crear array de días del mes
+                    const daysInMonth = lastDay.getDate()
+                    const calendarDays = []
+                    
+                    // Agregar días vacíos del mes anterior
+                    for (let i = 0; i < startDayOfWeek; i++) {
+                      calendarDays.push(null)
+                    }
+                    
+                    // Agregar días del mes actual
+                    for (let i = 1; i <= daysInMonth; i++) {
+                      calendarDays.push(i)
+                    }
+                    
+                    // Nombre del mes
+                    const monthName = firstDay.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })
+                    
+                    // Nombres de días de la semana
+                    const weekDays = ['DOM', 'LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB']
+                    
+                    return (
+                      <div>
+                        <h3 className="text-2xl font-bold text-brand-purple mb-6 capitalize">{monthName}</h3>
+                        
+                        {/* Encabezado con días de la semana */}
+                        <div className="grid grid-cols-7 gap-3 mb-3 bg-gradient-to-r from-brand-purple via-purple-600 to-brand-pink rounded-lg shadow-lg p-3">
+                          {weekDays.map((day, idx) => (
                             <div 
                               key={day} 
-                              className={`rounded-lg p-3 min-h-[100px] border-2 transition-all ${
-                                isToday
-                                  ? 'bg-purple-50 border-brand-purple shadow-md'
-                                  : 'bg-white border-gray-200 hover:border-purple-300'
-                              }`}
+                              className="p-3 text-center text-white font-extrabold text-sm border-r border-white/30 last:border-r-0"
                             >
-                              <div className={`text-sm font-bold mb-2 ${
-                                isToday ? 'text-brand-purple' : 'text-gray-700'
-                              }`}>
-                                {day}
-                              </div>
-                              
-                              {dayReservations.length > 0 && (
-                                <div className="space-y-1">
-                                  {dayReservations.map(r => (
-                                    <div
-                                      key={r.id}
-                                      className={`text-[10px] font-semibold p-1 rounded truncate ${
-                                        r.tipo === 'clase'
-                                          ? 'bg-green-100 text-green-800'
-                                          : 'bg-orange-100 text-orange-800'
-                                      }`}
-                                      title={`${r.curso} - ${parseLocalDateTime(r.datetime).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}`}
-                                    >
-                                      {parseLocalDateTime(r.datetime).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })} {r.curso}
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
+                              {day}
                             </div>
-                          )
-                        })}
+                          ))}
+                        </div>
+                        
+                        {/* Días del mes */}
+                        <div className="grid grid-cols-7 gap-3">
+                          {calendarDays.map((day, index) => {
+                            if (!day) {
+                              return <div key={`empty-${index}`} className="bg-gray-100/50 rounded-lg p-4 min-h-[140px]"></div>
+                            }
+                            
+                            const currentDate = new Date(year, month, day)
+                            const dateStr = currentDate.toISOString().split('T')[0]
+                            
+                            // Encontrar reservas para este día
+                            const dayReservations = reservas.filter(r => {
+                              const rDate = parseLocalDateTime(r.datetime)
+                              const rDateStr = rDate.toISOString().split('T')[0]
+                              return rDateStr === dateStr
+                            })
+                            
+                            const isToday = currentDate.toDateString() === new Date().toDateString()
+                            
+                            return (
+                              <div 
+                                key={day} 
+                                className={`rounded-lg p-4 min-h-[140px] shadow-md hover:shadow-lg transition-all border-2 ${
+                                  isToday
+                                    ? 'bg-gradient-to-br from-purple-100 to-pink-100 border-brand-purple shadow-xl'
+                                    : 'bg-white/90 border-purple-200 hover:border-brand-purple'
+                                }`}
+                              >
+                                <div className={`text-lg font-extrabold mb-3 ${
+                                  isToday ? 'text-brand-purple' : 'text-purple-700'
+                                }`}>
+                                  {day}
+                                </div>
+                                
+                                {dayReservations.length > 0 && (
+                                  <div className="space-y-1">
+                                    {dayReservations.map(r => (
+                                      <div
+                                        key={r.id}
+                                        className={`text-xs font-bold p-2 rounded-md shadow-sm truncate border-l-4 ${
+                                          r.tipo === 'clase'
+                                            ? 'bg-green-100 text-green-800 border-l-green-500'
+                                            : 'bg-orange-100 text-orange-800 border-l-orange-500'
+                                        }`}
+                                        title={`${r.curso} - ${parseLocalDateTime(r.datetime).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}`}
+                                      >
+                                        {parseLocalDateTime(r.datetime).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })} {r.curso}
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            )
+                          })}
+                        </div>
                       </div>
-                    </div>
-                  )
-                })()}
+                    )
+                  })()}
+                </div>
               </div>
             )}
           </section>
