@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getCourses, type Course } from '../services/api'
 
-const WHATSAPP_NUMBER = '573001234567' // Cambiar por el número real
+const WHATSAPP_NUMBER = '573227850345'
 
 export default function Cursos() {
   const [cursos, setCursos] = useState<Course[]>([])
