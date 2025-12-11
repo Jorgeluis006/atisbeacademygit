@@ -37,8 +37,8 @@ $stmt = $pdo->prepare('
         FROM teacher_slots
         WHERE teacher_id = ? 
             AND (
-                DATE(datetime) > DATE(NOW())
-                OR datetime >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)
+                DATE(datetime) = DATE(NOW())
+                OR datetime >= NOW()
             )
         ORDER BY datetime ASC
 ');
