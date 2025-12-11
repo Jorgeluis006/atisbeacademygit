@@ -18,7 +18,10 @@ $stmt = $pdo->prepare('
   FROM schedule_reservations sr
   LEFT JOIN teacher_slots ts ON sr.slot_id = ts.id
   WHERE sr.user_id=? 
-    AND sr.datetime > NOW()
+    AND (
+      DATE(sr.datetime) = DATE(NOW())
+      OR sr.datetime >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)
+    )
   ORDER BY sr.datetime ASC
 ');
 $stmt->execute([ (int)$_SESSION['user_id'] ]);
