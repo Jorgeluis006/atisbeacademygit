@@ -17,7 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         SELECT id, datetime, tipo, modalidad, duration_minutes, curso, nivel, meeting_link, is_available, created_at
         FROM teacher_slots
         WHERE teacher_id = ?
-          AND datetime > NOW()
         ORDER BY datetime ASC
     ');
     $stmt->execute([$teacher_id]);
