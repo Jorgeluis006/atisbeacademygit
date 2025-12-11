@@ -201,6 +201,29 @@ function ensure_schedule_schema() {
         }
     } catch (Throwable $e) {}
 
+    // Nuevas columnas para recordatorios múltiples (30, 5 y 1 minuto)
+    try {
+        $cols = $pdo->query("SHOW COLUMNS FROM schedule_reservations LIKE 'reminder_30_sent_at'")->fetchAll();
+        if (empty($cols)) {
+            $pdo->exec("ALTER TABLE schedule_reservations ADD COLUMN reminder_30_sent_at DATETIME NULL AFTER reminder_sent_at");
+            $pdo->exec("CREATE INDEX idx_res_reminder30 ON schedule_reservations(reminder_30_sent_at)");
+        }
+    } catch (Throwable $e) {}
+    try {
+        $cols = $pdo->query("SHOW COLUMNS FROM schedule_reservations LIKE 'reminder_5_sent_at'")->fetchAll();
+        if (empty($cols)) {
+            $pdo->exec("ALTER TABLE schedule_reservations ADD COLUMN reminder_5_sent_at DATETIME NULL AFTER reminder_30_sent_at");
+            $pdo->exec("CREATE INDEX idx_res_reminder5 ON schedule_reservations(reminder_5_sent_at)");
+        }
+    } catch (Throwable $e) {}
+    try {
+        $cols = $pdo->query("SHOW COLUMNS FROM schedule_reservations LIKE 'reminder_1_sent_at'")->fetchAll();
+        if (empty($cols)) {
+            $pdo->exec("ALTER TABLE schedule_reservations ADD COLUMN reminder_1_sent_at DATETIME NULL AFTER reminder_5_sent_at");
+            $pdo->exec("CREATE INDEX idx_res_reminder1 ON schedule_reservations(reminder_1_sent_at)");
+        }
+    } catch (Throwable $e) {}
+
     // Tabla para configuraciones de reservas (días permitidos)
     try {
         $sql = "CREATE TABLE IF NOT EXISTS booking_settings (
