@@ -2,12 +2,16 @@
 require_once __DIR__ . '/../_bootstrap.php';
 ensure_schedule_schema();
 
-// Permitir ejecución vía token (para cron) o por administrador autenticado
+// Permitir ejecución:
+// 1) Con token (REMINDER_CRON_TOKEN)
+// 2) Sin token si ALLOW_PUBLIC_REMINDERS === true
+// 3) O por administrador autenticado
 $tokenParam = isset($_GET['token']) ? (string)$_GET['token'] : '';
 $hasToken = defined('REMINDER_CRON_TOKEN') && REMINDER_CRON_TOKEN !== '' && $tokenParam === REMINDER_CRON_TOKEN;
-if (!$hasToken) {
-    // Si no hay token válido, requerir admin
-    try { require_admin(); } catch (Throwable $e) { json_error('No autorizado', 403); }
+$allowPublic = (defined('ALLOW_PUBLIC_REMINDERS') && ALLOW_PUBLIC_REMINDERS === true);
+if (!$hasToken && !$allowPublic) {
+  // Si no hay token ni modo público, requerir admin
+  try { require_admin(); } catch (Throwable $e) { json_error('No autorizado', 403); }
 }
 
 $pdo = get_pdo();
