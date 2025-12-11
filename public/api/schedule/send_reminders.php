@@ -128,7 +128,7 @@ function sendWindowReminders(PDO $pdo, int $minutes, string $column): array {
                     <p><strong>📆 Fecha y hora:</strong> ' . htmlspecialchars($fechaFormateada) . '</p>
                     <p><strong>💻 Modalidad:</strong> ' . htmlspecialchars(ucfirst((string)$r['modalidad'])) . '</p>
                   </div>
-                  ' + ($meetingLink ? '<p><strong>Enlace:</strong> ' . htmlspecialchars($meetingLink) . '</p>' : '') + '
+                  ' . ($meetingLink ? '<p><strong>Enlace:</strong> ' . htmlspecialchars($meetingLink) . '</p>' : '') . '
                 </div>
                 <div class="footer">&copy; ' . date('Y') . ' Atisbe Academy</div>
               </div>
