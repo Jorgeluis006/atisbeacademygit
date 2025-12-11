@@ -25,7 +25,8 @@ $stmt = $pdo->prepare('
     FROM schedule_reservations r
     INNER JOIN users u ON r.user_id = u.id
     WHERE r.teacher_id = ?
-    ORDER BY r.datetime DESC
+      AND r.datetime > NOW()
+    ORDER BY r.datetime ASC
 ');
 $stmt->execute([$teacher_id]);
 $reservations = $stmt->fetchAll();
