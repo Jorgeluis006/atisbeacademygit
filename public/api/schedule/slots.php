@@ -36,7 +36,10 @@ $stmt = $pdo->prepare('
                 max_alumnos
         FROM teacher_slots
         WHERE teacher_id = ? 
-            AND (DATE(datetime) > DATE(NOW()) OR datetime >= NOW())
+            AND (
+                DATE(datetime) > DATE(NOW())
+                OR datetime >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)
+            )
         ORDER BY datetime ASC
 ');
 $stmt->execute([$teacher_id]);
