@@ -31,6 +31,7 @@ function sendWindowReminders(PDO $pdo, int $minutes, string $column): array {
             u.email AS student_email,
             u.name AS student_name,
             t.name AS teacher_name,
+          t.email AS teacher_email,
             ts.meeting_link,
             ts.curso,
             ts.nivel
@@ -99,6 +100,43 @@ function sendWindowReminders(PDO $pdo, int $minutes, string $column): array {
 
         $ok = false;
         try { $ok = send_mail($email, $subject, $body); } catch (Throwable $e) { $ok = false; }
+        // Optional: notify teacher as well
+        $teacherEmail = (string)($r['teacher_email'] ?? '');
+        if ($teacherEmail !== '') {
+            $tSubject = 'Recordatorio: clase con ' . $studentName . ' empieza en ' . $minLabel;
+            $tBody = '
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="UTF-8">
+              <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: linear-gradient(135deg, #791eba 0%, #bfa6a4 100%); color: white; padding: 20px; text-align: center; border-radius: 10px; }
+                .content { background: #f9f9f9; padding: 20px; border-radius: 8px; }
+                .info-box { background: #fff; border-left: 4px solid #791eba; padding: 12px; margin: 16px 0; border-radius: 6px; }
+                .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="header"><h3>⏰ Recordatorio de clase</h3></div>
+                <div class="content">
+                  <p>Tu clase con <strong>' . htmlspecialchars($studentName) . '</strong> inicia en <strong>' . htmlspecialchars($minLabel) . '</strong>.</p>
+                  <div class="info-box">
+                    <p><strong>📚 Curso:</strong> ' . htmlspecialchars($curso . $nivel) . '</p>
+                    <p><strong>📆 Fecha y hora:</strong> ' . htmlspecialchars($fechaFormateada) . '</p>
+                    <p><strong>💻 Modalidad:</strong> ' . htmlspecialchars(ucfirst((string)$r['modalidad'])) . '</p>
+                  </div>
+                  ' + ($meetingLink ? '<p><strong>Enlace:</strong> ' . htmlspecialchars($meetingLink) . '</p>' : '') + '
+                </div>
+                <div class="footer">&copy; ' . date('Y') . ' Atisbe Academy</div>
+              </div>
+            </body>
+            </html>';
+            try { send_mail($teacherEmail, $tSubject, $tBody); } catch (Throwable $e) {}
+        }
+
         if ($ok) {
             $sent++;
             $items[] = ['id' => (int)$r['id'], 'status' => 'sent', 'minutes' => $minutes];
