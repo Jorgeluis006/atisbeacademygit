@@ -18,7 +18,13 @@ $pdo = get_pdo();
 
 require_once __DIR__ . '/../mailer.php';
 
+// Base URL para assets en correos (logo, etc.)
+$scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$baseUrl = $scheme . '://' . $host;
+
 function sendWindowReminders(PDO $pdo, int $minutes, string $column): array {
+  global $baseUrl;
     $upper = $minutes;
     $lower = max(0, $minutes - 1);
     $sql = "
@@ -63,6 +69,7 @@ function sendWindowReminders(PDO $pdo, int $minutes, string $column): array {
         $fechaFormateada = $dt->format('d/m/Y \a \l\a\s H:i');
         $minLabel = ($minutes === 1) ? '1 minuto' : ($minutes . ' minutos');
         $subject = 'Recordatorio: tu clase empieza en ' . $minLabel;
+        $logoUrl = htmlspecialchars($baseUrl . '/images/logoheader.png');
         $body = '
         <!DOCTYPE html>
         <html>
@@ -71,16 +78,19 @@ function sendWindowReminders(PDO $pdo, int $minutes, string $column): array {
           <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #791eba 0%, #bfa6a4 100%); color: white; padding: 24px; text-align: center; border-radius: 10px 10px 0 0; }
-            .content { background: #f9f9f9; padding: 24px; border-radius: 0 0 10px 10px; }
-            .info-box { background: #fff; border-left: 4px solid #791eba; padding: 12px; margin: 16px 0; border-radius: 6px; }
+            .header { background: linear-gradient(135deg, #791eba 0%, #FFFF00 100%); color: white; padding: 24px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #fffdf0; padding: 24px; border-radius: 0 0 10px 10px; }
+            .info-box { background: #ffffff; border-left: 4px solid #791eba; padding: 12px; margin: 16px 0; border-radius: 6px; }
             .button { display: inline-block; background: #791eba; color: white !important; padding: 12px 22px; text-decoration: none; border-radius: 8px; margin: 16px 0; font-weight: bold; }
             .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
           </style>
         </head>
         <body>
           <div class="container">
-            <div class="header"><h2>⏰ Tu clase está por empezar</h2></div>
+            <div class="header">
+              <img src="' . $logoUrl . '" alt="Atisbe Academy" style="height:42px; margin-bottom:8px;" />
+              <h2>⏰ Tu clase está por empezar</h2>
+            </div>
             <div class="content">
               <p>Hola <strong>' . htmlspecialchars($studentName) . '</strong>,</p>
               <p>Este es un recordatorio: tu clase inicia en <strong>' . htmlspecialchars($minLabel) . '</strong>.</p>
@@ -104,6 +114,7 @@ function sendWindowReminders(PDO $pdo, int $minutes, string $column): array {
         $teacherEmail = (string)($r['teacher_email'] ?? '');
         if ($teacherEmail !== '') {
             $tSubject = 'Recordatorio: clase con ' . $studentName . ' empieza en ' . $minLabel;
+            $tLogoUrl = $logoUrl;
             $tBody = '
             <!DOCTYPE html>
             <html>
@@ -112,15 +123,18 @@ function sendWindowReminders(PDO $pdo, int $minutes, string $column): array {
               <style>
                 body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
                 .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                .header { background: linear-gradient(135deg, #791eba 0%, #bfa6a4 100%); color: white; padding: 20px; text-align: center; border-radius: 10px; }
-                .content { background: #f9f9f9; padding: 20px; border-radius: 8px; }
+                .header { background: linear-gradient(135deg, #791eba 0%, #FFFF00 100%); color: white; padding: 20px; text-align: center; border-radius: 10px; }
+                .content { background: #fffdf0; padding: 20px; border-radius: 8px; }
                 .info-box { background: #fff; border-left: 4px solid #791eba; padding: 12px; margin: 16px 0; border-radius: 6px; }
                 .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
               </style>
             </head>
             <body>
               <div class="container">
-                <div class="header"><h3>⏰ Recordatorio de clase</h3></div>
+                <div class="header">
+                  <img src="' . $tLogoUrl . '" alt="Atisbe Academy" style="height:36px; margin-bottom:6px;" />
+                  <h3>⏰ Recordatorio de clase</h3>
+                </div>
                 <div class="content">
                   <p>Tu clase con <strong>' . htmlspecialchars($studentName) . '</strong> inicia en <strong>' . htmlspecialchars($minLabel) . '</strong>.</p>
                   <div class="info-box">
