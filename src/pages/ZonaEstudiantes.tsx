@@ -1191,12 +1191,15 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
 
   // Filtrar slots por modalidad, curso y eliminar los que ya pasaron
   const now = new Date()
+  const graceWindowMinutes = 30
+  const graceThreshold = new Date(now.getTime() - graceWindowMinutes * 60 * 1000)
   const filteredSlots = slots.filter(s => {
     const matchModalidad = modalidadFilter === 'todas' || s.modalidad === modalidadFilter
     const matchCurso = cursoFilter === 'todos' || s.curso === cursoFilter
     // Filtrar slots que ya han pasado
     const slotDateTime = parseLocalDateTime(s.datetime)
-    const isNotExpired = slotDateTime > now
+    // Permitir ventana de gracia: mostrar si está por venir o si empezó hace <= 30 min
+    const isNotExpired = slotDateTime >= graceThreshold
     return matchModalidad && matchCurso && isNotExpired
   })
 
