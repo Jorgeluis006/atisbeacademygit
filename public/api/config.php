@@ -28,3 +28,7 @@ if (!defined('SMTP_FROM_NAME')) define('SMTP_FROM_NAME', 'Atisbe Notificador');
 
 // Controla si se siembra el usuario demo al iniciar (por defecto: permitir)
 if (!defined('DISABLE_DEMO_SEED')) define('DISABLE_DEMO_SEED', false);
+
+// Permitir ejecución pública del endpoint de recordatorios por defecto
+// (Puedes desactivarlo en config.local.php definiendo ALLOW_PUBLIC_REMINDERS = false)
+if (!defined('ALLOW_PUBLIC_REMINDERS')) define('ALLOW_PUBLIC_REMINDERS', true);
