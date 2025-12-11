@@ -1189,11 +1189,15 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
   const [modalidadFilter, setModalidadFilter] = useState<'todas' | 'virtual' | 'presencial'>('todas')
   const [cursoFilter, setCursoFilter] = useState<string>('todos')
 
-  // Filtrar slots por modalidad y curso
+  // Filtrar slots por modalidad, curso y eliminar los que ya pasaron
+  const now = new Date()
   const filteredSlots = slots.filter(s => {
     const matchModalidad = modalidadFilter === 'todas' || s.modalidad === modalidadFilter
     const matchCurso = cursoFilter === 'todos' || s.curso === cursoFilter
-    return matchModalidad && matchCurso
+    // Filtrar slots que ya han pasado
+    const slotDateTime = parseLocalDateTime(s.datetime)
+    const isNotExpired = slotDateTime > now
+    return matchModalidad && matchCurso && isNotExpired
   })
 
 
