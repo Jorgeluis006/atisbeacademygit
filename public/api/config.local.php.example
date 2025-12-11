@@ -37,3 +37,7 @@ define('MAIL_TO', 'info@tudominio.com');
 // Ejemplo de cron (cada minuto):
 // wget -q -O - "https://tu-dominio.com/api/schedule/send_reminders.php?token=TU_TOKEN" > /dev/null 2>&1
 // define('REMINDER_CRON_TOKEN', 'CAMBIA_ESTO_POR_UN_TOKEN_UNICO');
+
+// Si prefieres evitar token, permite ejecución pública del endpoint de recordatorios:
+// OJO: cualquiera podría invocarlo; úsalo sólo si tu hosting no soporta tokens en cron.
+// define('ALLOW_PUBLIC_REMINDERS', true); // por defecto está desactivado
