@@ -32,3 +32,8 @@ define('MAIL_TO', 'info@tudominio.com');
 // define('SMTP_PORT', 587);
 // define('SMTP_FROM', 'no-reply@tudominio.com');
 // define('SMTP_FROM_NAME', 'Atisbe Notificador');
+
+// Token para cron de recordatorios (define uno seguro y usa la URL: /api/schedule/send_reminders.php?token=TU_TOKEN)
+// Ejemplo de cron (cada minuto):
+// wget -q -O - "https://tu-dominio.com/api/schedule/send_reminders.php?token=TU_TOKEN" > /dev/null 2>&1
+// define('REMINDER_CRON_TOKEN', 'CAMBIA_ESTO_POR_UN_TOKEN_UNICO');
