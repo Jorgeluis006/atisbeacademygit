@@ -117,8 +117,8 @@ export default function Cursos() {
               {filteredCourses.map((c) => (
                 <article key={c.id} className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
                   {c.image_url && (
-                    <div className="w-full h-48 bg-gray-50 flex items-center justify-center p-4 overflow-hidden">
-                      <img src={c.image_url} alt={c.title} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" />
+                    <div className="w-full aspect-[16/9] bg-gray-50 overflow-hidden">
+                      <img src={c.image_url} alt={c.title} className="w-full h-full object-cover" />
                     </div>
                   )}
                   <div className="p-6">
