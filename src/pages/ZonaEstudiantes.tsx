@@ -1229,8 +1229,11 @@ export default function ZonaEstudiantes() {
                       telefono: customPhone,
                       idioma,
                       modalidad,
-                      franja
-                    })
+                      franja,
+                      // extras para el correo de notificación
+                      teacher: customTeacher,
+                      notes: customNotes
+                    } as any)
                     setCustomSuccess('Tu solicitud fue enviada. Te contactaremos pronto para coordinar la clase.');
                     setCustomTeacher(''); setCustomDatetime(''); setCustomNotes(''); setCustomPhone('');
                   } catch (err: any) {
