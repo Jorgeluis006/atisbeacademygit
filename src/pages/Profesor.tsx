@@ -231,6 +231,7 @@ export default function Profesor() {
   })
   const [creatingSlot, setCreatingSlot] = useState(false)
   // Batch (semana) creation
+  const [weeklyTime, setWeeklyTime] = useState<string>('08:00')
   const [weeklyDays, setWeeklyDays] = useState<Record<number, boolean>>({ 0: false, 1: true, 2: true, 3: true, 4: true, 5: false, 6: false })
   const [creatingWeek, setCreatingWeek] = useState(false)
   const [editingMeetingLink, setEditingMeetingLink] = useState<{ slotId: number; currentLink: string } | null>(null)
@@ -283,8 +284,14 @@ export default function Profesor() {
       }
       const base = new Date(newSlot.datetime)
       // Tomamos la hora/minuto del calendario existente
-      const baseHour = base.getHours()
-      const baseMinute = base.getMinutes()
+      // Hora/minuto: si se especifica `weeklyTime`, lo usamos; si no, usamos la hora/minuto del calendario
+      let baseHour = base.getHours()
+      let baseMinute = base.getMinutes()
+      if (weeklyTime && weeklyTime.includes(':')) {
+        const [hh, mm] = weeklyTime.split(':')
+        baseHour = parseInt(hh || '0')
+        baseMinute = parseInt(mm || '0')
+      }
       // Generaremos desde la fecha base los siguientes 7 días
       const created: string[] = []
       const failed: string[] = []
@@ -636,7 +643,12 @@ export default function Profesor() {
                 </svg>
                 Crear semana (grupal)
               </label>
-              <div className="grid grid-cols-1 gap-3 mb-3">
+              <div className="grid grid-cols-2 gap-3 mb-3">
+                <div>
+                  <label className="text-xs text-gray-600">Hora</label>
+                  <input type="time" className="w-full px-4 py-3 border-2 border-brand-purple/30 rounded-xl" value={weeklyTime} onChange={e => setWeeklyTime(e.target.value)} />
+                  <p className="text-xs text-gray-600 mt-1">Si la dejas vacía, se usa la del calendario.</p>
+                </div>
                 <div>
                   <label className="text-xs text-gray-600">Días</label>
                   <div className="flex flex-wrap gap-2">
@@ -644,7 +656,6 @@ export default function Profesor() {
                       <button key={idx} type="button" onClick={() => setWeeklyDays({ ...weeklyDays, [idx]: !weeklyDays[idx] })} className={`px-3 py-1 rounded-lg border ${weeklyDays[idx] ? 'bg-brand-purple text-white border-brand-purple' : 'bg-white text-brand-black border-brand-black/20'}`}>{label}</button>
                     ))}
                   </div>
-                  <p className="text-xs text-gray-600 mt-1">Usa la fecha y hora del calendario superior como base.</p>
                 </div>
               </div>
               <button 
