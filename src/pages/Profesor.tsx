@@ -449,6 +449,8 @@ export default function Profesor() {
               <select className="w-full px-4 py-3 border-2 border-indigo-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-indigo-200 focus:border-indigo-500 transition-all shadow-sm hover:border-indigo-400 font-semibold" value={newSlot.curso} onChange={e => setNewSlot({ ...newSlot, curso: e.target.value })}>
                 <option value="Inglés">Inglés</option>
                 <option value="Francés">Francés</option>
+                <option value="Portugués">Portugués</option>
+                <option value="Italiano">Italiano</option>
                 <option value="Español para extranjeros">Español para extranjeros</option>
                 <option value="Club Conversacional">Club Conversacional</option>
                 <option value="ConversArte">ConversArte</option>
