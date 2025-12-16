@@ -230,6 +230,10 @@ export default function Profesor() {
     max_alumnos: 1
   })
   const [creatingSlot, setCreatingSlot] = useState(false)
+  // Batch (semana) creation
+  const [weeklyTime, setWeeklyTime] = useState<string>('08:00')
+  const [weeklyDays, setWeeklyDays] = useState<Record<number, boolean>>({ 0: false, 1: true, 2: true, 3: true, 4: true, 5: false, 6: false })
+  const [creatingWeek, setCreatingWeek] = useState(false)
   const [editingMeetingLink, setEditingMeetingLink] = useState<{ slotId: number; currentLink: string } | null>(null)
   const [meetingLinkInput, setMeetingLinkInput] = useState('')
   const [savingMeetingLink, setSavingMeetingLink] = useState(false)
@@ -267,6 +271,53 @@ export default function Profesor() {
       alert(err?.response?.data?.error || 'No se pudo crear el horario')
     } finally {
       setCreatingSlot(false)
+    }
+  }
+
+  async function handleCreateWeek() {
+    // Crea clases grupales para cada día seleccionado de la próxima semana a una hora fija
+    setCreatingWeek(true)
+    try {
+      const today = new Date()
+      const startOfWeek = new Date(today)
+      startOfWeek.setHours(0,0,0,0)
+      // Normalizar a inicio de semana (lunes = 1). Nuestro weeklyDays usa 0..6 (domingo..sábado), pero generaremos 7 días desde hoy.
+      const created: string[] = []
+      const failed: string[] = []
+      const [hh, mm] = (weeklyTime || '08:00').split(':')
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(today)
+        d.setDate(today.getDate() + i)
+        const dow = d.getDay() // 0 domingo .. 6 sábado
+        if (!weeklyDays[dow]) continue
+        d.setHours(parseInt(hh||'0'), parseInt(mm||'0'), 0, 0)
+        const y = d.getFullYear()
+        const m = String(d.getMonth()+1).padStart(2,'0')
+        const day = String(d.getDate()).padStart(2,'0')
+        const H = String(d.getHours()).padStart(2,'0')
+        const M = String(d.getMinutes()).padStart(2,'0')
+        const datetimeFormatted = `${y}-${m}-${day} ${H}:${M}:00`
+        try {
+          await createTeacherSlot({
+            datetime: datetimeFormatted,
+            tipo: newSlot.tipo,
+            modalidad: newSlot.modalidad,
+            duration_minutes: newSlot.duration_minutes,
+            curso: newSlot.curso,
+            nivel: newSlot.nivel,
+            meeting_link: newSlot.meeting_link,
+            max_alumnos: newSlot.max_alumnos
+          })
+          created.push(datetimeFormatted)
+        } catch (e: any) {
+          failed.push(datetimeFormatted)
+        }
+      }
+      const updated = await getTeacherSlots()
+      setSlots(updated)
+      alert(`Semana creada. Éxitos: ${created.length}${failed.length ? `, fallidos: ${failed.length}` : ''}`)
+    } finally {
+      setCreatingWeek(false)
     }
   }
 
@@ -574,6 +625,36 @@ export default function Profesor() {
                   </>
                 )}
               </button>
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                <svg className="w-5 h-5 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7h18M3 12h18M3 17h18" />
+                </svg>
+                Crear semana (grupal)
+              </label>
+              <div className="grid grid-cols-2 gap-3 mb-3">
+                <div>
+                  <label className="text-xs text-gray-600">Hora fija</label>
+                  <input type="time" className="w-full px-4 py-3 border-2 border-brand-purple/30 rounded-xl" value={weeklyTime} onChange={e => setWeeklyTime(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-600">Días</label>
+                  <div className="flex flex-wrap gap-2">
+                    {['D','L','M','X','J','V','S'].map((label, idx) => (
+                      <button key={idx} type="button" onClick={() => setWeeklyDays({ ...weeklyDays, [idx]: !weeklyDays[idx] })} className={`px-3 py-1 rounded-lg border ${weeklyDays[idx] ? 'bg-brand-purple text-white border-brand-purple' : 'bg-white text-brand-black border-brand-black/20'}`}>{label}</button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <button 
+                className="w-full h-12 font-bold text-base rounded-xl bg-brand-purple text-white hover:bg-brand-purple/90 shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" 
+                disabled={creatingWeek} 
+                onClick={handleCreateWeek}
+              >
+                {creatingWeek ? 'Creando semana…' : 'Crear semana completa'}
+              </button>
+              <p className="text-xs text-gray-600 mt-2">Usa los mismos datos (curso, nivel, modalidad, capacidad) para cada día seleccionado en la próxima semana.</p>
             </div>
           </div>
         </div>
