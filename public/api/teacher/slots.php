@@ -112,6 +112,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         json_error('No autorizado para eliminar este slot', 403);
     }
 
+    // Obtener datetime del slot para validar ventana de 24 horas
+    $stmt = $pdo->prepare('SELECT datetime FROM teacher_slots WHERE id = ?');
+    $stmt->execute([$slot_id]);
+    $slotRow = $stmt->fetch();
+    if (!$slotRow) { json_error('Slot no encontrado', 404); }
+
+    // Restringir eliminación si el slot está dentro de las próximas 24 horas
+    $stmt = $pdo->prepare('SELECT CASE WHEN ? >= DATE_ADD(NOW(), INTERVAL 24 HOUR) THEN 1 ELSE 0 END AS allowed');
+    $stmt->execute([$slotRow['datetime']]);
+    $allowed = (int)$stmt->fetchColumn();
+    if ($allowed !== 1) {
+        json_error('Solo puedes cancelar/eliminar un horario hasta 24 horas antes');
+    }
+
     // Verificar si hay reservas asociadas
     $stmt = $pdo->prepare('SELECT COUNT(*) FROM schedule_reservations WHERE slot_id = ?');
     $stmt->execute([$slot_id]);
