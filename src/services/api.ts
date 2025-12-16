@@ -341,6 +341,21 @@ export async function getPublicTeachers(): Promise<TeacherPublic[]> {
   return res.data?.items ?? []
 }
 
+// Admin: all student progress
+export type AdminStudentProgressItem = {
+  id: number
+  username: string
+  name: string | null
+  level?: string | null
+  modality?: string | null
+  teacher?: { id: number; username: string; name: string | null } | null
+  progreso: StudentProgress
+}
+export async function getAdminAllProgress(): Promise<AdminStudentProgressItem[]> {
+  const res = await api.get('/admin/all_progress.php')
+  return res.data?.items ?? []
+}
+
 // Upload image
 export async function uploadImage(file: File): Promise<string> {
   const formData = new FormData()

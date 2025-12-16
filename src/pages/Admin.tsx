@@ -35,6 +35,7 @@ import {
 } from '../services/api'
 
 import AdminContacts from './AdminContacts'
+import { getAdminAllProgress, type AdminStudentProgressItem } from '../services/api'
 
 
 
@@ -209,7 +210,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true)
   const [msg, setMsg] = useState('')
   const [err, setErr] = useState('')
-  const [activeTab, setActiveTab] = useState<'contacts' | 'users' | 'testimonials' | 'courses' | 'blog' | 'videos' | 'products' | 'config'>('users')
+  const [activeTab, setActiveTab] = useState<'contacts' | 'users' | 'grades' | 'testimonials' | 'courses' | 'blog' | 'videos' | 'products' | 'config'>('users')
   const [showChangePassword, setShowChangePassword] = useState(false)
 
   useEffect(() => {
@@ -283,6 +284,12 @@ export default function Admin() {
           Usuarios
         </button>
         <button 
+          className={`px-4 py-2 font-semibold transition-colors ${activeTab === 'grades' ? 'border-b-2 border-brand-purple text-brand-purple' : 'text-brand-black/60 hover:text-brand-black'}`}
+          onClick={() => setActiveTab('grades')}
+        >
+          Notas
+        </button>
+        <button 
           className={`px-4 py-2 font-semibold transition-colors ${activeTab === 'testimonials' ? 'border-b-2 border-brand-purple text-brand-purple' : 'text-brand-black/60 hover:text-brand-black'}`}
           onClick={() => setActiveTab('testimonials')}
         >
@@ -338,6 +345,7 @@ export default function Admin() {
         </>
       )}
 
+      {activeTab === 'grades' && <AdminGrades />}
       {activeTab === 'testimonials' && <TestimonialsManager />}
       {activeTab === 'courses' && <CoursesManager />}
       {activeTab === 'blog' && <BlogManager />}
@@ -353,6 +361,98 @@ export default function Admin() {
       {showChangePassword && <ChangePasswordModal onClose={() => setShowChangePassword(false)} />}
       </div>
     </main>
+  )
+}
+
+function AdminGrades() {
+  const [items, setItems] = useState<AdminStudentProgressItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    (async () => {
+      setLoading(true); setError('')
+      try {
+        const data = await getAdminAllProgress()
+        setItems(data)
+      } catch (e: any) {
+        setError(e?.response?.data?.error || 'No se pudo cargar las notas')
+      } finally {
+        setLoading(false)
+      }
+    })()
+  }, [])
+
+  if (loading) return <section className="card mt-6"><p>Cargando…</p></section>
+  if (error) return <section className="card mt-6"><p className="text-brand-orange font-semibold">{error}</p></section>
+
+  // Helper para promedio
+  function promedioNotas(notas: { nota: number }[]) {
+    const valid = notas.map(n => Number(n.nota)).filter(n => Number.isFinite(n))
+    if (valid.length === 0) return null
+    const avg = valid.reduce((a,b) => a+b, 0) / valid.length
+    return Math.round(avg * 10) / 10
+  }
+
+  return (
+    <section className="bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 rounded-2xl p-8 shadow-2xl border-2 border-purple-200 mt-6">
+      <div className="flex items-center gap-3 mb-6">
+        <svg className="w-8 h-8 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+        </svg>
+        <h2 className="text-3xl font-extrabold bg-gradient-to-r from-brand-purple to-brand-pink bg-clip-text text-transparent">Notas de estudiantes</h2>
+      </div>
+
+      {items.length === 0 ? (
+        <p className="text-sm text-brand-black/70">Sin registros de progreso.</p>
+      ) : (
+        <div className="overflow-x-auto bg-white rounded-xl shadow-lg border border-purple-200">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-gradient-to-r from-brand-purple to-purple-600 text-white">
+                <th className="px-6 py-4 text-left font-bold">Estudiante</th>
+                <th className="px-6 py-4 text-left font-bold">Profesor</th>
+                <th className="px-6 py-4 text-left font-bold">Nivel</th>
+                <th className="px-6 py-4 text-left font-bold">Promedio</th>
+                <th className="px-6 py-4 text-left font-bold">Notas</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map(it => {
+                const notas = it.progreso?.notas || []
+                const avg = promedioNotas(notas)
+                return (
+                  <tr key={it.id} className="border-b border-gray-200 hover:bg-purple-50">
+                    <td className="px-6 py-3">
+                      <div className="font-bold">{it.name || it.username}</div>
+                      <div className="text-xs text-brand-black/70">{it.username}</div>
+                    </td>
+                    <td className="px-6 py-3 text-sm">{it.teacher ? (it.teacher.name || it.teacher.username) : '—'}</td>
+                    <td className="px-6 py-3 text-sm">{it.level || it.progreso?.nivel?.mcer || '—'}</td>
+                    <td className="px-6 py-3 text-sm">{avg !== null ? avg : '—'}</td>
+                    <td className="px-6 py-3 text-sm">
+                      {notas.length === 0 ? (
+                        <span className="text-brand-black/60">—</span>
+                      ) : (
+                        <div className="space-y-1">
+                          {notas.map((n, idx) => (
+                            <div key={idx} className="flex items-center gap-2">
+                              <span className="inline-block px-2 py-1 rounded bg-blue-100 text-blue-700 text-xs font-semibold">{Number.isFinite(n.nota) ? n.nota : 0}</span>
+                              <span className="font-semibold text-gray-800 text-xs">{n.actividad || 'Actividad'}</span>
+                              {n.fecha && <span className="text-xs text-gray-500">{n.fecha}</span>}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
   )
 }
 
