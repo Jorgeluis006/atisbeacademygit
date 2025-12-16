@@ -16,9 +16,7 @@ import {
   type ScheduleSlot,
   type Reservation,
   changePassword,
-  sendChatMessage,
-  getChatMessages,
-  type ChatMessage
+  
 } from '../services/api'
 
 // Helper function to parse MySQL datetime as local time (not UTC)

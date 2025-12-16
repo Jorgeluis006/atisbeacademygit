@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { login as apiLogin, logout as apiLogout, me as apiMe, getStudentProgress, type StudentProgress, getScheduleSlots, createReservation, getMyReservations, cancelReservation, type ScheduleSlot, type Reservation, forgotPassword, changePassword } from '../services/api'
+import { login as apiLogin, logout as apiLogout, me as apiMe, getStudentProgress, type StudentProgress, getScheduleSlots, createReservation, getMyReservations, cancelReservation, type ScheduleSlot, type Reservation, forgotPassword, changePassword, sendContactForm } from '../services/api'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 
@@ -356,6 +356,16 @@ export default function ZonaEstudiantes() {
   const [loadingData, setLoadingData] = useState(false)
   const [showChangePassword, setShowChangePassword] = useState(false)
   const [calendarView, setCalendarView] = useState<'weekly' | 'monthly'>('weekly')
+  // Solicitud de clase personalizada
+  const [customEmail, setCustomEmail] = useState('')
+  const [customPhone, setCustomPhone] = useState('')
+  const [customTeacher, setCustomTeacher] = useState('')
+  const [customDatetime, setCustomDatetime] = useState('')
+  const [customModality, setCustomModality] = useState<'virtual' | 'presencial'>('virtual')
+  const [customNotes, setCustomNotes] = useState('')
+  const [customSending, setCustomSending] = useState(false)
+  const [customSuccess, setCustomSuccess] = useState<string>('')
+  const [customError, setCustomError] = useState<string>('')
 
   async function loadStudentData() {
     setLoadingData(true)
@@ -1157,6 +1167,82 @@ export default function ZonaEstudiantes() {
       )}
       {showChangePassword && <ChangePasswordModal onClose={() => setShowChangePassword(false)} />}
       </div>
+            <section className="bg-white rounded-2xl p-6 shadow-lg border border-purple-200">
+              <div className="flex items-center gap-3 mb-4">
+                <svg className="w-6 h-6 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                <h2 className="text-xl font-bold">Solicitar clase personalizada</h2>
+              </div>
+              <p className="text-sm text-brand-black/70 mb-4">Pide una clase 1:1 con el profesor, indicando tus preferencias.</p>
+              {customSuccess && (
+                <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm">{customSuccess}</div>
+              )}
+              {customError && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">{customError}</div>
+              )}
+              <div className="grid sm:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Correo de contacto</label>
+                  <input className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-purple" type="email" value={customEmail} onChange={e => setCustomEmail(e.target.value)} placeholder="tu@correo.com" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Teléfono</label>
+                  <input className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-purple" type="tel" value={customPhone} onChange={e => setCustomPhone(e.target.value)} placeholder="+57 300 000 0000" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Profesor (opcional)</label>
+                  <input className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-purple" type="text" value={customTeacher} onChange={e => setCustomTeacher(e.target.value)} placeholder="Usuario o nombre del profesor" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Fecha y hora preferida</label>
+                  <input className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-purple" type="datetime-local" value={customDatetime} onChange={e => setCustomDatetime(e.target.value)} />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Modalidad</label>
+                  <select className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-purple" value={customModality} onChange={e => setCustomModality(e.target.value as any)}>
+                    <option value="virtual">Virtual</option>
+                    <option value="presencial">Presencial</option>
+                  </select>
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Notas / Objetivo</label>
+                  <textarea className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-purple" rows={3} value={customNotes} onChange={e => setCustomNotes(e.target.value)} placeholder="Cuéntanos qué necesitas trabajar, nivel, objetivo, etc." />
+                </div>
+              </div>
+              <button 
+                className="btn-primary w-full" 
+                disabled={customSending || !customEmail}
+                onClick={async () => {
+                  setCustomError(''); setCustomSuccess(''); setCustomSending(true)
+                  try {
+                    // Mapear al payload del formulario de contacto existente
+                    const nombre = user?.name || user?.username || 'Estudiante'
+                    const idioma = 'Clase personalizada'
+                    const modalidad = customModality
+                    const franja = customDatetime ? customDatetime.replace('T',' ') : 'Por coordinar'
+                    await sendContactForm({
+                      nombre,
+                      edad: '',
+                      nacionalidad: '',
+                      email: customEmail,
+                      telefono: customPhone,
+                      idioma,
+                      modalidad,
+                      franja
+                    })
+                    setCustomSuccess('Tu solicitud fue enviada. Te contactaremos pronto para coordinar la clase.');
+                    setCustomTeacher(''); setCustomDatetime(''); setCustomNotes(''); setCustomPhone('');
+                  } catch (err: any) {
+                    setCustomError(err?.response?.data?.message || 'No se pudo enviar la solicitud');
+                  } finally {
+                    setCustomSending(false)
+                  }
+                }}
+              >
+                {customSending ? 'Enviando…' : 'Solicitar clase personalizada'}
+              </button>
+            </section>
     </main>
   )
 }
