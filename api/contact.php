@@ -13,7 +13,7 @@ if (!is_array($data)) {
     $data = $_POST;
 }
 
-$required = ['nombre','edad','nacionalidad','email','telefono','idioma','modalidad','franja'];
+$required = ['nombre','email','idioma','modalidad','franja'];
 foreach ($required as $k) {
     if (!isset($data[$k]) || trim((string)$data[$k]) === '') {
         json_error('Campo requerido faltante: ' . $k, 422);
@@ -31,10 +31,10 @@ try {
     $stmt = $pdo->prepare('INSERT INTO contacts (nombre, edad, nacionalidad, email, telefono, idioma, modalidad, franja) VALUES (?,?,?,?,?,?,?,?)');
     $stmt->execute([
         trim($data['nombre']),
-        trim($data['edad']),
-        trim($data['nacionalidad']),
+        isset($data['edad']) ? trim((string)$data['edad']) : '',
+        isset($data['nacionalidad']) ? trim((string)$data['nacionalidad']) : '',
         trim($data['email']),
-        trim($data['telefono']),
+        isset($data['telefono']) ? trim((string)$data['telefono']) : '',
         trim($data['idioma']),
         trim($data['modalidad']),
         trim($data['franja']),
@@ -50,7 +50,9 @@ try {
             '<p><strong>Modalidad:</strong> ' . htmlspecialchars($data['modalidad']) . '</p>' .
             '<p><strong>Franja:</strong> ' . htmlspecialchars($data['franja']) . '</p>' .
             '<p><strong>Curso (usuario):</strong> ' . (isset($data['curso']) ? htmlspecialchars($data['curso']) : '') . '</p>' .
-            '<p><strong>Día de interés (usuario):</strong> ' . (isset($data['dia_interes']) ? htmlspecialchars($data['dia_interes']) : '') . '</p>';
+            '<p><strong>Día de interés (usuario):</strong> ' . (isset($data['dia_interes']) ? htmlspecialchars($data['dia_interes']) : '') . '</p>' .
+            '<p><strong>Profesor preferido:</strong> ' . (isset($data['teacher']) ? htmlspecialchars($data['teacher']) : '') . '</p>' .
+            '<p><strong>Notas / Objetivo:</strong> ' . (isset($data['notes']) ? nl2br(htmlspecialchars($data['notes'])) : '') . '</p>';
     @send_mail(MAIL_TO, 'Nuevo contacto Atisbe', $body);
     // Enviar copia a automatic@atisbeacademy.com
     @send_mail('automatic@atisbeacademy.com', 'Copia de nuevo contacto Atisbe', $body);
