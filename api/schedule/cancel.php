@@ -17,6 +17,25 @@ if ($id <= 0) { json_error('id inválido', 422); }
 $pdo = get_pdo();
 
 // Solo cancelar reservas del usuario autenticado
+// Verificar existencia y ventana de 24 horas
+$stmt = $pdo->prepare('SELECT id, datetime FROM schedule_reservations WHERE id = ? AND user_id = ?');
+$stmt->execute([$id, (int)$_SESSION['user_id']]);
+$res = $stmt->fetch();
+
+if (!$res) {
+    json_error('Reserva no encontrada', 404);
+}
+
+// Solo permitir cancelar si faltan 24 horas o más
+$stmt = $pdo->prepare('SELECT CASE WHEN ? >= DATE_ADD(NOW(), INTERVAL 24 HOUR) THEN 1 ELSE 0 END AS allowed');
+$stmt->execute([$res['datetime']]);
+$allowed = (int)$stmt->fetchColumn();
+
+if ($allowed !== 1) {
+    json_error('Solo puedes cancelar hasta 24 horas antes de la clase');
+}
+
+// Proceder a cancelar
 $stmt = $pdo->prepare('DELETE FROM schedule_reservations WHERE id=? AND user_id=?');
 $stmt->execute([$id, (int)$_SESSION['user_id']]);
 
