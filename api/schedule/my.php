@@ -14,9 +14,13 @@ $stmt = $pdo->prepare('
     sr.created_at,
     ts.meeting_link,
     ts.curso,
-    ts.nivel
+    ts.nivel,
+    ts.teacher_id AS teacher_id,
+    u.username AS teacher_username,
+    u.name AS teacher_name
   FROM schedule_reservations sr
   LEFT JOIN teacher_slots ts ON sr.slot_id = ts.id
+  LEFT JOIN users u ON ts.teacher_id = u.id
   WHERE sr.user_id=? 
     AND (
       DATE(sr.datetime) = DATE(NOW())
