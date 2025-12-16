@@ -1231,8 +1231,8 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
       await cancelReservation(id)
       await onCancel()
       setOk('Reserva cancelada')
-    } catch {
-      setError('No se pudo cancelar')
+    } catch (e: any) {
+      setError(e?.response?.data?.error || 'No se pudo cancelar')
     } finally {
       setLoading(false)
     }

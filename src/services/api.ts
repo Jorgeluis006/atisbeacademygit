@@ -373,3 +373,23 @@ export async function resetPassword(token: string, newPassword: string) {
     new_password: newPassword 
   })
 }
+
+// Chat
+export type ChatMessage = {
+  id: number
+  sender_id: number
+  receiver_id: number
+  body: string
+  reservation_id?: number | null
+  created_at: string
+}
+
+export async function getChatMessages(otherId: number, options: { limit?: number; before_id?: number } = {}): Promise<ChatMessage[]> {
+  const res = await api.get('/chat/list.php', { params: { other_id: otherId, ...options } })
+  return res.data?.messages ?? []
+}
+
+export async function sendChatMessage(receiverId: number, body: string, reservationId?: number): Promise<{ id: number }> {
+  const res = await api.post('/chat/send.php', { receiver_id: receiverId, body, reservation_id: reservationId })
+  return res.data
+}
