@@ -58,6 +58,30 @@ try {
     @send_mail('automatic@atisbeacademy.com', 'Copia de nuevo contacto Atisbe', $body);
     }
 
+    // Si el usuario especificó un profesor, intentar enviarle copia directa
+    if (isset($data['teacher']) && trim((string)$data['teacher']) !== '') {
+        try {
+            $teacherKey = trim((string)$data['teacher']);
+            $q = $pdo->prepare('SELECT email, username, name FROM users WHERE role = "teacher" AND (username = ? OR name LIKE ? ) LIMIT 1');
+            $q->execute([$teacherKey, $teacherKey]);
+            $t = $q->fetch(PDO::FETCH_ASSOC);
+            if ($t && !empty($t['email'])) {
+                $subject = 'Solicitud de clase personalizada — ' . (isset($data['nombre']) ? (string)$data['nombre'] : 'Estudiante');
+                $teacherBody = '<h3>Solicitud de clase personalizada</h3>' .
+                    '<p><strong>Estudiante:</strong> ' . htmlspecialchars($data['nombre']) . '</p>' .
+                    '<p><strong>Email de contacto:</strong> ' . htmlspecialchars($data['email']) . '</p>' .
+                    '<p><strong>Teléfono:</strong> ' . htmlspecialchars($data['telefono']) . '</p>' .
+                    '<p><strong>Idioma:</strong> ' . htmlspecialchars($data['idioma']) . '</p>' .
+                    '<p><strong>Modalidad:</strong> ' . htmlspecialchars($data['modalidad']) . '</p>' .
+                    '<p><strong>Fecha/Hora preferida:</strong> ' . htmlspecialchars($data['franja']) . '</p>' .
+                    '<p><strong>Notas / Objetivo:</strong> ' . (isset($data['notes']) ? nl2br(htmlspecialchars($data['notes'])) : '') . '</p>';
+                @send_mail($t['email'], $subject, $teacherBody);
+            }
+        } catch (Throwable $e2) {
+            error_log('No se pudo enviar correo al profesor: ' . $e2->getMessage());
+        }
+    }
+
     // Enviar correo de confirmación al usuario
     try {
         $userEmailSubject = '¡Gracias por contactarnos! - Atisbe Academy';
