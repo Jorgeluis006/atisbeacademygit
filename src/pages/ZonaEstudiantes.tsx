@@ -499,30 +499,6 @@ export default function ZonaEstudiantes() {
       try {
         const u = await apiMe()
         if (u) setAuthUserId(u.id)
-          async function openChatWithTeacher(r: Reservation) {
-            const teacherId = (r as any).teacher_id as number | undefined
-            const teacherUsername = (r as any).teacher_username as string | undefined
-            const teacherName = (r as any).teacher_name as string | undefined
-            if (!teacherId) {
-              setError('No se pudo abrir el chat: falta el profesor')
-              return
-            }
-            setChatWith({ id: teacherId, username: teacherUsername, name: teacherName })
-            const msgs = await getChatMessages(teacherId)
-            setChatMessages(msgs)
-          }
-
-          async function sendChat() {
-            if (!chatWith || !chatText.trim()) return
-            try {
-              await sendChatMessage(chatWith.id, chatText.trim())
-              setChatText('')
-              const msgs = await getChatMessages(chatWith.id)
-              setChatMessages(msgs)
-            } catch (e: any) {
-              setError(e?.response?.data?.error || 'No se pudo enviar el mensaje')
-            }
-          }
         if (u && u.role === 'admin') { navigate('/admin', { replace: true }); return }
         if (u && u.role === 'teacher') { navigate('/profesor', { replace: true }); return }
         setUser(u ? { username: u.username, name: u.name, role: u.role } : null)
@@ -534,6 +510,31 @@ export default function ZonaEstudiantes() {
       }
     })()
   }, [])
+
+  async function openChatWithTeacher(r: Reservation) {
+    const teacherId = (r as any).teacher_id as number | undefined
+    const teacherUsername = (r as any).teacher_username as string | undefined
+    const teacherName = (r as any).teacher_name as string | undefined
+    if (!teacherId) {
+      setError('No se pudo abrir el chat: falta el profesor')
+      return
+    }
+    setChatWith({ id: teacherId, username: teacherUsername, name: teacherName })
+    const msgs = await getChatMessages(teacherId)
+    setChatMessages(msgs)
+  }
+
+  async function sendChat() {
+    if (!chatWith || !chatText.trim()) return
+    try {
+      await sendChatMessage(chatWith.id, chatText.trim())
+      setChatText('')
+      const msgs = await getChatMessages(chatWith.id)
+      setChatMessages(msgs)
+    } catch (e: any) {
+      setError(e?.response?.data?.error || 'No se pudo enviar el mensaje')
+    }
+  }
 
   async function handleLogout() {
     await apiLogout()

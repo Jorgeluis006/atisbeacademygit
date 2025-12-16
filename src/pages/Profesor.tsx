@@ -906,6 +906,43 @@ export default function Profesor() {
             </table>
           </div>
         )}
+
+        {/* Chat con estudiante */}
+        <div className="container-padded py-8">
+          <div className="bg-white rounded-xl border-2 border-brand-purple/20 p-4 shadow-sm">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">💬</span>
+                <h3 className="text-lg font-bold text-brand-black">Chat con estudiante</h3>
+              </div>
+              {chatWith && <span className="text-sm text-brand-black/70">Conversando con: {chatWith.name || chatWith.username}</span>}
+            </div>
+            {!chatWith ? (
+              <p className="text-sm text-brand-black/70">Elige un estudiante desde tus reservas para abrir el chat.</p>
+            ) : (
+              <div className="space-y-3">
+                <div className="h-56 overflow-y-auto bg-gray-50 border border-gray-200 rounded-lg p-3">
+                  {chatMessages.length === 0 ? (
+                    <p className="text-xs text-gray-500">No hay mensajes aún.</p>
+                  ) : (
+                    chatMessages.map((m: ChatMessage) => (
+                      <div key={m.id} className={`flex ${m.sender_id === (authUserId ?? -1) ? 'justify-end' : 'justify-start'}`}>
+                        <div className={`max-w-[70%] px-3 py-2 rounded-lg text-sm ${m.sender_id === (authUserId ?? -1) ? 'bg-purple-600 text-white' : 'bg-white border border-gray-200 text-brand-black'}`}>
+                          {m.body}
+                          <div className="text-[10px] opacity-70 mt-1">{new Date(m.created_at).toLocaleString('es-ES')}</div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <input value={chatText} onChange={e => setChatText(e.target.value)} placeholder="Escribe un mensaje…" className="flex-1 px-3 py-2 border-2 border-brand-purple/30 rounded-lg" />
+                  <button onClick={sendChat} className="px-4 py-2 bg-brand-purple text-white rounded-lg hover:bg-brand-purple/90">Enviar</button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </section>
 
       {/* Reservas de estudiantes */}
