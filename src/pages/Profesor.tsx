@@ -647,7 +647,6 @@ export default function Profesor() {
                 <div>
                   <label className="text-xs text-gray-600">Hora</label>
                   <input type="time" className="w-full px-4 py-3 border-2 border-brand-purple/30 rounded-xl" value={weeklyTime} onChange={e => setWeeklyTime(e.target.value)} />
-                  <p className="text-xs text-gray-600 mt-1">Si la dejas vacía, se usa la del calendario.</p>
                 </div>
                 <div>
                   <label className="text-xs text-gray-600">Días</label>
