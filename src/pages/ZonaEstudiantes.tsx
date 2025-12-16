@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { login as apiLogin, logout as apiLogout, me as apiMe, getStudentProgress, type StudentProgress, getScheduleSlots, createReservation, getMyReservations, cancelReservation, type ScheduleSlot, type Reservation, forgotPassword, changePassword, sendChatMessage, getChatMessages, type ChatMessage } from '../services/api'
+import { login as apiLogin, logout as apiLogout, me as apiMe, getStudentProgress, type StudentProgress, getScheduleSlots, createReservation, getMyReservations, cancelReservation, type ScheduleSlot, type Reservation, forgotPassword, changePassword } from '../services/api'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 
@@ -351,10 +351,7 @@ export default function ZonaEstudiantes() {
   const [progress, setProgress] = useState<StudentProgress | null>(null)
   const [slots, setSlots] = useState<ScheduleSlot[]>([])
   const [reservas, setReservas] = useState<Reservation[]>([])
-  const [chatWith, setChatWith] = useState<{ id: number; username?: string; name?: string } | null>(null)
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
-  const [chatText, setChatText] = useState('')
-  const [authUserId, setAuthUserId] = useState<number | null>(null)
+  // Chat removido
   const [loading, setLoading] = useState(true)
   const [loadingData, setLoadingData] = useState(false)
   const [showChangePassword, setShowChangePassword] = useState(false)
@@ -498,7 +495,6 @@ export default function ZonaEstudiantes() {
     (async () => {
       try {
         const u = await apiMe()
-        if (u) setAuthUserId(u.id)
         if (u && u.role === 'admin') { navigate('/admin', { replace: true }); return }
         if (u && u.role === 'teacher') { navigate('/profesor', { replace: true }); return }
         setUser(u ? { username: u.username, name: u.name, role: u.role } : null)
@@ -511,30 +507,7 @@ export default function ZonaEstudiantes() {
     })()
   }, [])
 
-  async function openChatWithTeacher(r: Reservation) {
-    const teacherId = (r as any).teacher_id as number | undefined
-    const teacherUsername = (r as any).teacher_username as string | undefined
-    const teacherName = (r as any).teacher_name as string | undefined
-    if (!teacherId) {
-      setError('No se pudo abrir el chat: falta el profesor')
-      return
-    }
-    setChatWith({ id: teacherId, username: teacherUsername, name: teacherName })
-    const msgs = await getChatMessages(teacherId)
-    setChatMessages(msgs)
-  }
-
-  async function sendChat() {
-    if (!chatWith || !chatText.trim()) return
-    try {
-      await sendChatMessage(chatWith.id, chatText.trim())
-      setChatText('')
-      const msgs = await getChatMessages(chatWith.id)
-      setChatMessages(msgs)
-    } catch (e: any) {
-      setError(e?.response?.data?.error || 'No se pudo enviar el mensaje')
-    }
-  }
+  // Chat removido
 
   async function handleLogout() {
     await apiLogout()
@@ -1509,12 +1482,7 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
                   >
                     <span>🗑️</span> Cancelar
                   </button>
-                  <button
-                    className="px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white font-bold rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all shadow-md hover:shadow-lg disabled:opacity-50 text-sm flex items-center gap-1"
-                    onClick={() => openChatWithTeacher(r)}
-                  >
-                    <span>💬</span> Chat con profesor
-                  </button>
+                  {/* Chat removido */}
                 </div>
               </div>
             ))}
@@ -1522,40 +1490,7 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
         )}
       </div>
 
-      {/* Chat con profesor */}
-      <div className="mt-6 bg-white rounded-xl border-2 border-indigo-200 p-4 shadow-sm">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">💬</span>
-            <h3 className="text-lg font-bold text-gray-800">Chat con profesor</h3>
-          </div>
-          {chatWith && <span className="text-sm text-gray-600">Conversando con: {chatWith.name || chatWith.username}</span>}
-        </div>
-        {!chatWith ? (
-          <p className="text-sm text-gray-600">Abre el chat desde alguna de tus reservas.</p>
-        ) : (
-          <div className="space-y-3">
-            <div className="h-56 overflow-y-auto bg-gray-50 border border-gray-200 rounded-lg p-3">
-              {chatMessages.length === 0 ? (
-                <p className="text-xs text-gray-500">No hay mensajes aún.</p>
-              ) : (
-                chatMessages.map(m => (
-                  <div key={m.id} className={`flex ${m.sender_id === (authUserId ?? -1) ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[70%] px-3 py-2 rounded-lg text-sm ${m.sender_id === (authUserId ?? -1) ? 'bg-indigo-600 text-white' : 'bg-white border border-gray-200 text-brand-black'}`}>
-                      {m.body}
-                      <div className="text-[10px] opacity-70 mt-1">{new Date(m.created_at).toLocaleString('es-ES')}</div>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-            <div className="flex gap-2">
-              <input value={chatText} onChange={e => setChatText(e.target.value)} placeholder="Escribe un mensaje…" className="flex-1 px-3 py-2 border-2 border-indigo-300 rounded-lg" />
-              <button onClick={sendChat} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Enviar</button>
-            </div>
-          </div>
-        )}
-      </div>
+      {/* Chat removido */}
     </div>
   )
 }
