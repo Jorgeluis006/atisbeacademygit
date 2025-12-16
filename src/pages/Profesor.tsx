@@ -287,7 +287,6 @@ export default function Profesor() {
       // Hora/minuto: usamos exclusivamente la hora del calendario seleccionado
       const baseHour = base.getHours()
       const baseMinute = base.getMinutes()
-      }
       // Generar la semana del calendario (domingo a sábado) basada en la fecha seleccionada
       const startOfWeek = new Date(base)
       startOfWeek.setHours(0,0,0,0)
