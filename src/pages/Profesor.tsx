@@ -69,13 +69,6 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
     }
     
     setLoading(true)
-    
-                        {/* Abrir chat con estudiante: usando reservas del profesor para mapear estudiante */}
-                        {reservations.filter(r => r.datetime === s.datetime).map(r => (
-                          <button key={`chat-${s.id}-${r.student_username}`} className="btn-secondary" onClick={() => openChat(r.student_username!)}>
-                            Chat con {r.student_name || r.student_username}
-                          </button>
-                        ))}
     try {
       await changePassword(currentPassword, newPassword)
       setSuccess(true)
