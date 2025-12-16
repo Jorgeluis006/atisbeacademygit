@@ -231,7 +231,7 @@ export default function Profesor() {
   })
   const [creatingSlot, setCreatingSlot] = useState(false)
   // Batch (semana) creation
-  const [weeklyTime, setWeeklyTime] = useState<string>('08:00')
+  // removed weeklyTime; we rely on calendar time
   const [weeklyDays, setWeeklyDays] = useState<Record<number, boolean>>({ 0: false, 1: true, 2: true, 3: true, 4: true, 5: false, 6: false })
   const [creatingWeek, setCreatingWeek] = useState(false)
   const [editingMeetingLink, setEditingMeetingLink] = useState<{ slotId: number; currentLink: string } | null>(null)
@@ -284,20 +284,20 @@ export default function Profesor() {
       }
       const base = new Date(newSlot.datetime)
       // Tomamos la hora/minuto del calendario existente
-      // Hora/minuto: si se especifica `weeklyTime`, lo usamos; si no, usamos la hora/minuto del calendario
-      let baseHour = base.getHours()
-      let baseMinute = base.getMinutes()
-      if (weeklyTime && weeklyTime.includes(':')) {
-        const [hh, mm] = weeklyTime.split(':')
-        baseHour = parseInt(hh || '0')
-        baseMinute = parseInt(mm || '0')
+      // Hora/minuto: usamos exclusivamente la hora del calendario seleccionado
+      const baseHour = base.getHours()
+      const baseMinute = base.getMinutes()
       }
-      // Generaremos desde la fecha base los siguientes 7 días
+      // Generar la semana del calendario (domingo a sábado) basada en la fecha seleccionada
+      const startOfWeek = new Date(base)
+      startOfWeek.setHours(0,0,0,0)
+      // mover a domingo (0)
+      startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay())
       const created: string[] = []
       const failed: string[] = []
       for (let i = 0; i < 7; i++) {
-        const d = new Date(base)
-        d.setDate(base.getDate() + i)
+        const d = new Date(startOfWeek)
+        d.setDate(startOfWeek.getDate() + i)
         const dow = d.getDay() // 0 domingo .. 6 sábado
         if (!weeklyDays[dow]) continue
         d.setHours(baseHour, baseMinute, 0, 0)
@@ -643,11 +643,7 @@ export default function Profesor() {
                 </svg>
                 Crear semana (grupal)
               </label>
-              <div className="grid grid-cols-2 gap-3 mb-3">
-                <div>
-                  <label className="text-xs text-gray-600">Hora</label>
-                  <input type="time" className="w-full px-4 py-3 border-2 border-brand-purple/30 rounded-xl" value={weeklyTime} onChange={e => setWeeklyTime(e.target.value)} />
-                </div>
+              <div className="grid grid-cols-1 gap-3 mb-3">
                 <div>
                   <label className="text-xs text-gray-600">Días</label>
                   <div className="flex flex-wrap gap-2">
