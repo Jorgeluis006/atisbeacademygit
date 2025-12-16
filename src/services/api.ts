@@ -334,6 +334,13 @@ export async function deleteVideo(id: number) {
   return api.delete('/admin/videos.php', { data: { id } })
 }
 
+// Public: Teachers list
+export type TeacherPublic = { id: number; username: string; name: string | null; email: string | null }
+export async function getPublicTeachers(): Promise<TeacherPublic[]> {
+  const res = await api.get('/public/teachers.php')
+  return res.data?.items ?? []
+}
+
 // Upload image
 export async function uploadImage(file: File): Promise<string> {
   const formData = new FormData()

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { login as apiLogin, logout as apiLogout, me as apiMe, getStudentProgress, type StudentProgress, getScheduleSlots, createReservation, getMyReservations, cancelReservation, type ScheduleSlot, type Reservation, forgotPassword, changePassword, sendContactForm } from '../services/api'
+import { login as apiLogin, logout as apiLogout, me as apiMe, getStudentProgress, type StudentProgress, getScheduleSlots, createReservation, getMyReservations, cancelReservation, type ScheduleSlot, type Reservation, forgotPassword, changePassword, sendContactForm, getPublicTeachers, type TeacherPublic } from '../services/api'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 
@@ -360,6 +360,7 @@ export default function ZonaEstudiantes() {
   const [customEmail, setCustomEmail] = useState('')
   const [customPhone, setCustomPhone] = useState('')
   const [customTeacher, setCustomTeacher] = useState('')
+  const [teacherOptions, setTeacherOptions] = useState<TeacherPublic[]>([])
   const [customDatetime, setCustomDatetime] = useState('')
   const [customModality, setCustomModality] = useState<'virtual' | 'presencial'>('virtual')
   const [customNotes, setCustomNotes] = useState('')
@@ -370,14 +371,16 @@ export default function ZonaEstudiantes() {
   async function loadStudentData() {
     setLoadingData(true)
     try {
-      const [prog, slotsData, reservasData] = await Promise.all([
+      const [prog, slotsData, reservasData, teachers] = await Promise.all([
         getStudentProgress(),
         getScheduleSlots(),
-        getMyReservations()
+        getMyReservations(),
+        getPublicTeachers()
       ])
       setProgress(prog)
       setSlots(slotsData)
       setReservas(reservasData)
+      setTeacherOptions(teachers)
     } catch (err) {
       console.error('Error loading student data:', err)
     } finally {
@@ -1192,7 +1195,12 @@ export default function ZonaEstudiantes() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Profesor (opcional)</label>
-                  <input className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-purple" type="text" value={customTeacher} onChange={e => setCustomTeacher(e.target.value)} placeholder="Usuario o nombre del profesor" />
+                  <select className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-purple" value={customTeacher} onChange={e => setCustomTeacher(e.target.value)}>
+                    <option value="">— Seleccionar profesor —</option>
+                    {teacherOptions.map(t => (
+                      <option key={t.id} value={t.username}>{(t.name || t.username) + (t.email ? ` — ${t.email}` : '')}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Fecha y hora preferida</label>
