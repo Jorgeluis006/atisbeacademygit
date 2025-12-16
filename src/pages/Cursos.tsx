@@ -27,6 +27,8 @@ export default function Cursos() {
     { value: 'all', label: 'Todos los cursos' },
     { value: 'ingles', label: 'Inglés' },
     { value: 'frances', label: 'Francés' },
+    { value: 'portugues', label: 'Portugués' },
+    { value: 'italiano', label: 'Italiano' },
     { value: 'espanol', label: 'Español para extranjeros' },
     { value: 'club-conversacional', label: 'Club Conversacional' },
     { value: 'conversarte', label: 'ConversArte' },
