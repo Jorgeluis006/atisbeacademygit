@@ -891,6 +891,8 @@ function CoursesManager() {
                   <option value="general">General</option>
                   <option value="ingles">Inglés</option>
                   <option value="frances">Francés</option>
+                  <option value="portugues">Portugués</option>
+                  <option value="italiano">Italiano</option>
                   <option value="espanol">Español para extranjeros</option>
                   <option value="club-conversacional">Club Conversacional</option>
                   <option value="conversarte">ConversArte</option>
