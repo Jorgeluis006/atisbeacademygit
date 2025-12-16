@@ -210,7 +210,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true)
   const [msg, setMsg] = useState('')
   const [err, setErr] = useState('')
-  const [activeTab, setActiveTab] = useState<'contacts' | 'users' | 'grades' | 'testimonials' | 'courses' | 'blog' | 'videos' | 'products' | 'config'>('users')
+  const [activeTab, setActiveTab] = useState<'contacts' | 'users' | 'grades' | 'testimonials' | 'courses' | 'blog' | 'videos' | 'products'>('users')
   const [showChangePassword, setShowChangePassword] = useState(false)
 
   useEffect(() => {
@@ -319,12 +319,6 @@ export default function Admin() {
         >
           Productos
         </button>
-        <button 
-          className={`px-4 py-2 font-semibold transition-colors ${activeTab === 'config' ? 'border-b-2 border-brand-purple text-brand-purple' : 'text-brand-black/60 hover:text-brand-black'}`}
-          onClick={() => setActiveTab('config')}
-        >
-          Configuración
-        </button>
       </div>
 
   {/* Tab Content */}
@@ -368,6 +362,8 @@ function AdminGrades() {
   const [items, setItems] = useState<AdminStudentProgressItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [filterTeacher, setFilterTeacher] = useState<string>('')
+  const [filterLevel, setFilterLevel] = useState<string>('')
 
   useEffect(() => {
     (async () => {
@@ -394,6 +390,27 @@ function AdminGrades() {
     return Math.round(avg * 10) / 10
   }
 
+  // Build filter options
+  const teacherOptions = Array.from(new Map(items
+    .filter(i => i.teacher)
+    .map(i => [i.teacher!.username, (i.teacher!.name || i.teacher!.username)]))
+    .entries())
+    .map(([username, label]) => ({ username, label }))
+    .sort((a,b) => a.label.localeCompare(b.label))
+
+  const levelOptionsBase = ['A1','A2','B1','B2','C1','C2']
+  const levelOptions = Array.from(new Set(
+    items.map(i => (i.level || i.progreso?.nivel?.mcer || ''))
+  )).filter(Boolean).sort((a,b) => levelOptionsBase.indexOf(a) - levelOptionsBase.indexOf(b))
+
+  const filtered = items.filter(i => {
+    const lvl = (i.level || i.progreso?.nivel?.mcer || '').trim()
+    const tUser = i.teacher?.username || ''
+    const passTeacher = filterTeacher ? tUser === filterTeacher : true
+    const passLevel = filterLevel ? lvl === filterLevel : true
+    return passTeacher && passLevel
+  })
+
   return (
     <section className="bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 rounded-2xl p-8 shadow-2xl border-2 border-purple-200 mt-6">
       <div className="flex items-center gap-3 mb-6">
@@ -403,7 +420,32 @@ function AdminGrades() {
         <h2 className="text-3xl font-extrabold bg-gradient-to-r from-brand-purple to-brand-pink bg-clip-text text-transparent">Notas de estudiantes</h2>
       </div>
 
-      {items.length === 0 ? (
+      {/* Filtros */}
+      <div className="grid sm:grid-cols-3 gap-4 mb-6">
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-2">Profesor</label>
+          <select className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-brand-purple" value={filterTeacher} onChange={e => setFilterTeacher(e.target.value)}>
+            <option value="">— Todos —</option>
+            {teacherOptions.map(t => (
+              <option key={t.username} value={t.username}>{t.label}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-2">Nivel (MCER)</label>
+          <select className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-brand-purple" value={filterLevel} onChange={e => setFilterLevel(e.target.value)}>
+            <option value="">— Todos —</option>
+            {levelOptions.map(l => (
+              <option key={l} value={l}>{l}</option>
+            ))}
+          </select>
+        </div>
+        <div className="flex items-end">
+          <button className="btn-secondary" onClick={() => { setFilterTeacher(''); setFilterLevel('') }}>Limpiar filtros</button>
+        </div>
+      </div>
+
+      {filtered.length === 0 ? (
         <p className="text-sm text-brand-black/70">Sin registros de progreso.</p>
       ) : (
         <div className="overflow-x-auto bg-white rounded-xl shadow-lg border border-purple-200">
@@ -418,7 +460,7 @@ function AdminGrades() {
               </tr>
             </thead>
             <tbody>
-              {items.map(it => {
+              {filtered.map(it => {
                 const notas = it.progreso?.notas || []
                 const avg = promedioNotas(notas)
                 return (
