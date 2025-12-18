@@ -1195,7 +1195,7 @@ function BlogManager() {
     <div className="rounded-xl shadow-lg p-8 bg-gradient-to-br from-brand-yellow/10 via-brand-cream to-brand-mauve/10 border border-brand-yellow/30">
       <div className="flex justify-between items-center mb-6">
         <h2 className="section-title text-brand-purple">Blog</h2>
-        <button className="btn-primary bg-brand-purple hover:bg-brand-purple/90 text-white" onClick={() => setEditing({ title: '', content: '', is_published: false })}>
+        <button className="btn-primary bg-brand-purple hover:bg-brand-purple/90 text-white" onClick={() => setEditing({ title: '', content: '', is_published: true })}>
           Nuevo post
         </button>
       </div>
@@ -1302,6 +1302,29 @@ function BlogManager() {
                   <td>{item.is_published ? <span className="text-brand-purple font-semibold">✓ Publicado</span> : <span className="text-brand-mauve/60">Borrador</span>}</td>
                   <td className="text-sm">{item.published_at ? new Date(item.published_at).toLocaleDateString() : '—'}</td>
                   <td className="flex gap-2">
+                    {!item.is_published ? (
+                      <button 
+                        className="btn-ghost text-sm text-brand-purple hover:text-brand-purple/80" 
+                        onClick={async () => {
+                          try {
+                            await handleSave({ ...item, is_published: true })
+                          } catch {}
+                        }}
+                      >
+                        Publicar
+                      </button>
+                    ) : (
+                      <button 
+                        className="btn-ghost text-sm text-brand-mauve hover:text-brand-mauve/80" 
+                        onClick={async () => {
+                          try {
+                            await handleSave({ ...item, is_published: false })
+                          } catch {}
+                        }}
+                      >
+                        Despublicar
+                      </button>
+                    )}
                     <button className="btn-ghost text-sm" onClick={() => setEditing(item)}>Editar</button>
                     <button className="btn-ghost text-sm text-brand-orange hover:text-brand-orange/80" onClick={() => handleDelete(item.id!)}>Eliminar</button>
                   </td>
