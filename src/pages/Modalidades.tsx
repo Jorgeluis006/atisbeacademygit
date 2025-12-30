@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react'
-import { useParams, useSearchParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { getCourses, getCourseModalities, type Course, type CourseModality } from '../services/api'
 
 export default function Modalidades() {
   const { id } = useParams()
   const courseId = Number(id)
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const [course, setCourse] = useState<Course | null>(null)
   const [items, setItems] = useState<CourseModality[]>([])
   const [loading, setLoading] = useState(true)
