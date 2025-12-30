@@ -360,6 +360,24 @@ function ensure_cms_schema() {
         INDEX (display_order)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
     $pdo->exec($sql);
+
+    // Tabla de modalidades por curso (cards adicionales por curso)
+    $sql = "CREATE TABLE IF NOT EXISTS course_modalities (
+        id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        course_id INT UNSIGNED NOT NULL,
+        title VARCHAR(200) NOT NULL,
+        description TEXT DEFAULT NULL,
+        image_url VARCHAR(255) DEFAULT NULL,
+        is_published BOOLEAN DEFAULT TRUE,
+        display_order INT DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX (course_id),
+        INDEX (is_published),
+        INDEX (display_order),
+        CONSTRAINT fk_course_modalities_course FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+    $pdo->exec($sql);
     
     // Tabla de productos
     $sql = "CREATE TABLE IF NOT EXISTS products (
