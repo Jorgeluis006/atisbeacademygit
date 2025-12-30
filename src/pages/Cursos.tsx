@@ -152,10 +152,10 @@ export default function Cursos() {
                     <div className="pt-4 border-t border-gray-100">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <button
-                          onClick={() => navigate(`/contacto?curso=${encodeURIComponent(c.title)}`)}
+                          onClick={() => navigate(`/cursos/${c.id}/modalidades`)}
                           className="w-full bg-white text-brand-purple border border-brand-purple py-2.5 px-4 rounded-lg font-semibold hover:bg-brand-purple/10 transition-colors"
                         >
-                          Ir a Contacto
+                          Modalidades
                         </button>
                         <button
                           onClick={() => window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=Hola,%20me%20interesa%20el%20curso:%20${encodeURIComponent(c.title)}`, '_blank')}

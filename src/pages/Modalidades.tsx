@@ -9,6 +9,7 @@ export default function Modalidades() {
   const [course, setCourse] = useState<Course | null>(null)
   const [items, setItems] = useState<CourseModality[]>([])
   const [loading, setLoading] = useState(true)
+  const WHATSAPP_NUMBER = '573227850345'
 
   useEffect(() => {
     (async () => {
@@ -32,6 +33,13 @@ export default function Modalidades() {
     const curso = course?.title || ''
     const modalidad = mod.title
     navigate(`/contacto?curso=${encodeURIComponent(curso)}&modalidad=${encodeURIComponent(modalidad)}`)
+  }
+
+  function goWhatsApp(mod: CourseModality) {
+    const curso = course?.title || ''
+    const modalidad = mod.title
+    const mensaje = `Hola, me interesa el curso ${curso} en la modalidad ${modalidad}`
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensaje)}`, '_blank')
   }
 
   return (
@@ -68,12 +76,20 @@ export default function Modalidades() {
                   <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-brand-purple transition-colors">{m.title}</h3>
                   {m.description && <p className="text-gray-600 mb-4 leading-relaxed">{m.description}</p>}
                   <div className="pt-4 border-t border-gray-100">
-                    <button
-                      onClick={() => goContact(m)}
-                      className="w-full bg-brand-purple text-white py-2.5 px-4 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
-                    >
-                      Elegir esta modalidad
-                    </button>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <button
+                        onClick={() => goWhatsApp(m)}
+                        className="w-full bg-brand-purple text-white py-2.5 px-4 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+                      >
+                        Contactar por WhatsApp
+                      </button>
+                      <button
+                        onClick={() => goContact(m)}
+                        className="w-full bg-white text-brand-purple border border-brand-purple py-2.5 px-4 rounded-lg font-semibold hover:bg-brand-purple/10 transition-colors"
+                      >
+                        Ir a Contacto
+                      </button>
+                    </div>
                   </div>
                 </div>
               </article>
