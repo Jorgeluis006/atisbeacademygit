@@ -46,9 +46,13 @@ export default function Modalidades() {
     <main className="bg-brand-beige">
       <div className="bg-gradient-to-r from-brand-purple to-purple-600 text-white py-16">
         <div className="container-padded text-center">
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-2">Modalidades</h1>
-          {course && (
-            <p className="text-white/90">Curso: <span className="font-bold">{course.title}</span></p>
+          <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-4 uppercase">
+            {course ? course.title : 'Curso'}
+          </h1>
+          {course?.description && (
+            <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto">
+              {course.description}
+            </p>
           )}
         </div>
       </div>
