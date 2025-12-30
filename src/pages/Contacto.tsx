@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { sendContactForm } from '../services/api'
 
 const initial = { nombre: '', edad: '', nacionalidad: '', email: '', telefono: '', idioma: '', modalidad: '', franja: '', curso: '', dia_interes: '' }
 
 export default function Contacto() {
+  const [searchParams] = useSearchParams()
   const [form, setForm] = useState(initial)
   const [status, setStatus] = useState<'idle'|'sending'|'ok'|'error'>('idle')
 
@@ -13,6 +15,14 @@ export default function Contacto() {
     const { name, value } = e.target
     setForm((f) => ({ ...f, [name]: value }))
   }
+
+  useEffect(() => {
+    const curso = searchParams.get('curso') || ''
+    const modalidad = searchParams.get('modalidad') || ''
+    if (curso || modalidad) {
+      setForm((f) => ({ ...f, curso: curso || f.curso, modalidad: modalidad || f.modalidad }))
+    }
+  }, [searchParams])
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()

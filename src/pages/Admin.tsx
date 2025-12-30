@@ -19,6 +19,7 @@ import {
   updateCourse,
   deleteCourse,
   type Course,
+  type CourseModality,
   getAdminBlogPosts,
   createBlogPost,
   updateBlogPost,
@@ -922,6 +923,7 @@ function CoursesManager() {
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState<Course | null>(null)
   const [uploading, setUploading] = useState(false)
+  const [modCourse, setModCourse] = useState<Course | null>(null)
 
   async function load() {
     setLoading(true)
@@ -1120,6 +1122,7 @@ function CoursesManager() {
                   <td>{item.display_order}</td>
                   <td className="flex gap-2">
                     <button className="btn-ghost text-sm" onClick={() => setEditing(item)}>Editar</button>
+                    <button className="btn-ghost text-sm text-brand-purple hover:text-brand-purple/80" onClick={() => setModCourse(item)}>Modalidades</button>
                     <button className="btn-ghost text-sm text-brand-orange hover:text-brand-orange/80" onClick={() => handleDelete(item.id!)}>Eliminar</button>
                   </td>
                 </tr>
@@ -1128,6 +1131,148 @@ function CoursesManager() {
           </table>
         </div>
       )}
+
+      {modCourse && <CourseModalitiesManager course={modCourse} onClose={() => setModCourse(null)} />}
+    </div>
+  )
+}
+
+function CourseModalitiesManager({ course, onClose }: { course: Course; onClose: () => void }) {
+  const [items, setItems] = useState<CourseModality[]>([])
+  const [loading, setLoading] = useState(true)
+  const [editing, setEditing] = useState<CourseModality | null>(null)
+  const [uploading, setUploading] = useState(false)
+
+  async function load() {
+    setLoading(true)
+    try {
+      const res = await (await import('../services/api')).getAdminCourseModalities(course.id!)
+      setItems(res)
+    } finally { setLoading(false) }
+  }
+
+  useEffect(() => { load() }, [])
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file || !editing) return
+    setUploading(true)
+    try {
+      const url = await (await import('../services/api')).uploadImage(file)
+      setEditing({ ...editing, image_url: url })
+      alert('Imagen subida exitosamente')
+    } catch (err) {
+      alert('Error al subir la imagen')
+      console.error(err)
+    } finally { setUploading(false) }
+  }
+
+  async function handleSave(item: CourseModality) {
+    try {
+      const api = await import('../services/api')
+      if (item.id) {
+        await api.updateCourseModality(item)
+      } else {
+        await api.createCourseModality({ ...item, course_id: course.id! })
+      }
+      setEditing(null)
+      await load()
+    } catch {
+      alert('Error al guardar')
+    }
+  }
+
+  async function handleDelete(id: number) {
+    if (!confirm('¿Eliminar esta modalidad?')) return
+    try {
+      const api = await import('../services/api')
+      await api.deleteCourseModality(id)
+      await load()
+    } catch {
+      alert('Error al eliminar')
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={onClose}>
+      <div className="bg-white rounded-2xl p-6 shadow-xl w-full max-w-3xl" onClick={(e) => e.stopPropagation()}>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-bold">Modalidades — {course.title}</h3>
+          <button className="text-gray-500 hover:text-gray-700" onClick={onClose}>✕</button>
+        </div>
+
+        <div className="flex justify-end mb-4">
+          <button className="btn-primary" onClick={() => setEditing({ course_id: course.id!, title: '', description: '', is_published: true, display_order: 0 })}>Nueva modalidad</button>
+        </div>
+
+        {editing && (
+          <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
+            <div className="grid gap-3">
+              <div>
+                <label className="label">Título</label>
+                <input className="input-control" value={editing.title} onChange={e => setEditing({ ...editing, title: e.target.value })} />
+              </div>
+              <div>
+                <label className="label">Descripción</label>
+                <textarea className="input-control" rows={3} value={editing.description || ''} onChange={e => setEditing({ ...editing, description: e.target.value })} />
+              </div>
+              <div>
+                <label className="label">Imagen</label>
+                <div className="grid gap-2">
+                  <input className="input-control" placeholder="URL de la imagen" value={editing.image_url || ''} onChange={e => setEditing({ ...editing, image_url: e.target.value })} />
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-brand-black/60">o subir:</span>
+                    <input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} />
+                    {uploading && <span className="text-sm text-brand-purple">Subiendo...</span>}
+                  </div>
+                  {editing.image_url && <img src={editing.image_url} alt="Preview" className="w-32 h-32 object-cover rounded" />}
+                </div>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="label">Orden</label>
+                  <input className="input-control" type="number" value={editing.display_order || 0} onChange={e => setEditing({ ...editing, display_order: Number(e.target.value) })} />
+                </div>
+                <div className="flex items-end">
+                  <label className="flex items-center gap-2"><input type="checkbox" checked={editing.is_published !== false} onChange={e => setEditing({ ...editing, is_published: e.target.checked })} /><span className="text-sm">Publicado</span></label>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <button className="btn-primary" onClick={() => handleSave(editing)}>Guardar</button>
+                <button className="btn-secondary" onClick={() => setEditing(null)}>Cancelar</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {loading ? <p>Cargando…</p> : (
+          <div className="overflow-auto">
+            <table className="table-clean">
+              <thead>
+                <tr>
+                  <th>Título</th>
+                  <th>Estado</th>
+                  <th>Orden</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map(it => (
+                  <tr key={it.id}>
+                    <td className="font-semibold">{it.title}</td>
+                    <td>{it.is_published ? 'Publicado' : 'Oculto'}</td>
+                    <td>{it.display_order || 0}</td>
+                    <td className="flex gap-2">
+                      <button className="btn-ghost text-sm" onClick={() => setEditing(it)}>Editar</button>
+                      <button className="btn-ghost text-sm text-brand-orange" onClick={() => handleDelete(it.id!)}>Eliminar</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

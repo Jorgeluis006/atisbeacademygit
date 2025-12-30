@@ -263,6 +263,39 @@ export async function deleteCourse(id: number) {
   return api.delete('/admin/courses.php', { data: { id } })
 }
 
+// CMS: Course Modalities
+export type CourseModality = {
+  id?: number
+  course_id: number
+  title: string
+  description?: string
+  image_url?: string
+  is_published?: boolean
+  display_order?: number
+}
+
+export async function getCourseModalities(courseId: number): Promise<CourseModality[]> {
+  const res = await api.get('/public/course_modalities.php', { params: { course_id: courseId } })
+  return res.data?.items ?? []
+}
+
+export async function getAdminCourseModalities(courseId: number): Promise<CourseModality[]> {
+  const res = await api.get('/admin/course_modalities.php', { params: { course_id: courseId } })
+  return res.data?.items ?? []
+}
+
+export async function createCourseModality(input: CourseModality) {
+  return api.post('/admin/course_modalities.php', input)
+}
+
+export async function updateCourseModality(input: CourseModality) {
+  return api.put('/admin/course_modalities.php', input)
+}
+
+export async function deleteCourseModality(id: number) {
+  return api.delete('/admin/course_modalities.php', { data: { id } })
+}
+
 // CMS: Blog
 export type BlogPost = {
   id?: number

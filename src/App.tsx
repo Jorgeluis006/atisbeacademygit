@@ -17,6 +17,7 @@ import Influencers from './pages/Influencers'
 import Admin from './pages/Admin'
 import Profesor from './pages/Profesor'
 import ResetPassword from './pages/ResetPassword'
+import Modalidades from './pages/Modalidades'
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/quienes-somos" element={<QuienesSomos />} />
           <Route path="/cursos" element={<Cursos />} />
+          <Route path="/cursos/:id/modalidades" element={<Modalidades />} />
           <Route path="/testimonios" element={<Testimonios />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/contacto" element={<Contacto />} />
