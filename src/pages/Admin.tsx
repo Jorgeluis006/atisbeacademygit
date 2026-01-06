@@ -32,7 +32,12 @@ import {
   changePassword,
   type Video,
   uploadImage,
-  uploadVideo
+  uploadVideo,
+  getAdminCorporativo,
+  createCorporativoItem,
+  updateCorporativoItem,
+  deleteCorporativoItem,
+  type CorporativoItem
 } from '../services/api'
 
 import AdminContacts from './AdminContacts'
@@ -211,7 +216,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true)
   const [msg, setMsg] = useState('')
   const [err, setErr] = useState('')
-  const [activeTab, setActiveTab] = useState<'contacts' | 'users' | 'grades' | 'testimonials' | 'courses' | 'exams' | 'blog' | 'videos' | 'products'>('users')
+  const [activeTab, setActiveTab] = useState<'contacts' | 'users' | 'grades' | 'testimonials' | 'courses' | 'corporativo' | 'exams' | 'blog' | 'videos' | 'products'>('users')
   const [showChangePassword, setShowChangePassword] = useState(false)
 
   useEffect(() => {
@@ -303,6 +308,12 @@ export default function Admin() {
           Cursos
         </button>
         <button 
+          className={`px-4 py-2 font-semibold transition-colors ${activeTab === 'corporativo' ? 'border-b-2 border-brand-purple text-brand-purple' : 'text-brand-black/60 hover:text-brand-black'}`}
+          onClick={() => setActiveTab('corporativo')}
+        >
+          Corporativo
+        </button>
+        <button 
           className={`px-4 py-2 font-semibold transition-colors ${activeTab === 'exams' ? 'border-b-2 border-brand-purple text-brand-purple' : 'text-brand-black/60 hover:text-brand-black'}`}
           onClick={() => setActiveTab('exams')}
         >
@@ -350,6 +361,7 @@ export default function Admin() {
       {activeTab === 'testimonials' && <TestimonialsManager />}
       {activeTab === 'courses' && <CoursesManager />}
       {activeTab === 'blog' && <BlogManager />}
+      {activeTab === 'corporativo' && <CorporativoManager />}
       {activeTab === 'exams' && <ExamsManager />}
       {activeTab === 'videos' && <VideosManager />}
       {activeTab === 'products' && <ProductsManager />}
@@ -365,6 +377,163 @@ export default function Admin() {
     </main>
   )
 }
+// CMS: Corporativo Manager
+function CorporativoManager() {
+  const [items, setItems] = useState<CorporativoItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [editing, setEditing] = useState<CorporativoItem | null>(null)
+  const [uploading, setUploading] = useState(false)
+
+  async function load() {
+    setLoading(true)
+    try {
+      const data = await getAdminCorporativo()
+      setItems(data)
+    } finally { setLoading(false) }
+  }
+
+  useEffect(() => { load() }, [])
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file || !editing) return
+    setUploading(true)
+    try {
+      const url = await uploadImage(file)
+      setEditing({ ...editing, image_url: url })
+      alert('Imagen subida exitosamente')
+    } catch {
+      alert('Error al subir la imagen')
+    } finally { setUploading(false) }
+  }
+
+  async function handleSave(item: CorporativoItem) {
+    try {
+      if (item.id) {
+        await updateCorporativoItem(item)
+      } else {
+        await createCorporativoItem(item)
+      }
+      setEditing(null)
+      await load()
+      alert('Guardado exitosamente')
+    } catch {
+      alert('Error al guardar')
+    }
+  }
+
+  async function handleDelete(id: number) {
+    if (!confirm('¿Eliminar esta card corporativa?')) return
+    try {
+      await deleteCorporativoItem(id)
+      await load()
+    } catch {
+      alert('Error al eliminar')
+    }
+  }
+
+  return (
+    <div className="rounded-xl shadow-lg p-8 bg-gradient-to-br from-brand-purple/10 via-brand-cream to-brand-orange/10 border border-brand-purple/30">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="section-title text-brand-purple">Corporativo</h2>
+        <button className="btn-primary bg-brand-purple hover:bg-brand-purple/90 text-white" onClick={() => setEditing({ title: '', description: '', default_modality: '', is_published: true, display_order: 0 })}>
+          Nueva card
+        </button>
+      </div>
+
+      {editing && (
+        <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-md p-6 mb-6 border border-brand-orange/20">
+          <h3 className="font-serif text-lg mb-4 text-brand-purple">{editing.id ? 'Editar' : 'Nueva'} Card</h3>
+          <div className="grid gap-4">
+            <div>
+              <label className="label">Título</label>
+              <input className="input-control" value={editing.title} onChange={e => setEditing({ ...editing, title: e.target.value })} />
+            </div>
+            <div>
+              <label className="label">Slug (opcional)</label>
+              <input className="input-control" value={editing.slug || ''} onChange={e => setEditing({ ...editing, slug: e.target.value })} />
+            </div>
+            <div>
+              <label className="label">Descripción</label>
+              <textarea className="input-control" rows={4} value={editing.description || ''} onChange={e => setEditing({ ...editing, description: e.target.value })} />
+            </div>
+            <div>
+              <label className="label">Imagen</label>
+              <div className="grid gap-2">
+                <input className="input-control" placeholder="URL de la imagen" value={editing.image_url || ''} onChange={e => setEditing({ ...editing, image_url: e.target.value })} />
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-brand-black/60">o subir:</span>
+                  <input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} className="text-sm" />
+                  {uploading && <span className="text-sm text-brand-purple">Subiendo...</span>}
+                </div>
+                {editing.image_url && (
+                  <img src={editing.image_url} alt="Preview" className="w-32 h-20 object-cover rounded-lg mt-2" />
+                )}
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-3 gap-3">
+              <div>
+                <label className="label">Modalidad por defecto</label>
+                <select className="select-control" value={editing.default_modality || ''} onChange={e => setEditing({ ...editing, default_modality: e.target.value })}>
+                  <option value="">—</option>
+                  <option value="virtual">Virtual</option>
+                  <option value="presencial">Presencial</option>
+                </select>
+              </div>
+              <div>
+                <label className="label">Orden</label>
+                <input className="input-control" type="number" value={editing.display_order || 0} onChange={e => setEditing({ ...editing, display_order: Number(e.target.value) })} />
+              </div>
+              <div className="flex items-end">
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" checked={editing.is_published !== false} onChange={e => setEditing({ ...editing, is_published: e.target.checked })} />
+                  <span className="text-sm">Publicado</span>
+                </label>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button className="btn-primary" onClick={() => handleSave(editing)}>Guardar</button>
+              <button className="btn-secondary" onClick={() => setEditing(null)}>Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {loading ? <p>Cargando...</p> : (
+        <div className="overflow-auto">
+          <table className="table-clean">
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Slug</th>
+                <th>Modalidad</th>
+                <th>Estado</th>
+                <th>Orden</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map(item => (
+                <tr key={item.id}>
+                  <td className="font-semibold">{item.title}</td>
+                  <td className="text-sm">{item.slug || '—'}</td>
+                  <td className="text-sm">{item.default_modality || '—'}</td>
+                  <td>{item.is_published ? <span className="text-brand-purple font-semibold">✓</span> : <span className="text-brand-mauve/60">✗</span>}</td>
+                  <td>{item.display_order}</td>
+                  <td className="flex gap-2">
+                    <button className="btn-ghost text-sm" onClick={() => setEditing(item)}>Editar</button>
+                    <button className="btn-ghost text-sm text-brand-orange hover:text-brand-orange/80" onClick={() => handleDelete(item.id!)}>Eliminar</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  )
+}
+
 
 function AdminGrades() {
   const [items, setItems] = useState<AdminStudentProgressItem[]>([])
@@ -1355,6 +1524,10 @@ function ExamsManager() {
             <div>
               <label className="label">Descripción</label>
               <textarea className="input-control" rows={3} value={editing.description || ''} onChange={e => setEditing({ ...editing, description: e.target.value })} />
+            </div>
+            <div>
+              <label className="label">Descripción detallada (para la tarjeta)</label>
+              <textarea className="input-control" rows={4} value={editing.detail_description || ''} onChange={e => setEditing({ ...editing, detail_description: e.target.value })} />
             </div>
             <div>
               <label className="label">Imagen</label>

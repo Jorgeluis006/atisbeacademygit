@@ -403,6 +403,37 @@ export async function deleteVideo(id: number) {
   return api.delete('/admin/videos.php', { data: { id } })
 }
 
+// CMS: Corporativo
+export type CorporativoItem = {
+  id?: number
+  title: string
+  slug?: string
+  description?: string
+  image_url?: string
+  default_modality?: string
+  is_published?: boolean
+  display_order?: number
+}
+
+export async function getCorporativo(): Promise<CorporativoItem[]> {
+  const res = await api.get('/public/corporativo.php')
+  return res.data?.items ?? []
+}
+
+export async function getAdminCorporativo(): Promise<CorporativoItem[]> {
+  const res = await api.get('/admin/corporativo.php')
+  return res.data?.items ?? []
+}
+export async function createCorporativoItem(input: CorporativoItem) {
+  return api.post('/admin/corporativo.php', input)
+}
+export async function updateCorporativoItem(input: CorporativoItem) {
+  return api.put('/admin/corporativo.php', input)
+}
+export async function deleteCorporativoItem(id: number) {
+  return api.delete('/admin/corporativo.php', { data: { id } })
+}
+
 // Public: Teachers list
 export type TeacherPublic = { id: number; username: string; name: string | null; email: string | null }
 export async function getPublicTeachers(): Promise<TeacherPublic[]> {
