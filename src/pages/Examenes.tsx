@@ -39,12 +39,12 @@ export default function Examenes() {
               className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 cursor-pointer"
               aria-label={`Ver detalles de ${e.title}`}
             >
-              <div className="w-full aspect-[16/9] bg-gray-50 overflow-hidden">
-                <img src={e.image_url || '/images/A1.png'} alt={e.title} className="w-full h-full object-cover" />
+              <div className="w-full aspect-[16/9] bg-gray-50 overflow-hidden flex items-center justify-center">
+                <img src={e.image_url || '/images/A1.png'} alt={e.title} className="w-full h-auto max-h-full object-contain" />
               </div>
               <div className="p-6">
                 <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-brand-purple transition-colors">{e.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{e.description}</p>
+                <p className="text-gray-600 leading-relaxed">{e.detail_description || e.description}</p>
               </div>
             </article>
           ))}

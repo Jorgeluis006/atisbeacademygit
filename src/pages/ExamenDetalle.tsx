@@ -27,15 +27,13 @@ export default function ExamenDetalle() {
 
       <div className="container-padded py-10">
         <div className="max-w-6xl mx-auto grid gap-6 sm:gap-10 md:grid-cols-[360px,1fr] items-start">
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-            <div className="w-full aspect-[3/4] sm:aspect-[4/5] md:aspect-[3/4] bg-gray-50 overflow-hidden">
-              <img src={exam?.image_url || '/images/A1.png'} alt={exam?.title || 'Examen'} className="w-full h-full object-cover" />
-            </div>
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex items-center justify-center">
+            <img src={exam?.image_url || '/images/A1.png'} alt={exam?.title || 'Examen'} className="w-full h-auto max-h-[560px] object-contain" />
           </div>
           <div className="space-y-6">
             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 sm:p-6">
               <h2 className="text-2xl font-bold mb-3">Descripción</h2>
-              <p className="text-gray-700 leading-relaxed">{exam?.description || 'Detalles próximamente.'}</p>
+              <p className="text-gray-700 leading-relaxed">{exam?.detail_description || exam?.description || 'Detalles próximamente.'}</p>
             </div>
             <ExamInquiryForm exam={exam?.title || 'Examen'} />
           </div>
