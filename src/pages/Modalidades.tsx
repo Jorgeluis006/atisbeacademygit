@@ -105,9 +105,14 @@ export default function Modalidades() {
               </article>
             ))}
           </div>
-          {/* Contact form below modalities */}
-          <div ref={contactRef}>
-            <ContactForm title="¿Te interesa este curso? Contáctanos" prefill={prefill} />
+          {/* Contact form below modalities with hero header */}
+          <div ref={contactRef} className="mt-12">
+            <div className="bg-gradient-to-r from-brand-purple to-purple-600 text-white py-12 mb-8">
+              <div className="container-padded text-center">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold">¿Te interesa este curso? Contáctanos</h2>
+              </div>
+            </div>
+            <ContactForm title="" prefill={prefill} />
           </div>
           </>
         )}
