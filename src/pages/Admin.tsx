@@ -211,7 +211,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true)
   const [msg, setMsg] = useState('')
   const [err, setErr] = useState('')
-  const [activeTab, setActiveTab] = useState<'contacts' | 'users' | 'grades' | 'testimonials' | 'courses' | 'blog' | 'videos' | 'products'>('users')
+  const [activeTab, setActiveTab] = useState<'contacts' | 'users' | 'grades' | 'testimonials' | 'courses' | 'exams' | 'blog' | 'videos' | 'products'>('users')
   const [showChangePassword, setShowChangePassword] = useState(false)
 
   useEffect(() => {
@@ -303,6 +303,12 @@ export default function Admin() {
           Cursos
         </button>
         <button 
+          className={`px-4 py-2 font-semibold transition-colors ${activeTab === 'exams' ? 'border-b-2 border-brand-purple text-brand-purple' : 'text-brand-black/60 hover:text-brand-black'}`}
+          onClick={() => setActiveTab('exams')}
+        >
+          Exámenes
+        </button>
+        <button 
           className={`px-4 py-2 font-semibold transition-colors ${activeTab === 'blog' ? 'border-b-2 border-brand-purple text-brand-purple' : 'text-brand-black/60 hover:text-brand-black'}`}
           onClick={() => setActiveTab('blog')}
         >
@@ -344,7 +350,9 @@ export default function Admin() {
       {activeTab === 'testimonials' && <TestimonialsManager />}
       {activeTab === 'courses' && <CoursesManager />}
       {activeTab === 'blog' && <BlogManager />}
+      {activeTab === 'exams' && <ExamsManager />}
       {activeTab === 'videos' && <VideosManager />}
+      {activeTab === 'exams' && <ExamsManager />}
       {activeTab === 'products' && <ProductsManager />}
 
       {(msg || err) && (
@@ -1273,6 +1281,143 @@ function CourseModalitiesManager({ course, onClose }: { course: Course; onClose:
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+// CMS: Exams Manager
+function ExamsManager() {
+  const [items, setItems] = useState<import('../services/api').Exam[]>([])
+  const [loading, setLoading] = useState(true)
+  const [editing, setEditing] = useState<import('../services/api').Exam | null>(null)
+  const [uploading, setUploading] = useState(false)
+
+  async function load() {
+    setLoading(true)
+    try {
+      const data = await (await import('../services/api')).getAdminExams()
+      setItems(data)
+    } finally { setLoading(false) }
+  }
+
+  useEffect(() => { load() }, [])
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file || !editing) return
+    setUploading(true)
+    try {
+      const url = await (await import('../services/api')).uploadImage(file)
+      setEditing({ ...editing, image_url: url })
+      alert('Imagen subida exitosamente')
+    } catch {
+      alert('Error al subir la imagen')
+    } finally { setUploading(false) }
+  }
+
+  async function handleSave(item: import('../services/api').Exam) {
+    try {
+      const api = await import('../services/api')
+      if (item.id) await api.updateExam(item)
+      else await api.createExam(item)
+      setEditing(null)
+      await load()
+    } catch { alert('Error al guardar') }
+  }
+
+  async function handleDelete(id: number) {
+    if (!confirm('¿Eliminar este examen?')) return
+    try {
+      const api = await import('../services/api')
+      await api.deleteExam(id)
+      await load()
+    } catch { alert('Error al eliminar') }
+  }
+
+  return (
+    <div className="rounded-xl shadow-lg p-8 bg-gradient-to-br from-brand-purple/10 via-brand-cream to-brand-mauve/10 border border-brand-purple/30">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="section-title text-brand-purple">Exámenes</h2>
+        <button className="btn-primary" onClick={() => setEditing({ title: '', slug: '', description: '', is_published: true, display_order: 0 })}>Nuevo examen</button>
+      </div>
+
+      {editing && (
+        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <h3 className="font-serif text-lg mb-4">{editing.id ? 'Editar' : 'Nuevo'} Examen</h3>
+          <div className="grid gap-4">
+            <div>
+              <label className="label">Título</label>
+              <input className="input-control" value={editing.title} onChange={e => setEditing({ ...editing, title: e.target.value })} />
+            </div>
+            <div>
+              <label className="label">Slug (URL)</label>
+              <input className="input-control" placeholder="ej: ielts" value={editing.slug} onChange={e => setEditing({ ...editing, slug: e.target.value.replace(/\s+/g,'-').toLowerCase() })} />
+            </div>
+            <div>
+              <label className="label">Descripción</label>
+              <textarea className="input-control" rows={3} value={editing.description || ''} onChange={e => setEditing({ ...editing, description: e.target.value })} />
+            </div>
+            <div>
+              <label className="label">Imagen</label>
+              <div className="grid gap-2">
+                <input className="input-control" placeholder="URL" value={editing.image_url || ''} onChange={e => setEditing({ ...editing, image_url: e.target.value })} />
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-brand-black/60">o subir:</span>
+                  <input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} />
+                  {uploading && <span className="text-sm text-brand-purple">Subiendo…</span>}
+                </div>
+                {editing.image_url && <img src={editing.image_url} className="w-32 h-20 object-cover rounded-lg" />}
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-3 gap-3">
+              <div>
+                <label className="label">Orden</label>
+                <input className="input-control" type="number" value={editing.display_order || 0} onChange={e => setEditing({ ...editing, display_order: Number(e.target.value) })} />
+              </div>
+              <div className="flex items-end">
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" checked={editing.is_published !== false} onChange={e => setEditing({ ...editing, is_published: e.target.checked })} />
+                  <span className="text-sm">Publicado</span>
+                </label>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button className="btn-primary" onClick={() => handleSave(editing)}>Guardar</button>
+              <button className="btn-secondary" onClick={() => setEditing(null)}>Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {loading ? <p>Cargando…</p> : (
+        <div className="overflow-auto">
+          <table className="table-clean">
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Slug</th>
+                <th>Estado</th>
+                <th>Orden</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map(item => (
+                <tr key={item.id}>
+                  <td className="font-semibold">{item.title}</td>
+                  <td className="text-sm text-gray-600">{item.slug}</td>
+                  <td>{item.is_published ? '✓' : '✗'}</td>
+                  <td>{item.display_order || 0}</td>
+                  <td className="flex gap-2">
+                    <button className="btn-ghost text-sm" onClick={() => setEditing(item)}>Editar</button>
+                    <button className="btn-ghost text-sm text-brand-orange" onClick={() => item.id && handleDelete(item.id)}>Eliminar</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   )
 }

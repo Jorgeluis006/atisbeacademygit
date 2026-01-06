@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { sendContactForm } from '../services/api'
 
 export default function ExamInquiryForm({ exam }: { exam: string }) {
   const [nombre, setNombre] = useState('')
@@ -6,16 +7,31 @@ export default function ExamInquiryForm({ exam }: { exam: string }) {
   const [email, setEmail] = useState('')
   const WHATSAPP_NUMBER = '573227850345'
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    const parts = [
-      `Hola, me interesa la preparación para el examen ${exam}.`,
-      nombre ? `Mi nombre es ${nombre}.` : '',
-      edad ? `Tengo ${edad} años.` : '',
-      email ? `Mi correo es ${email}.` : ''
-    ].filter(Boolean)
-    const mensaje = parts.join(' ')
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensaje)}`, '_blank')
+    try {
+      await sendContactForm({
+        nombre: nombre || '—',
+        edad: edad || '—',
+        nacionalidad: '—',
+        email: email || '—',
+        telefono: '—',
+        idioma: `Examen: ${exam}`,
+        modalidad: 'examen',
+        franja: '—'
+      })
+      const parts = [
+        `Hola, me interesa la preparación para el examen ${exam}.`,
+        nombre ? `Mi nombre es ${nombre}.` : '',
+        edad ? `Tengo ${edad} años.` : '',
+        email ? `Mi correo es ${email}.` : ''
+      ].filter(Boolean)
+      const mensaje = parts.join(' ')
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensaje)}`, '_blank')
+      alert('¡Tu solicitud fue enviada! Te contactaremos pronto.')
+    } catch {
+      alert('No se pudo enviar la solicitud. Intenta nuevamente.')
+    }
   }
 
   return (

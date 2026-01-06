@@ -213,6 +213,41 @@ export async function getAdminTestimonials(): Promise<Testimonial[]> {
   return res.data?.items ?? []
 }
 
+// Exams
+export type Exam = {
+  id?: number
+  title: string
+  slug: string
+  description?: string
+  image_url?: string
+  is_published?: boolean
+  display_order?: number
+}
+
+export async function getExams(): Promise<Exam[]> {
+  const res = await api.get('/public/exams.php')
+  return res.data?.items ?? []
+}
+
+export async function getExam(slug: string): Promise<Exam> {
+  const res = await api.get('/public/exam.php', { params: { slug } })
+  return res.data?.item
+}
+
+export async function getAdminExams(): Promise<Exam[]> {
+  const res = await api.get('/admin/exams.php')
+  return res.data?.items ?? []
+}
+export async function createExam(input: Exam) {
+  return api.post('/admin/exams.php', input)
+}
+export async function updateExam(input: Exam) {
+  return api.put('/admin/exams.php', input)
+}
+export async function deleteExam(id: number) {
+  return api.delete('/admin/exams.php', { data: { id } })
+}
+
 export async function createTestimonial(input: Testimonial) {
   return api.post('/admin/testimonials.php', input)
 }

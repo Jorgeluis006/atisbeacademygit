@@ -291,6 +291,23 @@ function ensure_cms_schema() {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
     $pdo->exec($sql);
     
+    // Tabla de exámenes
+    $sql = "CREATE TABLE IF NOT EXISTS exams (
+        id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        title VARCHAR(200) NOT NULL,
+        slug VARCHAR(220) UNIQUE NOT NULL,
+        description TEXT DEFAULT NULL,
+        image_url VARCHAR(255) DEFAULT NULL,
+        is_published BOOLEAN DEFAULT TRUE,
+        display_order INT DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX (is_published),
+        INDEX (display_order),
+        INDEX (slug)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+    $pdo->exec($sql);
+
     // Tabla de cursos
     $sql = "CREATE TABLE IF NOT EXISTS courses (
         id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
