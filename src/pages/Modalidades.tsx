@@ -109,7 +109,7 @@ export default function Modalidades() {
           <div ref={contactRef} className="mt-12">
             <div className="bg-gradient-to-r from-brand-purple to-purple-600 text-white py-12 mb-8">
               <div className="container-padded text-center">
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold">¿Te interesa este curso? Contáctanos</h2>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white">¿Te interesa este curso? Contáctanos</h2>
               </div>
             </div>
             <ContactForm title="" prefill={prefill} />
