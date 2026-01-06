@@ -352,7 +352,6 @@ export default function Admin() {
       {activeTab === 'blog' && <BlogManager />}
       {activeTab === 'exams' && <ExamsManager />}
       {activeTab === 'videos' && <VideosManager />}
-      {activeTab === 'exams' && <ExamsManager />}
       {activeTab === 'products' && <ProductsManager />}
 
       {(msg || err) && (
