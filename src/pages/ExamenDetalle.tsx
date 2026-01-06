@@ -21,14 +21,13 @@ export default function ExamenDetalle() {
       <div className="bg-gradient-to-r from-brand-purple to-purple-600 text-white py-12 sm:py-16">
         <div className="container-padded">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white mb-2 sm:mb-4 uppercase">{exam?.title || 'Examen'}</h1>
-          <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-4xl">{exam?.description || 'Detalles próximamente.'}</p>
         </div>
       </div>
 
       <div className="container-padded py-10">
-        <div className="max-w-6xl mx-auto grid gap-6 sm:gap-10 md:grid-cols-[360px,1fr] items-start">
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex items-center justify-center">
-            <img src={exam?.image_url || '/images/A1.png'} alt={exam?.title || 'Examen'} className="w-full h-auto max-h-[560px] object-contain" />
+        <div className="max-w-6xl mx-auto grid gap-6 sm:gap-10 md:grid-cols-[520px,1fr] lg:grid-cols-[600px,1fr] items-start">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex items-center justify-center h-[300px] sm:h-[360px] md:h-[420px] lg:h-[520px] xl:h-[580px]">
+            <img src={exam?.image_url || '/images/A1.png'} alt={exam?.title || 'Examen'} className="w-full h-full object-contain" />
           </div>
           <div className="space-y-6">
             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 sm:p-6">
