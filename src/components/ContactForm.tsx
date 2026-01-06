@@ -8,6 +8,7 @@ export type ContactPrefill = Partial<typeof initial>
 export default function ContactForm({ prefill, title = 'Contacto' }: { prefill?: ContactPrefill; title?: string }) {
   const [form, setForm] = useState(initial)
   const [status, setStatus] = useState<'idle'|'sending'|'ok'|'error'>('idle')
+  const [consent, setConsent] = useState(false)
 
   const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 
@@ -24,11 +25,16 @@ export default function ContactForm({ prefill, title = 'Contacto' }: { prefill?:
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (!consent) {
+      alert('Por favor autoriza el tratamiento de datos por ATISBE para continuar.')
+      return
+    }
     setStatus('sending')
     try {
       await sendContactForm(form)
       setStatus('ok')
       setForm(initial)
+      setConsent(false)
     } catch {
       setStatus('error')
     }
@@ -90,8 +96,15 @@ export default function ContactForm({ prefill, title = 'Contacto' }: { prefill?:
                 <option>Noche</option>
               </select>
             </div>
+            <label className="flex items-start gap-3 text-xs sm:text-sm text-gray-700">
+              <input type="checkbox" className="mt-1" checked={consent} onChange={e => setConsent(e.target.checked)} />
+              <span>
+                Autorizo de manera previa, expresa, informada e inequívoca a <strong>ATISBE</strong> para que los datos suministrados en este formulario sean tratados de conformidad con la política de tratamiento de datos, la cual podrás consultar
+                {' '}<a href="/politicas-privacidad" target="_blank" rel="noopener" className="text-brand-purple underline">aquí</a>.
+              </span>
+            </label>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-2 sm:mt-4">
-              <button className="btn-primary w-full sm:flex-1 min-h-[44px]" type="submit" disabled={status==='sending'}>
+              <button className="btn-primary w-full sm:flex-1 min-h-[44px]" type="submit" disabled={status==='sending' || !consent}>
                 {status==='sending' ? 'Enviando…' : 'ENVIAR FORMULARIO'}
               </button>
               <button 

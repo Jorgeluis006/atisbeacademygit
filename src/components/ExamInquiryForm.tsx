@@ -5,10 +5,15 @@ export default function ExamInquiryForm({ exam }: { exam: string }) {
   const [nombre, setNombre] = useState('')
   const [edad, setEdad] = useState('')
   const [email, setEmail] = useState('')
+  const [consent, setConsent] = useState(false)
   const WHATSAPP_NUMBER = '573227850345'
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (!consent) {
+      alert('Por favor autoriza el tratamiento de datos por ATISBE para continuar.')
+      return
+    }
     try {
       await sendContactForm({
         nombre: nombre || '—',
@@ -42,7 +47,14 @@ export default function ExamInquiryForm({ exam }: { exam: string }) {
         <input className="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" placeholder="Nombre" value={nombre} onChange={e => setNombre(e.target.value)} />
         <input className="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" type="email" placeholder="Correo" value={email} onChange={e => setEmail(e.target.value)} />
       </div>
-      <button type="submit" className="btn-primary w-full">Quiero más información</button>
+      <label className="flex items-start gap-3 text-xs sm:text-sm text-gray-700">
+        <input type="checkbox" className="mt-1" checked={consent} onChange={e => setConsent(e.target.checked)} />
+        <span>
+          Autorizo de manera previa, expresa, informada e inequívoca a <strong>ATISBE</strong> para que los datos suministrados en este formulario sean tratados de conformidad con la política de tratamiento de datos, la cual podrás consultar
+          {' '}<a href="/politicas-privacidad" target="_blank" rel="noopener" className="text-brand-purple underline">aquí</a>.
+        </span>
+      </label>
+      <button type="submit" className="btn-primary w-full" disabled={!consent}>Quiero más información</button>
     </form>
   )
 }
