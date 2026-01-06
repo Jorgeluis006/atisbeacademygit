@@ -219,6 +219,7 @@ export type Exam = {
   title: string
   slug: string
   description?: string
+  detail_description?: string
   image_url?: string
   is_published?: boolean
   display_order?: number
