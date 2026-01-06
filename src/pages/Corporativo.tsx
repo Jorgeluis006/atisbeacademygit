@@ -32,8 +32,9 @@ export default function Corporativo() {
     }
   ]
 
-  function comenzar(prefill: Record<string, string>) {
-    const qs = new URLSearchParams(prefill).toString()
+  function comenzar(prefill: Partial<Record<string, string>>) {
+    const entries = Object.entries(prefill).filter(([, v]) => typeof v === 'string' && v.length > 0) as [string, string][]
+    const qs = new URLSearchParams(entries).toString()
     navigate(`/contacto?${qs}`)
   }
 
