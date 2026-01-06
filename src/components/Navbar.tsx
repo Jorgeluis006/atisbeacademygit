@@ -6,6 +6,7 @@ const navItems = [
   { to: '/', label: 'Inicio' },
   { to: '/quienes-somos', label: 'Quiénes somos' },
   { to: '/cursos', label: 'Cursos' },
+  { to: '/corporativo', label: 'Corporativo' },
   { to: '/examenes', label: 'Exámenes' },
   { to: '/testimonios', label: 'Testimonios' },
   { to: '/blog', label: 'Blog' },
@@ -38,15 +39,35 @@ export function Navbar() {
         {/* Desktop nav */}
         <nav className="hidden lg:flex items-center gap-6">
           {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                `text-sm font-medium ${isActive ? 'text-brand-purple' : 'text-brand-black/80 hover:text-brand-purple dark:text-white/80 dark:hover:text-white'}`
-              }
-            >
-              {item.label}
-            </NavLink>
+            item.label !== 'Corporativo' ? (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `text-sm font-medium ${isActive ? 'text-brand-purple' : 'text-brand-black/80 hover:text-brand-purple dark:text-white/80 dark:hover:text-white'}`
+                }
+              >
+                {item.label}
+              </NavLink>
+            ) : (
+              <div key={item.to} className="relative group">
+                <NavLink
+                  to={item.to}
+                  className={({ isActive }) =>
+                    `text-sm font-medium ${isActive ? 'text-brand-purple' : 'text-brand-black/80 hover:text-brand-purple'}`
+                  }
+                >
+                  {item.label}
+                </NavLink>
+                <div className="absolute left-1/2 -translate-x-1/2 mt-3 w-56 bg-white rounded-2xl shadow-lg border border-gray-100 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition">
+                  <div className="p-3 space-y-2 text-center text-brand-red">
+                    <Link to="/corporativo?section=empresariales" className="block py-2 rounded-xl hover:bg-brand-red/10">Cursos Empresariales</Link>
+                    <Link to="/corporativo?section=colegios" className="block py-2 rounded-xl hover:bg-brand-red/10">Cursos en Colegios</Link>
+                    <Link to="/corporativo?section=personalizado" className="block py-2 rounded-xl bg-brand-red text-white">Personalizado Virtual</Link>
+                  </div>
+                </div>
+              </div>
+            )
           ))}
           <Link to="/zona-estudiantes" className="btn-primary">Zona de estudiantes</Link>
           {isAdmin && (

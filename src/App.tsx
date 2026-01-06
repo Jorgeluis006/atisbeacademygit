@@ -20,6 +20,7 @@ import ResetPassword from './pages/ResetPassword'
 import Modalidades from './pages/Modalidades'
 import Examenes from './pages/Examenes'
 import ExamenDetalle from './pages/ExamenDetalle'
+import Corporativo from './pages/Corporativo'
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/quienes-somos" element={<QuienesSomos />} />
           <Route path="/cursos" element={<Cursos />} />
           <Route path="/cursos/:id/modalidades" element={<Modalidades />} />
+          <Route path="/corporativo" element={<Corporativo />} />
           <Route path="/examenes" element={<Examenes />} />
           <Route path="/examenes/:id" element={<ExamenDetalle />} />
           <Route path="/testimonios" element={<Testimonios />} />
