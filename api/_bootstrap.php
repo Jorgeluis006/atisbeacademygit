@@ -291,12 +291,42 @@ function ensure_cms_schema() {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
     $pdo->exec($sql);
     
+    // Tabla Corporativo (cards gestionables)
+    $sql = "CREATE TABLE IF NOT EXISTS corporativo_items (
+        id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        title VARCHAR(200) NOT NULL,
+        slug VARCHAR(120) DEFAULT NULL,
+        description TEXT DEFAULT NULL,
+        image_url VARCHAR(255) DEFAULT NULL,
+        default_modality VARCHAR(50) DEFAULT NULL,
+        is_published BOOLEAN DEFAULT TRUE,
+        display_order INT DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX (is_published),
+        INDEX (display_order),
+        INDEX (slug)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+    $pdo->exec($sql);
+
+    // Seed por defecto si está vacío
+    try {
+        $count = (int)$pdo->query("SELECT COUNT(*) FROM corporativo_items")->fetchColumn();
+        if ($count === 0) {
+            $stmt = $pdo->prepare("INSERT INTO corporativo_items (title, slug, description, image_url, default_modality, is_published, display_order) VALUES (?,?,?,?,?,?,?)");
+            $stmt->execute(['Cursos empresariales', 'empresariales', 'Curso de estudio de manera presencial en casa u oficina de los estudiantes. Las clases se desarrollan a partir del estilo de aprendizaje preferido de los estudiantes, con apoyo de contenidos programáticos cuidadosamente elegidos y de acuerdo al idioma a aprender con enfoque a negocios o interacción general.', '/images/B2.png', NULL, true, 1]);
+            $stmt->execute(['Cursos en colegios', 'colegios', 'Nuestros cursos de inglés en colegios apoyan a instituciones educativas que desean llevar a sus estudiantes hacia el bilingüismo desde primaria hasta bachillerato, a través de cursos extra curriculares que facilitan la práctica del inglés como lengua extranjera.', '/images/B1.png', NULL, true, 2]);
+            $stmt->execute(['Personalizado', 'personalizado', 'Nuestros cursos presenciales y virtuales con profesor privado permiten a los estudiantes abrir puertas e incrementar sus aptitudes laborales y visión frente al futuro.', '/images/A2.png', 'virtual', true, 3]);
+        }
+    } catch (Throwable $e) {}
+
     // Tabla de exámenes
     $sql = "CREATE TABLE IF NOT EXISTS exams (
         id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
         title VARCHAR(200) NOT NULL,
         slug VARCHAR(220) UNIQUE NOT NULL,
         description TEXT DEFAULT NULL,
+        detail_description TEXT DEFAULT NULL,
         image_url VARCHAR(255) DEFAULT NULL,
         is_published BOOLEAN DEFAULT TRUE,
         display_order INT DEFAULT 0,
@@ -307,6 +337,14 @@ function ensure_cms_schema() {
         INDEX (slug)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
     $pdo->exec($sql);
+
+    // Agregar columna detail_description si falta (para instalaciones previas)
+    try {
+        $stmt = $pdo->query("SHOW COLUMNS FROM exams LIKE 'detail_description'");
+        if (!$stmt->fetch()) {
+            $pdo->exec("ALTER TABLE exams ADD COLUMN detail_description TEXT DEFAULT NULL AFTER description");
+        }
+    } catch (Throwable $e) {}
 
     // Tabla de cursos
     $sql = "CREATE TABLE IF NOT EXISTS courses (
