@@ -6,6 +6,7 @@ const navItems = [
   { to: '/', label: 'Inicio' },
   { to: '/quienes-somos', label: 'Quiénes somos' },
   { to: '/cursos', label: 'Cursos' },
+  { to: '/examenes', label: 'Exámenes' },
   { to: '/testimonios', label: 'Testimonios' },
   { to: '/blog', label: 'Blog' },
   { to: '/contacto', label: 'Contacto' },
