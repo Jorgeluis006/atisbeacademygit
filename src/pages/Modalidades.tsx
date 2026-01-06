@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getCourses, getCourseModalities, type Course, type CourseModality } from '../services/api'
+import ContactForm from '../components/ContactForm'
 
 export default function Modalidades() {
   const { id } = useParams()
@@ -68,6 +69,7 @@ export default function Modalidades() {
             <p className="text-gray-600">Aún no hay modalidades para este curso.</p>
           </div>
         ) : (
+          <>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {items.map(m => (
               <article key={m.id} className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
@@ -99,6 +101,9 @@ export default function Modalidades() {
               </article>
             ))}
           </div>
+          {/* Contact form below modalities */}
+          <ContactForm title="¿Te interesa este curso? Contáctanos" prefill={{ curso: course?.title || '' }} />
+          </>
         )}
       </div>
     </main>
