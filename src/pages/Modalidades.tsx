@@ -1,16 +1,17 @@
-import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { getCourses, getCourseModalities, type Course, type CourseModality } from '../services/api'
 import ContactForm from '../components/ContactForm'
 
 export default function Modalidades() {
   const { id } = useParams()
   const courseId = Number(id)
-  const navigate = useNavigate()
   const [course, setCourse] = useState<Course | null>(null)
   const [items, setItems] = useState<CourseModality[]>([])
   const [loading, setLoading] = useState(true)
   const WHATSAPP_NUMBER = '573227850345'
+  const contactRef = useRef<HTMLDivElement>(null)
+  const [prefill, setPrefill] = useState<{ curso?: string; modalidad?: string }>({})
 
   useEffect(() => {
     (async () => {
@@ -30,10 +31,13 @@ export default function Modalidades() {
     })()
   }, [courseId])
 
+  useEffect(() => {
+    setPrefill(p => ({ ...p, curso: course?.title || '' }))
+  }, [course?.title])
+
   function goContact(mod: CourseModality) {
-    const curso = course?.title || ''
-    const modalidad = mod.title
-    navigate(`/contacto?curso=${encodeURIComponent(curso)}&modalidad=${encodeURIComponent(modalidad)}`)
+    setPrefill(p => ({ ...p, modalidad: mod.title }))
+    contactRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   function goWhatsApp(mod: CourseModality) {
@@ -102,7 +106,9 @@ export default function Modalidades() {
             ))}
           </div>
           {/* Contact form below modalities */}
-          <ContactForm title="¿Te interesa este curso? Contáctanos" prefill={{ curso: course?.title || '' }} />
+          <div ref={contactRef}>
+            <ContactForm title="¿Te interesa este curso? Contáctanos" prefill={prefill} />
+          </div>
           </>
         )}
       </div>
