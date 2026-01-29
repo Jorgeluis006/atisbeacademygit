@@ -7,7 +7,7 @@ export default function Cursos() {
   const navigate = useNavigate()
   const [cursos, setCursos] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedType, setSelectedType] = useState<string>(searchParams.get('category') || 'all')
+  const [selectedType, setSelectedType] = useState<string>(searchParams.get('category') || 'conversarte')
 
   useEffect(() => {
     (async () => {
@@ -23,17 +23,9 @@ export default function Cursos() {
   }, [])
 
   const courseTypes = [
-    { value: 'all', label: 'Todos los cursos' },
-    { value: 'ingles', label: 'Inglés' },
-    { value: 'frances', label: 'Francés' },
-    { value: 'portugues', label: 'Portugués' },
-    { value: 'italiano', label: 'Italiano' },
-    { value: 'espanol', label: 'Español para extranjeros' },
-    { value: 'club-conversacional', label: 'Club Conversacional' },
     { value: 'conversarte', label: 'ConversArte' },
-    { value: 'ninos', label: 'Cursos para niños' },
-    { value: 'personalizadas', label: 'Clases personalizadas' },
-    { value: 'general', label: 'Otros' }
+    { value: 'cursos-idiomas', label: 'Cursos de idiomas' },
+    { value: 'refuerzos', label: 'Refuerzos escolares' }
   ]
 
   const getCourseTypeLabel = (type: string) => {
@@ -41,12 +33,10 @@ export default function Cursos() {
     return found ? found.label : type
   }
 
-  const filteredCourses = selectedType === 'all' 
-    ? cursos 
-    : cursos.filter(c => {
-        const courseType = c.course_type || 'general'
-        return courseType === selectedType
-      })
+  const filteredCourses = cursos.filter(c => {
+    const courseType = c.course_type || 'general'
+    return courseType === selectedType
+  })
 
   return (
   <main className="bg-brand-beige">
