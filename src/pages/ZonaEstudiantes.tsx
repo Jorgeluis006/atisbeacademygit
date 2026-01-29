@@ -393,6 +393,7 @@ export default function ZonaEstudiantes() {
     try {
       console.log('Iniciando generación de PDF...')
       console.log('Reservas:', reservas)
+      console.log('Cantidad de reservas:', reservas.length)
       
       const doc = new jsPDF('landscape')
     
@@ -977,13 +978,18 @@ export default function ZonaEstudiantes() {
                         {[0, 1, 2, 3, 4, 5, 6].map((dayOffset) => {
                           const cellDate = new Date(startOfWeek)
                           cellDate.setDate(startOfWeek.getDate() + dayOffset)
+                          cellDate.setHours(0, 0, 0, 0)
                           const cellDateStr = cellDate.toISOString().split('T')[0]
                           
                           const cellReservations = reservas.filter(r => {
                             const rDate = parseLocalDateTime(r.datetime)
                             const rDateStr = rDate.toISOString().split('T')[0]
                             const rHour = rDate.getHours()
-                            return rDateStr === cellDateStr && rHour === hour
+                            const matches = rDateStr === cellDateStr && rHour === hour
+                            if (matches) {
+                              console.log(`Match found: ${r.datetime} -> ${rDateStr} ${rHour}:00`)
+                            }
+                            return matches
                           })
                           
                           return (
@@ -1269,15 +1275,17 @@ function parseLocalDateTime(mysqlDatetime: string): Date {
   const [year, month, day] = datePart.split('-')
   const [hour, minute, second] = timePart.split(':')
   
+  // Parsear como integers
+  const parsedYear = parseInt(year)
+  const parsedMonth = parseInt(month) - 1 // months are 0-indexed
+  const parsedDay = parseInt(day)
+  const parsedHour = parseInt(hour || '0')
+  const parsedMinute = parseInt(minute || '0')
+  const parsedSecond = parseInt(second || '0')
+  
   // Create date with local timezone
-  return new Date(
-    parseInt(year),
-    parseInt(month) - 1, // months are 0-indexed
-    parseInt(day),
-    parseInt(hour || '0'),
-    parseInt(minute || '0'),
-    parseInt(second || '0')
-  )
+  return new Date(parsedYear, parsedMonth, parsedDay, parsedHour, parsedMinute, parsedSecond)
+
 }
 
 function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: ScheduleSlot[]; reservas: Reservation[]; onBooked: () => void; onCancel: () => void }) {
