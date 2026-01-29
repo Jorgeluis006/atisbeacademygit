@@ -225,7 +225,7 @@ export default function Profesor() {
     tipo: 'clase', 
     modalidad: 'virtual', 
     duration_minutes: 60,
-    curso: 'Inglés',
+    curso: 'ConversArte',
     nivel: '',
     meeting_link: '',
     max_alumnos: 1
@@ -265,7 +265,7 @@ export default function Profesor() {
         tipo: 'clase', 
         modalidad: 'virtual', 
         duration_minutes: 60,
-        curso: 'Inglés',
+        curso: 'ConversArte',
         nivel: '',
         meeting_link: '',
         max_alumnos: 1
@@ -514,17 +514,9 @@ export default function Profesor() {
                 Curso
               </label>
               <select className="w-full px-4 py-3 border-2 border-indigo-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-indigo-200 focus:border-indigo-500 transition-all shadow-sm hover:border-indigo-400 font-semibold" value={newSlot.curso} onChange={e => setNewSlot({ ...newSlot, curso: e.target.value })}>
-                <option value="Inglés">Inglés</option>
-                <option value="Francés">Francés</option>
-                <option value="Portugués">Portugués</option>
-                <option value="Italiano">Italiano</option>
-                <option value="Español para extranjeros">Español para extranjeros</option>
-                <option value="Club Conversacional">Club Conversacional</option>
                 <option value="ConversArte">ConversArte</option>
-                <option value="Tour Cafetero">Tour Cafetero</option>
-                <option value="Cursos para niños">Cursos para niños</option>
-                <option value="Clases personalizadas">Clases personalizadas</option>
-                <option value="General">General</option>
+                <option value="Cursos de idiomas">Cursos de idiomas</option>
+                <option value="Refuerzos escolares">Refuerzos escolares</option>
               </select>
             </div>
             <div>
@@ -1234,15 +1226,9 @@ export default function Profesor() {
                     onChange={e => setProg({ ...prog, curso: e.target.value })}
                   >
                     <option value="">— Seleccionar curso —</option>
-                    <option value="Inglés">Inglés</option>
-                    <option value="Francés">Francés</option>
-                    <option value="Español para extranjeros">Español para extranjeros</option>
-                    <option value="Club Conversacional">Club Conversacional</option>
                     <option value="ConversArte">ConversArte</option>
-                    <option value="Tour Cafetero">Tour Cafetero</option>
-                    <option value="Cursos para niños">Cursos para niños</option>
-                    <option value="Clases personalizadas">Clases personalizadas</option>
-                    <option value="General">General</option>
+                    <option value="Cursos de idiomas">Cursos de idiomas</option>
+                    <option value="Refuerzos escolares">Refuerzos escolares</option>
                   </select>
                 </div>
                 <div>
