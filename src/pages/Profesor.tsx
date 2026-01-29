@@ -519,8 +519,6 @@ export default function Profesor() {
                 <option value="Portugués">Portugués</option>
                 <option value="Italiano">Italiano</option>
                 <option value="Español para extranjeros">Español para extranjeros</option>
-                <option value="Club Conversacional">Club Conversacional</option>
-                <option value="ConversArte">ConversArte</option>
               </select>
             </div>
             <div>
@@ -1235,8 +1233,6 @@ export default function Profesor() {
                     <option value="Portugués">Portugués</option>
                     <option value="Italiano">Italiano</option>
                     <option value="Español para extranjeros">Español para extranjeros</option>
-                    <option value="Club Conversacional">Club Conversacional</option>
-                    <option value="ConversArte">ConversArte</option>
                   </select>
                 </div>
                 <div>
