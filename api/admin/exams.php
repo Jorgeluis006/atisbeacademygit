@@ -16,14 +16,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($input['title'] ?? '');
     $slug = trim($input['slug'] ?? '');
     $description = trim($input['description'] ?? '');
+    $detail_description = trim($input['detail_description'] ?? '');
     $image_url = trim($input['image_url'] ?? '');
     $is_published = isset($input['is_published']) ? (bool)$input['is_published'] : true;
     $display_order = (int)($input['display_order'] ?? 0);
 
     if ($title === '' || $slug === '') { json_error('Título y slug son requeridos'); }
 
-    $stmt = $pdo->prepare('INSERT INTO exams (title, slug, description, image_url, is_published, display_order) VALUES (?,?,?,?,?,?)');
-    $stmt->execute([$title, $slug, $description, $image_url, $is_published, $display_order]);
+    $stmt = $pdo->prepare('INSERT INTO exams (title, slug, description, detail_description, image_url, is_published, display_order) VALUES (?,?,?,?,?,?,?)');
+    $stmt->execute([$title, $slug, $description, $detail_description, $image_url, $is_published, $display_order]);
     json_ok(['id' => (int)$pdo->lastInsertId()]);
 }
 
@@ -34,13 +35,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     $title = trim($input['title'] ?? '');
     $slug = trim($input['slug'] ?? '');
     $description = trim($input['description'] ?? '');
+    $detail_description = trim($input['detail_description'] ?? '');
     $image_url = trim($input['image_url'] ?? '');
     $is_published = isset($input['is_published']) ? (bool)$input['is_published'] : true;
     $display_order = (int)($input['display_order'] ?? 0);
     if ($title === '' || $slug === '') { json_error('Título y slug son requeridos'); }
 
-    $stmt = $pdo->prepare('UPDATE exams SET title=?, slug=?, description=?, image_url=?, is_published=?, display_order=? WHERE id=?');
-    $stmt->execute([$title, $slug, $description, $image_url, $is_published, $display_order, $id]);
+    $stmt = $pdo->prepare('UPDATE exams SET title=?, slug=?, description=?, detail_description=?, image_url=?, is_published=?, display_order=? WHERE id=?');
+    $stmt->execute([$title, $slug, $description, $detail_description, $image_url, $is_published, $display_order, $id]);
     json_ok();
 }
 
