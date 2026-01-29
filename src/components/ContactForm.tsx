@@ -69,7 +69,7 @@ export default function ContactForm({ prefill, title = 'Contacto' }: { prefill?:
               <input className="border border-gray-300 rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" name="edad" placeholder="Edad" required value={form.edad} onChange={onChange} />
               <input className="border border-gray-300 rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" name="nacionalidad" placeholder="Nacionalidad" required value={form.nacionalidad} onChange={onChange} />
               <input className="border border-gray-300 rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" type="email" name="email" placeholder="Correo electrónico" required value={form.email} onChange={onChange} />
-              <input className="border border-gray-300 rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" name="telefono" placeholder="Número de contacto" required value={form.telefono} onChange={onChange} />
+              <input className="border border-gray-300 rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" name="telefono" placeholder="Indicativo ej: +57 y número de contacto" required value={form.telefono} onChange={onChange} />
               <select className="border border-gray-300 rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" name="idioma" required value={form.idioma} onChange={onChange}>
                 <option value="">Idioma que desea aprender</option>
                 <option>Inglés</option>
@@ -82,10 +82,9 @@ export default function ContactForm({ prefill, title = 'Contacto' }: { prefill?:
               <input className="border border-gray-300 rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" name="curso" placeholder="¿En qué estás interesado?" required value={form.curso} onChange={onChange} />
               <select className="border border-gray-300 rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" name="modalidad" required value={form.modalidad} onChange={onChange}>
                 <option value="">Modalidad preferida</option>
-                <option>virtual</option>
-                <option>presencial</option>
-                <option>grupal</option>
-                <option>personalizada</option>
+                <option>personalizada - virtual</option>
+                <option>grupal - virtual</option>
+                <option>Personalizada - presencial</option>
               </select>
               <select className="border border-gray-300 rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" name="dia_interes" required value={form.dia_interes} onChange={onChange}>
                 <option value="">Día de interés</option>
