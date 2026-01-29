@@ -1101,6 +1101,15 @@ function CoursesManager() {
   const [uploading, setUploading] = useState(false)
   const [modCourse, setModCourse] = useState<Course | null>(null)
 
+  const getCourseTypeLabel = (type: string) => {
+    const labels: Record<string, string> = {
+      'conversarte': 'ConversArte',
+      'cursos-idiomas': 'Cursos de idiomas',
+      'refuerzos': 'Refuerzos escolares'
+    }
+    return labels[type] || type
+  }
+
   async function load() {
     setLoading(true)
     try {
@@ -1157,7 +1166,7 @@ function CoursesManager() {
     <div className="rounded-xl shadow-lg p-8 bg-gradient-to-br from-brand-purple/10 via-brand-cream to-brand-orange/10 border border-brand-purple/30">
       <div className="flex justify-between items-center mb-6">
         <h2 className="section-title text-brand-purple">Cursos</h2>
-        <button className="btn-primary bg-brand-purple hover:bg-brand-purple/90 text-white" onClick={() => setEditing({ title: '', description: '', modality: 'virtual', course_type: 'general', is_published: true, display_order: 0 })}>
+        <button className="btn-primary bg-brand-purple hover:bg-brand-purple/90 text-white" onClick={() => setEditing({ title: '', description: '', modality: 'virtual', course_type: 'conversarte', is_published: true, display_order: 0 })}>
           Nuevo curso
         </button>
       </div>
@@ -1207,18 +1216,10 @@ function CoursesManager() {
               </div>
               <div>
                 <label className="label">Tipo de curso</label>
-                <select className="select-control" value={editing.course_type || 'general'} onChange={e => setEditing({ ...editing, course_type: e.target.value })}>
-                  <option value="general">General</option>
-                  <option value="ingles">Inglés</option>
-                  <option value="frances">Francés</option>
-                  <option value="portugues">Portugués</option>
-                  <option value="italiano">Italiano</option>
-                  <option value="espanol">Español para extranjeros</option>
-                  <option value="club-conversacional">Club Conversacional</option>
+                <select className="select-control" value={editing.course_type || 'conversarte'} onChange={e => setEditing({ ...editing, course_type: e.target.value })}>
                   <option value="conversarte">ConversArte</option>
-                  <option value="tour-cafetero">Tour Cafetero</option>
-                  <option value="ninos">Cursos para niños</option>
-                  <option value="personalizadas">Clases personalizadas</option>
+                  <option value="cursos-idiomas">Cursos de idiomas</option>
+                  <option value="refuerzos">Refuerzos escolares</option>
                 </select>
               </div>
             </div>
@@ -1290,7 +1291,7 @@ function CoursesManager() {
               {items.map(item => (
                 <tr key={item.id}>
                   <td className="font-semibold">{item.title}</td>
-                  <td className="text-sm">{item.course_type || 'general'}</td>
+                  <td className="text-sm">{getCourseTypeLabel(item.course_type || 'conversarte')}</td>
                   <td>{item.level || '—'}</td>
                   <td>{item.modality}</td>
                   <td>{item.price ? `$${item.price}` : '—'}</td>
