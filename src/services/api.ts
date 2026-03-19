@@ -456,6 +456,49 @@ export async function getAdminAllProgress(): Promise<AdminStudentProgressItem[]>
   return res.data?.items ?? []
 }
 
+export type StudentProgressHistoryActor = {
+  id: number | null
+  username: string | null
+  name: string | null
+  role: string | null
+}
+
+export type AdminStudentProgressHistoryStudent = {
+  id: number
+  username: string
+  name: string | null
+  level?: string | null
+  modality?: string | null
+}
+
+export type StudentProgressHistoryItem = {
+  id: number
+  student_id: number
+  action_type: string
+  created_at: string
+  actor: StudentProgressHistoryActor
+  previous_data: StudentProgress | null
+  new_data: StudentProgress | null
+}
+
+export type AdminStudentProgressHistoryResponse = {
+  student: AdminStudentProgressHistoryStudent
+  items: StudentProgressHistoryItem[]
+}
+
+export async function getAdminStudentProgressHistory(params: { studentId?: number; studentUsername?: string }): Promise<AdminStudentProgressHistoryResponse> {
+  const res = await api.get('/admin/progress_history.php', {
+    params: {
+      student_id: params.studentId,
+      student_username: params.studentUsername,
+    },
+  })
+  return {
+    student: res.data?.student,
+    items: res.data?.items ?? [],
+  }
+}
+
 // Upload image
 export async function uploadImage(file: File): Promise<string> {
   const formData = new FormData()

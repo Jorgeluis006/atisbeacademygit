@@ -37,13 +37,270 @@ import {
   createCorporativoItem,
   updateCorporativoItem,
   deleteCorporativoItem,
-  type CorporativoItem
+  type CorporativoItem,
+  getAdminAllProgress,
+  getAdminStudentProgressHistory,
+  type AdminStudentProgressItem,
+  type StudentProgress,
+  type StudentProgressHistoryItem,
 } from '../services/api'
-
 import AdminContacts from './AdminContacts'
-import { getAdminAllProgress, type AdminStudentProgressItem } from '../services/api'
 
+type ProgressChange = {
+  label: string
+  detail: string
+}
 
+function emptyStudentProgress(): StudentProgress {
+  return {
+    asistencia: 0,
+    notas: [],
+    nivel: { mcer: '', descripcion: '' },
+    fortalezas: [],
+    debilidades: [],
+    curso: '',
+  }
+}
+
+function normalizeProgress(progress: StudentProgress | null | undefined): StudentProgress {
+  if (!progress) return emptyStudentProgress()
+  return {
+    asistencia: Number(progress.asistencia) || 0,
+    notas: Array.isArray(progress.notas) ? progress.notas : [],
+    nivel: {
+      mcer: progress.nivel?.mcer || '',
+      descripcion: progress.nivel?.descripcion || '',
+    },
+    fortalezas: Array.isArray(progress.fortalezas) ? progress.fortalezas : [],
+    debilidades: Array.isArray(progress.debilidades) ? progress.debilidades : [],
+    curso: progress.curso || '',
+  }
+}
+
+function formatHistoryDateTime(value: string) {
+  const normalized = value.includes('T') ? value : value.replace(' ', 'T')
+  const date = new Date(normalized)
+  if (Number.isNaN(date.getTime())) return value
+  return date.toLocaleString('es-CO', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
+function formatActorLabel(item: StudentProgressHistoryItem) {
+  const actorName = item.actor?.name || item.actor?.username || 'Usuario'
+  const actorRole = item.actor?.role ? ` (${item.actor.role})` : ''
+  return `${actorName}${actorRole}`
+}
+
+function uniqueValues(values: string[]) {
+  return Array.from(new Set(values.map(value => value.trim()).filter(Boolean)))
+}
+
+function diffList(label: string, previous: string[], next: string[]) {
+  const before = uniqueValues(previous)
+  const after = uniqueValues(next)
+  const added = after.filter(item => !before.includes(item))
+  const removed = before.filter(item => !after.includes(item))
+  const changes: ProgressChange[] = []
+  if (added.length > 0) {
+    changes.push({ label, detail: `Agregado: ${added.join(', ')}` })
+  }
+  if (removed.length > 0) {
+    changes.push({ label, detail: `Eliminado: ${removed.join(', ')}` })
+  }
+  return changes
+}
+
+function noteKey(note: { actividad: string; fecha: string }, index: number) {
+  return `${note.actividad.trim().toLowerCase()}|${note.fecha.trim()}|${index}`
+}
+
+function diffNotes(previousNotes: StudentProgress['notas'], nextNotes: StudentProgress['notas']) {
+  const previousMap = new Map(previousNotes.map((note, index) => [noteKey(note, index), note]))
+  const nextMap = new Map(nextNotes.map((note, index) => [noteKey(note, index), note]))
+  const keys = Array.from(new Set([...previousMap.keys(), ...nextMap.keys()]))
+  const changes: ProgressChange[] = []
+
+  keys.forEach(key => {
+    const previous = previousMap.get(key)
+    const next = nextMap.get(key)
+    const activity = next?.actividad || previous?.actividad || 'Actividad sin nombre'
+    const dateLabel = next?.fecha || previous?.fecha || 'sin fecha'
+
+    if (!previous && next) {
+      changes.push({ label: 'Notas', detail: `Se agregó ${activity} (${dateLabel}) con nota ${next.nota}` })
+      return
+    }
+    if (previous && !next) {
+      changes.push({ label: 'Notas', detail: `Se eliminó ${activity} (${dateLabel}) con nota ${previous.nota}` })
+      return
+    }
+    if (previous && next && previous.nota !== next.nota) {
+      changes.push({ label: 'Notas', detail: `${activity} (${dateLabel}) cambió de ${previous.nota} a ${next.nota}` })
+    }
+  })
+
+  return changes
+}
+
+function getProgressChanges(previousData: StudentProgress | null, newData: StudentProgress | null) {
+  const previous = normalizeProgress(previousData)
+  const next = normalizeProgress(newData)
+  const changes: ProgressChange[] = []
+
+  if (previousData === null && newData !== null) {
+    changes.push({ label: 'Registro', detail: 'Se creó el progreso inicial del estudiante' })
+  }
+  if (previous.asistencia !== next.asistencia) {
+    changes.push({ label: 'Asistencia', detail: `${previous.asistencia}% -> ${next.asistencia}%` })
+  }
+  if ((previous.curso || '') !== (next.curso || '')) {
+    changes.push({ label: 'Curso', detail: `${previous.curso || 'Sin definir'} -> ${next.curso || 'Sin definir'}` })
+  }
+  if (previous.nivel.mcer !== next.nivel.mcer) {
+    changes.push({ label: 'Nivel MCER', detail: `${previous.nivel.mcer || 'Sin definir'} -> ${next.nivel.mcer || 'Sin definir'}` })
+  }
+  if (previous.nivel.descripcion !== next.nivel.descripcion) {
+    changes.push({ label: 'Descripción nivel', detail: `${previous.nivel.descripcion || 'Sin descripción'} -> ${next.nivel.descripcion || 'Sin descripción'}` })
+  }
+
+  changes.push(...diffNotes(previous.notas, next.notas))
+  changes.push(...diffList('Fortalezas', previous.fortalezas, next.fortalezas))
+  changes.push(...diffList('Debilidades', previous.debilidades, next.debilidades))
+
+  if (changes.length === 0) {
+    changes.push({ label: 'Actualización', detail: 'No se detectaron diferencias legibles en este evento' })
+  }
+
+  return changes
+}
+
+function SnapshotPanel({ title, progress, emptyLabel }: { title: string; progress: StudentProgress | null; emptyLabel: string }) {
+  if (!progress) {
+    return <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-4 text-sm text-gray-600">{emptyLabel}</div>
+  }
+
+  return (
+    <div className="rounded-xl border border-purple-200 bg-purple-50/50 p-4">
+      <h5 className="font-bold text-gray-900 mb-3">{title}</h5>
+      <div className="space-y-3 text-sm text-gray-700">
+        <div><span className="font-semibold">Asistencia:</span> {progress.asistencia}%</div>
+        <div><span className="font-semibold">Curso:</span> {progress.curso || 'Sin definir'}</div>
+        <div><span className="font-semibold">Nivel:</span> {progress.nivel.mcer || 'Sin definir'}</div>
+        <div><span className="font-semibold">Descripción:</span> {progress.nivel.descripcion || 'Sin descripción'}</div>
+        <div>
+          <span className="font-semibold">Notas:</span>
+          {progress.notas.length === 0 ? (
+            <span> Sin notas</span>
+          ) : (
+            <div className="mt-2 space-y-2">
+              {progress.notas.map((note, index) => (
+                <div key={`${note.actividad}-${note.fecha}-${index}`} className="rounded-lg bg-white px-3 py-2 border border-purple-100">
+                  <div className="font-semibold">{note.actividad || 'Actividad sin nombre'}</div>
+                  <div>Nota: {note.nota}</div>
+                  <div>Fecha: {note.fecha || 'Sin fecha'}</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div><span className="font-semibold">Fortalezas:</span> {progress.fortalezas.length > 0 ? progress.fortalezas.join(', ') : 'Sin fortalezas'}</div>
+        <div><span className="font-semibold">Debilidades:</span> {progress.debilidades.length > 0 ? progress.debilidades.join(', ') : 'Sin debilidades'}</div>
+      </div>
+    </div>
+  )
+}
+
+function ProgressHistoryModal({
+  student,
+  items,
+  loading,
+  error,
+  onClose,
+}: {
+  student: AdminStudentProgressItem | null
+  items: StudentProgressHistoryItem[]
+  loading: boolean
+  error: string
+  onClose: () => void
+}) {
+  if (!student) return null
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden" onClick={(event) => event.stopPropagation()}>
+        <div className="px-8 py-6 bg-gradient-to-r from-brand-purple to-purple-600 text-white flex items-start justify-between gap-4">
+          <div>
+            <p className="text-white/80 text-sm font-semibold">Historial de cambios</p>
+            <h3 className="text-3xl font-extrabold">{student.name || student.username}</h3>
+            <p className="text-white/90 mt-1">{student.username} · Nivel actual: {student.level || student.progreso?.nivel?.mcer || 'Sin definir'}</p>
+          </div>
+          <button onClick={onClose} className="rounded-full bg-white/15 hover:bg-white/25 p-2 transition-colors" aria-label="Cerrar historial">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="px-8 py-6 overflow-y-auto max-h-[calc(90vh-110px)] bg-gradient-to-b from-white to-purple-50/40">
+          {loading ? <p className="text-gray-700">Cargando historial…</p> : null}
+          {!loading && error ? <p className="text-brand-orange font-semibold">{error}</p> : null}
+          {!loading && !error && items.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-purple-300 bg-white p-8 text-center text-gray-600">
+              Todavía no hay cambios registrados para este estudiante.
+            </div>
+          ) : null}
+          {!loading && !error && items.length > 0 ? (
+            <div className="space-y-5">
+              {items.map(item => {
+                const changes = getProgressChanges(item.previous_data, item.new_data)
+                return (
+                  <article key={item.id} className="bg-white rounded-2xl border border-purple-200 shadow-md p-6">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-5">
+                      <div>
+                        <div className="flex items-center gap-3 flex-wrap">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-brand-purple text-xs font-bold uppercase tracking-wide">
+                            {item.action_type === 'create' ? 'Creación' : 'Actualización'}
+                          </span>
+                          <span className="text-sm font-semibold text-gray-700">{formatActorLabel(item)}</span>
+                        </div>
+                        <p className="text-sm text-gray-500 mt-2">{formatHistoryDateTime(item.created_at)}</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      {changes.map((change, index) => (
+                        <div key={`${item.id}-${change.label}-${index}`} className="rounded-xl bg-purple-50 px-4 py-3 border border-purple-100">
+                          <div className="text-sm font-bold text-gray-900">{change.label}</div>
+                          <div className="text-sm text-gray-700 mt-1">{change.detail}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <details className="mt-5 group">
+                      <summary className="cursor-pointer list-none inline-flex items-center gap-2 text-sm font-bold text-brand-purple hover:text-brand-purple/80">
+                        Ver detalle completo del snapshot
+                        <span className="transition-transform group-open:rotate-180">▾</span>
+                      </summary>
+                      <div className="grid lg:grid-cols-2 gap-4 mt-4">
+                        <SnapshotPanel title="Antes" progress={item.previous_data} emptyLabel="Sin registro anterior" />
+                        <SnapshotPanel title="Después" progress={item.new_data} emptyLabel="Sin registro posterior" />
+                      </div>
+                    </details>
+                  </article>
+                )
+              })}
+            </div>
+          ) : null}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 function ChangePasswordModal({ onClose }: { onClose: () => void }) {
   const [currentPassword, setCurrentPassword] = useState('')
@@ -541,6 +798,10 @@ function AdminGrades() {
   const [error, setError] = useState('')
   const [filterTeacher, setFilterTeacher] = useState<string>('')
   const [filterLevel, setFilterLevel] = useState<string>('')
+  const [historyStudent, setHistoryStudent] = useState<AdminStudentProgressItem | null>(null)
+  const [historyItems, setHistoryItems] = useState<StudentProgressHistoryItem[]>([])
+  const [historyLoading, setHistoryLoading] = useState(false)
+  const [historyError, setHistoryError] = useState('')
 
   useEffect(() => {
     (async () => {
@@ -588,90 +849,128 @@ function AdminGrades() {
     return passTeacher && passLevel
   })
 
+  async function openHistory(student: AdminStudentProgressItem) {
+    setHistoryStudent(student)
+    setHistoryItems([])
+    setHistoryError('')
+    setHistoryLoading(true)
+    try {
+      const data = await getAdminStudentProgressHistory({ studentId: student.id, studentUsername: student.username })
+      setHistoryItems(data.items)
+    } catch (e: any) {
+      setHistoryError(e?.response?.data?.error || 'No se pudo cargar el historial del estudiante')
+    } finally {
+      setHistoryLoading(false)
+    }
+  }
+
   return (
-    <section className="bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 rounded-2xl p-8 shadow-2xl border-2 border-purple-200 mt-6">
-      <div className="flex items-center gap-3 mb-6">
-        <svg className="w-8 h-8 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-        </svg>
-        <h2 className="text-3xl font-extrabold bg-gradient-to-r from-brand-purple to-brand-pink bg-clip-text text-transparent">Notas de estudiantes</h2>
-      </div>
+    <>
+      <section className="bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 rounded-2xl p-8 shadow-2xl border-2 border-purple-200 mt-6">
+        <div className="flex items-center gap-3 mb-6">
+          <svg className="w-8 h-8 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+          </svg>
+          <div>
+            <h2 className="text-3xl font-extrabold bg-gradient-to-r from-brand-purple to-brand-pink bg-clip-text text-transparent">Notas de estudiantes</h2>
+            <p className="text-sm text-gray-600 mt-1">Cada fila permite abrir el historial completo del progreso del estudiante.</p>
+          </div>
+        </div>
 
-      {/* Filtros */}
-      <div className="grid sm:grid-cols-3 gap-4 mb-6">
-        <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2">Profesor</label>
-          <select className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-brand-purple" value={filterTeacher} onChange={e => setFilterTeacher(e.target.value)}>
-            <option value="">— Todos —</option>
-            {teacherOptions.map(t => (
-              <option key={t.username} value={t.username}>{t.label}</option>
-            ))}
-          </select>
+        <div className="grid sm:grid-cols-3 gap-4 mb-6">
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">Profesor</label>
+            <select className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-brand-purple" value={filterTeacher} onChange={e => setFilterTeacher(e.target.value)}>
+              <option value="">— Todos —</option>
+              {teacherOptions.map(t => (
+                <option key={t.username} value={t.username}>{t.label}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">Nivel (MCER)</label>
+            <select className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-brand-purple" value={filterLevel} onChange={e => setFilterLevel(e.target.value)}>
+              <option value="">— Todos —</option>
+              {levelOptions.map(l => (
+                <option key={l} value={l}>{l}</option>
+              ))}
+            </select>
+          </div>
+          <div className="flex items-end">
+            <button className="btn-secondary" onClick={() => { setFilterTeacher(''); setFilterLevel('') }}>Limpiar filtros</button>
+          </div>
         </div>
-        <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2">Nivel (MCER)</label>
-          <select className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-brand-purple" value={filterLevel} onChange={e => setFilterLevel(e.target.value)}>
-            <option value="">— Todos —</option>
-            {levelOptions.map(l => (
-              <option key={l} value={l}>{l}</option>
-            ))}
-          </select>
-        </div>
-        <div className="flex items-end">
-          <button className="btn-secondary" onClick={() => { setFilterTeacher(''); setFilterLevel('') }}>Limpiar filtros</button>
-        </div>
-      </div>
 
-      {filtered.length === 0 ? (
-        <p className="text-sm text-brand-black/70">Sin registros de progreso.</p>
-      ) : (
-        <div className="overflow-x-auto bg-white rounded-xl shadow-lg border border-purple-200">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gradient-to-r from-brand-purple to-purple-600 text-white">
-                <th className="px-6 py-4 text-left font-bold">Estudiante</th>
-                <th className="px-6 py-4 text-left font-bold">Profesor</th>
-                <th className="px-6 py-4 text-left font-bold">Nivel</th>
-                <th className="px-6 py-4 text-left font-bold">Promedio</th>
-                <th className="px-6 py-4 text-left font-bold">Notas</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map(it => {
-                const notas = it.progreso?.notas || []
-                const avg = promedioNotas(notas)
-                return (
-                  <tr key={it.id} className="border-b border-gray-200 hover:bg-purple-50">
-                    <td className="px-6 py-3">
-                      <div className="font-bold">{it.name || it.username}</div>
-                      <div className="text-xs text-brand-black/70">{it.username}</div>
-                    </td>
-                    <td className="px-6 py-3 text-sm">{it.teacher ? (it.teacher.name || it.teacher.username) : '—'}</td>
-                    <td className="px-6 py-3 text-sm">{it.level || it.progreso?.nivel?.mcer || '—'}</td>
-                    <td className="px-6 py-3 text-sm">{avg !== null ? avg : '—'}</td>
-                    <td className="px-6 py-3 text-sm">
-                      {notas.length === 0 ? (
-                        <span className="text-brand-black/60">—</span>
-                      ) : (
-                        <div className="space-y-1">
-                          {notas.map((n, idx) => (
-                            <div key={idx} className="flex items-center gap-2">
-                              <span className="inline-block px-2 py-1 rounded bg-blue-100 text-blue-700 text-xs font-semibold">{Number.isFinite(n.nota) ? n.nota : 0}</span>
-                              <span className="font-semibold text-gray-800 text-xs">{n.actividad || 'Actividad'}</span>
-                              {n.fecha && <span className="text-xs text-gray-500">{n.fecha}</span>}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </section>
+        {filtered.length === 0 ? (
+          <p className="text-sm text-brand-black/70">Sin registros de progreso.</p>
+        ) : (
+          <div className="overflow-x-auto bg-white rounded-xl shadow-lg border border-purple-200">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-gradient-to-r from-brand-purple to-purple-600 text-white">
+                  <th className="px-6 py-4 text-left font-bold">Estudiante</th>
+                  <th className="px-6 py-4 text-left font-bold">Profesor</th>
+                  <th className="px-6 py-4 text-left font-bold">Nivel</th>
+                  <th className="px-6 py-4 text-left font-bold">Promedio</th>
+                  <th className="px-6 py-4 text-left font-bold">Notas</th>
+                  <th className="px-6 py-4 text-left font-bold">Historial</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map(it => {
+                  const notas = it.progreso?.notas || []
+                  const avg = promedioNotas(notas)
+                  return (
+                    <tr key={it.id} className="border-b border-gray-200 hover:bg-purple-50 align-top">
+                      <td className="px-6 py-3">
+                        <div className="font-bold">{it.name || it.username}</div>
+                        <div className="text-xs text-brand-black/70">{it.username}</div>
+                      </td>
+                      <td className="px-6 py-3 text-sm">{it.teacher ? (it.teacher.name || it.teacher.username) : '—'}</td>
+                      <td className="px-6 py-3 text-sm">{it.level || it.progreso?.nivel?.mcer || '—'}</td>
+                      <td className="px-6 py-3 text-sm">{avg !== null ? avg : '—'}</td>
+                      <td className="px-6 py-3 text-sm">
+                        {notas.length === 0 ? (
+                          <span className="text-brand-black/60">—</span>
+                        ) : (
+                          <div className="space-y-1">
+                            {notas.map((n, idx) => (
+                              <div key={idx} className="flex items-center gap-2">
+                                <span className="inline-block px-2 py-1 rounded bg-blue-100 text-blue-700 text-xs font-semibold">{Number.isFinite(n.nota) ? n.nota : 0}</span>
+                                <span className="font-semibold text-gray-800 text-xs">{n.actividad || 'Actividad'}</span>
+                                {n.fecha && <span className="text-xs text-gray-500">{n.fecha}</span>}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-6 py-3 text-sm">
+                        <button className="btn-secondary whitespace-nowrap" onClick={() => openHistory(it)}>
+                          Ver historial
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      <ProgressHistoryModal
+        student={historyStudent}
+        items={historyItems}
+        loading={historyLoading}
+        error={historyError}
+        onClose={() => {
+          setHistoryStudent(null)
+          setHistoryItems([])
+          setHistoryError('')
+          setHistoryLoading(false)
+        }}
+      />
+    </>
   )
 }
 

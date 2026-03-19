@@ -270,6 +270,150 @@ function ensure_student_progress_schema() {
     get_pdo()->exec($sql);
 }
 
+function ensure_student_progress_history_schema() {
+    $sql = "CREATE TABLE IF NOT EXISTS student_progress_history (
+        id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        student_id INT UNSIGNED NOT NULL,
+        changed_by_user_id INT UNSIGNED NULL,
+        actor_role VARCHAR(50) DEFAULT NULL,
+        action_type VARCHAR(20) NOT NULL DEFAULT 'update',
+        previous_data JSON DEFAULT NULL,
+        new_data JSON DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_progress_history_student_created (student_id, created_at),
+        INDEX idx_progress_history_actor (changed_by_user_id),
+        CONSTRAINT fk_progress_history_student FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE,
+        CONSTRAINT fk_progress_history_actor FOREIGN KEY (changed_by_user_id) REFERENCES users(id) ON DELETE SET NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+    get_pdo()->exec($sql);
+}
+
+function default_student_progress() {
+    return [
+        'asistencia' => 0,
+        'notas' => [],
+        'nivel' => [
+            'mcer' => '',
+            'descripcion' => '',
+        ],
+        'fortalezas' => [],
+        'debilidades' => [],
+        'curso' => '',
+    ];
+}
+
+function normalize_student_progress($progress) {
+    $defaults = default_student_progress();
+    if (!is_array($progress)) {
+        return $defaults;
+    }
+
+    $asistencia = isset($progress['asistencia']) ? (float)$progress['asistencia'] : 0;
+    if (!is_finite($asistencia)) {
+        $asistencia = 0;
+    }
+    $asistencia = max(0, min(100, $asistencia));
+
+    $notas = [];
+    if (isset($progress['notas']) && is_array($progress['notas'])) {
+        foreach ($progress['notas'] as $nota) {
+            if (!is_array($nota)) {
+                continue;
+            }
+            $valor = isset($nota['nota']) ? (float)$nota['nota'] : 0;
+            if (!is_finite($valor)) {
+                $valor = 0;
+            }
+            $notas[] = [
+                'actividad' => trim((string)($nota['actividad'] ?? '')),
+                'nota' => round(max(0, min(5, $valor)), 2),
+                'fecha' => trim((string)($nota['fecha'] ?? '')),
+            ];
+        }
+    }
+
+    $nivel = is_array($progress['nivel'] ?? null) ? $progress['nivel'] : [];
+    $fortalezas = isset($progress['fortalezas']) && is_array($progress['fortalezas']) ? $progress['fortalezas'] : [];
+    $debilidades = isset($progress['debilidades']) && is_array($progress['debilidades']) ? $progress['debilidades'] : [];
+
+    return [
+        'asistencia' => round($asistencia, 2),
+        'notas' => $notas,
+        'nivel' => [
+            'mcer' => trim((string)($nivel['mcer'] ?? '')),
+            'descripcion' => trim((string)($nivel['descripcion'] ?? '')),
+        ],
+        'fortalezas' => array_values(array_filter(array_map(fn($item) => trim((string)$item), $fortalezas), fn($item) => $item !== '')),
+        'debilidades' => array_values(array_filter(array_map(fn($item) => trim((string)$item), $debilidades), fn($item) => $item !== '')),
+        'curso' => trim((string)($progress['curso'] ?? '')),
+    ];
+}
+
+function get_student_progress_snapshot(PDO $pdo, $userId) {
+    $stmt = $pdo->prepare('SELECT data FROM student_progress WHERE user_id = ?');
+    $stmt->execute([(int)$userId]);
+    $row = $stmt->fetch();
+    if (!$row || !isset($row['data'])) {
+        return null;
+    }
+
+    $decoded = json_decode((string)$row['data'], true);
+    if (!is_array($decoded)) {
+        return null;
+    }
+
+    return normalize_student_progress($decoded);
+}
+
+function save_student_progress_with_history(PDO $pdo, $userId, $progress, $actorId = null, $actorRole = null) {
+    ensure_student_progress_schema();
+    ensure_student_progress_history_schema();
+
+    $normalized = normalize_student_progress($progress);
+    $previous = get_student_progress_snapshot($pdo, $userId);
+    $newJson = json_encode($normalized, JSON_UNESCAPED_UNICODE);
+    $previousJson = $previous === null ? null : json_encode($previous, JSON_UNESCAPED_UNICODE);
+    $hasChanges = $previous === null || $previousJson !== $newJson;
+    $actionType = $previous === null ? 'create' : 'update';
+    $actorIdValue = $actorId !== null ? (int)$actorId : null;
+    if ($actorIdValue !== null && $actorIdValue <= 0) {
+        $actorIdValue = null;
+    }
+    $actorRoleValue = $actorRole !== null ? trim((string)$actorRole) : null;
+    if ($actorRoleValue === '') {
+        $actorRoleValue = null;
+    }
+
+    try {
+        $pdo->beginTransaction();
+
+        $nivelMcer = trim((string)($normalized['nivel']['mcer'] ?? ''));
+        $pdo->prepare('UPDATE users SET level=? WHERE id=?')
+            ->execute([$nivelMcer !== '' ? $nivelMcer : null, (int)$userId]);
+
+        $pdo->prepare('INSERT INTO student_progress (user_id, data) VALUES (?, ?) ON DUPLICATE KEY UPDATE data=VALUES(data), updated_at=CURRENT_TIMESTAMP')
+            ->execute([(int)$userId, $newJson]);
+
+        if ($hasChanges) {
+            $pdo->prepare('INSERT INTO student_progress_history (student_id, changed_by_user_id, actor_role, action_type, previous_data, new_data) VALUES (?, ?, ?, ?, ?, ?)')
+                ->execute([(int)$userId, $actorIdValue, $actorRoleValue, $actionType, $previousJson, $newJson]);
+        }
+
+        $pdo->commit();
+
+        return [
+            'saved' => true,
+            'history_logged' => $hasChanges,
+            'action_type' => $actionType,
+        ];
+    } catch (Throwable $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $e;
+    }
+}
+
 // Tablas para CMS: testimonios, cursos, blog
 function ensure_cms_schema() {
     $pdo = get_pdo();
