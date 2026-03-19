@@ -16,6 +16,7 @@ if ($studentUsername === '' || !is_array($progress)) json_error('Parámetros inv
 ensure_users_schema();
 ensure_teacher_fields();
 ensure_student_progress_schema();
+ensure_student_progress_history_schema();
 
 $pdo = get_pdo();
 
@@ -26,17 +27,16 @@ $student = $stmt->fetch();
 if (!$student) json_error('Estudiante no encontrado o no asignado al profesor', 404);
 
 $userId = (int)$student['id'];
-$json = json_encode($progress, JSON_UNESCAPED_UNICODE);
 
-// Actualizar el nivel en la tabla users si está presente en el progreso
-if (isset($progress['nivel']['mcer']) && !empty($progress['nivel']['mcer'])) {
-    $nivelMcer = trim((string)$progress['nivel']['mcer']);
-    $pdo->prepare('UPDATE users SET level=? WHERE id=?')
-        ->execute([$nivelMcer, $userId]);
+try {
+    $result = save_student_progress_with_history(
+        $pdo,
+        $userId,
+        $progress,
+        (int)($_SESSION['user_id'] ?? 0),
+        $role
+    );
+    json_ok($result);
+} catch (Throwable $e) {
+    json_error('No se pudo guardar el progreso', 500, ['details' => $e->getMessage()]);
 }
-
-// UPSERT en student_progress
-$pdo->prepare('INSERT INTO student_progress (user_id, data) VALUES (?, ?) ON DUPLICATE KEY UPDATE data=VALUES(data), updated_at=CURRENT_TIMESTAMP')
-    ->execute([$userId, $json]);
-
-json_ok(['saved' => true]);
