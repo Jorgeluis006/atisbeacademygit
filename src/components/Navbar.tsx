@@ -7,7 +7,6 @@ const navItems = [
   { to: '/cursos', label: 'Cursos' },
   { to: '/corporativo', label: 'Corporativo' },
   { to: '/examenes', label: 'Exámenes' },
-  { to: '/testimonios', label: 'Testimonios' },
   { to: '/blog', label: 'Blog' },
   { to: '/contacto', label: 'Contacto' },
   { to: '/pago', label: 'Pago' },

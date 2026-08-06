@@ -269,7 +269,11 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
               onClick={() => setShowCurrent(!showCurrent)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
             >
-              {showCurrent ? '🙈' : '👁️'}
+              {showCurrent ? (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+              )}
             </button>
           </div>
           
@@ -291,7 +295,11 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
               onClick={() => setShowNew(!showNew)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
             >
-              {showNew ? '🙈' : '👁️'}
+              {showNew ? (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+              )}
             </button>
           </div>
           
@@ -313,7 +321,11 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
               onClick={() => setShowConfirm(!showConfirm)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
             >
-              {showConfirm ? '🙈' : '👁️'}
+              {showConfirm ? (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+              )}
             </button>
           </div>
           
@@ -787,7 +799,7 @@ export default function ZonaEstudiantes() {
                     </h3>
                   </div>
                   <p className="text-lg font-semibold text-brand-purple mb-4">
-                    {progress?.nivel?.mcer ? `¡Tu mascota está creciendo! 🌱` : '¡Comienza tu aventura! 🌱'}
+                    {progress?.nivel?.mcer ? `¡Tu progreso avanza cada día!` : '¡Comienza tu aventura!'}
                   </p>
                   {progress?.nivel?.descripcion && (
                     <p className="text-sm text-gray-600 leading-relaxed">
@@ -890,7 +902,7 @@ export default function ZonaEstudiantes() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <p className="text-sm text-gray-600 font-semibold">Aún no tienes clases agendadas</p>
-                <p className="text-xs text-gray-500 mt-1">Agenda tu primera clase en la sección de arriba 👆</p>
+                <p className="text-xs text-gray-500 mt-1">Agenda tu primera clase en la sección de arriba</p>
               </div>
             ) : calendarView === 'weekly' ? (
               <div className="overflow-x-auto -mx-6 px-6">
@@ -1336,7 +1348,7 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
         <div className="grid gap-4">
           <div>
             <label className="block text-sm font-bold text-gray-800 mb-2 flex items-center gap-2">
-              <span>🕐</span> Selecciona un horario
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Selecciona un horario
             </label>
             <select 
               className="w-full px-4 py-3 border-2 border-blue-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all shadow-sm hover:border-blue-400 font-semibold" 
@@ -1373,7 +1385,7 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
           
           <div>
             <label className="block text-sm font-bold text-gray-800 mb-2 flex items-center gap-2">
-              <span>📝</span> Notas (opcional)
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg> Notas (opcional)
             </label>
             <input 
               className="w-full px-4 py-3 border-2 border-purple-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all shadow-sm hover:border-purple-400" 
@@ -1396,7 +1408,7 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
               </>
             ) : (
               <>
-                <span>✅</span> Agendar
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg> Agendar
               </>
             )}
           </button>
@@ -1404,13 +1416,13 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
         
         {error && (
           <div className="mt-3 bg-red-50 border-2 border-red-300 rounded-xl p-3 flex items-center gap-2">
-            <span className="text-xl">❌</span>
+            <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
             <span className="text-red-700 text-sm font-semibold">{error}</span>
           </div>
         )}
         {ok && (
           <div className="mt-3 bg-green-50 border-2 border-green-300 rounded-xl p-3 flex items-center gap-2">
-            <span className="text-xl">✅</span>
+            <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
             <span className="text-green-700 text-sm font-semibold">{ok}</span>
           </div>
         )}
@@ -1419,15 +1431,15 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
       {/* Mis reservas */}
       <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-5 border-2 border-indigo-200 shadow-md">
         <div className="flex items-center gap-2 mb-4">
-          <span className="text-2xl">📋</span>
+          <svg className="w-6 h-6 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
           <h3 className="text-xl font-bold text-gray-800">Mis reservas</h3>
         </div>
         
         {reservas.length === 0 ? (
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-8 text-center border border-indigo-200">
-            <div className="text-5xl mb-3">📭</div>
+            <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0l-2 8H6l-2-8m16 0H4" /></svg>
             <p className="text-sm text-gray-600 font-semibold">Aún no tienes reservas.</p>
-            <p className="text-xs text-gray-500 mt-1">Agenda tu primera clase arriba 👆</p>
+            <p className="text-xs text-gray-500 mt-1">Agenda tu primera clase arriba</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -1439,16 +1451,16 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
                       <span className={`px-3 py-1 rounded-full text-xs font-bold ${
                         r.tipo === 'clase' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
                       }`}>
-                        {r.tipo === 'clase' ? '📚 Clase' : '📝 Examen'}
+                        {r.tipo === 'clase' ? 'Clase' : 'Examen'}
                       </span>
                       <span className={`px-3 py-1 rounded-full text-xs font-bold ${
                         r.modalidad === 'virtual' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
                       }`}>
-                        {r.modalidad === 'virtual' ? '🌐 Virtual' : '🏫 Presencial'}
+                        {r.modalidad === 'virtual' ? 'Virtual' : 'Presencial'}
                       </span>
                     </div>
                     <div className="text-sm font-bold text-gray-800 flex items-center gap-2">
-                      <span>🕐</span> {parseLocalDateTime(r.datetime).toLocaleString('es-ES', {
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> {parseLocalDateTime(r.datetime).toLocaleString('es-ES', {
                         weekday: 'long',
                         year: 'numeric',
                         month: 'long',
@@ -1478,7 +1490,7 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
                     )}
                     {r.notas && (
                       <div className="mt-2 bg-gray-50 rounded-lg p-2 border border-gray-200">
-                        <span className="text-xs text-gray-500 font-semibold">📝 Notas:</span>
+                        <span className="text-xs text-gray-500 font-semibold">Notas:</span>
                         <p className="text-sm text-gray-700 mt-1">{r.notas}</p>
                       </div>
                     )}
@@ -1488,7 +1500,7 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
                     disabled={loading} 
                     onClick={() => cancelar(r.id)}
                   >
-                    <span>🗑️</span> Cancelar
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg> Cancelar
                   </button>
                   {/* Chat removido */}
                 </div>

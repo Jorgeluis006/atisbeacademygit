@@ -36,7 +36,7 @@ export default function AdminContacts() {
             href="/api/admin/contacts_export.php"
             className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-brand-purple to-purple-600 text-white rounded-lg shadow-md hover:opacity-95"
           >
-            ⬇️ Descargar Excel
+            Descargar Excel
           </a>
         </div>
       </div>

@@ -24,8 +24,10 @@ export default function PaymentDrawer({ open, onClose, productName, price, phone
       <aside className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden max-h-[90vh]">
         {/* Header */}
         <div className="px-6 py-4 bg-gradient-to-r from-brand-purple to-purple-600 text-white flex items-center justify-between sticky top-0 z-10">
-          <h3 className="text-xl font-bold">📱 Proceso de Pago por QR</h3>
-          <button onClick={onClose} className="text-white/80 hover:text-white text-2xl" aria-label="Cerrar">✕</button>
+          <h3 className="text-xl font-bold">Proceso de Pago por QR</h3>
+          <button onClick={onClose} className="text-white/80 hover:text-white text-2xl" aria-label="Cerrar">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
         </div>
         
         {/* Scrollable content */}
@@ -34,7 +36,7 @@ export default function PaymentDrawer({ open, onClose, productName, price, phone
           {/* WhatsApp Contact Card */}
           <div className="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-2xl p-6 shadow-lg">
             <div className="text-center">
-              <h2 className="text-2xl font-bold mb-3">💬 Escríbenos para generar tu QR de pago</h2>
+              <h2 className="text-2xl font-bold mb-3">Escríbenos para generar tu QR de pago</h2>
               <p className="text-green-50 mb-4">Contacta a este número de WhatsApp y proporciona la siguiente información:</p>
               <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 mb-4">
                 <p className="text-3xl font-bold mb-1">{phone}</p>
@@ -52,15 +54,15 @@ export default function PaymentDrawer({ open, onClose, productName, price, phone
           {/* Información Requerida */}
           <div className="bg-gray-50 rounded-2xl p-6">
             <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <span>📋</span> Información requerida:
+              Información requerida:
             </h3>
             <div className="space-y-4">
               <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-200">
-                <div className="font-bold text-purple-900 text-sm mb-2 flex items-center gap-2">🏷️ Nombre del producto</div>
+                <div className="font-bold text-purple-900 text-sm mb-2 flex items-center gap-2">Nombre del producto</div>
                 <input value={nombreProducto} onChange={e => setNombreProducto(e.target.value)} placeholder="Especifica qué curso o producto te interesa adquirir" className="w-full text-sm bg-white border border-gray-300 rounded px-3 py-2" />
               </div>
               <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-4 border border-blue-200">
-                <div className="font-bold text-blue-900 text-sm mb-2 flex items-center gap-2">📧 Datos de contacto</div>
+                <div className="font-bold text-blue-900 text-sm mb-2 flex items-center gap-2">Datos de contacto</div>
                 <p className="text-sm text-gray-600">Nombre completo y correo electrónico para el registro</p>
               </div>
             </div>
@@ -69,7 +71,7 @@ export default function PaymentDrawer({ open, onClose, productName, price, phone
           {/* Proceso Rápido - Timeline */}
           <div className="bg-white rounded-2xl p-6 border border-gray-200">
             <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <span>⚡</span> Proceso rápido:
+              Proceso rápido:
             </h3>
             <div className="space-y-4">
               {[
@@ -92,7 +94,6 @@ export default function PaymentDrawer({ open, onClose, productName, price, phone
 
           {/* Security Badge */}
           <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-4 flex items-center gap-3 justify-center">
-            <div className="text-3xl">🛡️</div>
             <div>
               <h3 className="font-bold text-green-900 text-sm">Pago 100% Seguro</h3>
               <p className="text-xs text-green-700">Transacciones protegidas y verificadas</p>
@@ -108,25 +109,23 @@ export default function PaymentDrawer({ open, onClose, productName, price, phone
                 </svg>
               </div>
               <h3 className="text-lg font-bold text-purple-900 mb-2">
-                🎓 Acceso a la Zona de Estudiantes
+                Acceso a la Zona de Estudiantes
               </h3>
               <p className="text-purple-800 text-sm mb-3 max-w-md mx-auto">
                 Una vez confirmado el pago, recibirás tus credenciales personales:
               </p>
               <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto">
                 <div className="bg-white/80 rounded-lg p-3 border border-purple-200">
-                  <div className="text-2xl mb-1">👤</div>
                   <h4 className="font-bold text-purple-900 text-xs">Usuario</h4>
                   <p className="text-xs text-purple-700">Nombre único</p>
                 </div>
                 <div className="bg-white/80 rounded-lg p-3 border border-purple-200">
-                  <div className="text-2xl mb-1">🔑</div>
                   <h4 className="font-bold text-purple-900 text-xs">Contraseña</h4>
                   <p className="text-xs text-purple-700">Acceso seguro</p>
                 </div>
               </div>
               <p className="text-purple-700 mt-3 text-xs">
-                ⚡ <span className="font-bold">Menos de 1 hora</span> después de confirmar el pago
+                <span className="font-bold">Menos de 1 hora</span> después de confirmar el pago
               </p>
             </div>
           </div>

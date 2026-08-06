@@ -129,7 +129,11 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
               onClick={() => setShowCurrent(!showCurrent)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
             >
-              {showCurrent ? '🙈' : '👁️'}
+              {showCurrent ? (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+              )}
             </button>
           </div>
           
@@ -151,7 +155,11 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
               onClick={() => setShowNew(!showNew)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
             >
-              {showNew ? '🙈' : '👁️'}
+              {showNew ? (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+              )}
             </button>
           </div>
           
@@ -173,7 +181,11 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
               onClick={() => setShowConfirm(!showConfirm)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
             >
-              {showConfirm ? '🙈' : '👁️'}
+              {showConfirm ? (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+              )}
             </button>
           </div>
           
@@ -335,21 +347,21 @@ export default function Profesor() {
   }
 
   async function handleDeleteSlot(id: number) {
-    const confirmed = confirm('⚠️ ¿Estás seguro de eliminar este horario?\n\nNota: Si hay estudiantes reservados en este horario, no podrás eliminarlo.')
+    const confirmed = confirm('¿Estás seguro de eliminar este horario?\n\nNota: Si hay estudiantes reservados en este horario, no podrás eliminarlo.')
     if (!confirmed) return
     
     try {
       await deleteTeacherSlot(id)
       const updated = await getTeacherSlots()
       setSlots(updated)
-      alert('✅ Horario eliminado exitosamente')
+      alert('Horario eliminado exitosamente')
     } catch (err: any) {
       const errorMsg = err?.response?.data?.error || 'No se pudo eliminar'
       
       if (errorMsg.includes('reservas activas') || errorMsg.includes('reservas')) {
-        alert('⚠️ No se puede eliminar este horario\n\nRazón: Hay estudiantes que ya lo reservaron.\n\nSugerencia: Cancela primero las reservas de los estudiantes o espera a que termine la clase.')
+        alert('No se puede eliminar este horario\n\nRazón: Hay estudiantes que ya lo reservaron.\n\nSugerencia: Cancela primero las reservas de los estudiantes o espera a que termine la clase.')
       } else {
-        alert('❌ Error al eliminar: ' + errorMsg)
+        alert('Error al eliminar: ' + errorMsg)
       }
     }
   }
@@ -365,9 +377,9 @@ export default function Profesor() {
       setSlots(updated)
       setEditingMeetingLink(null)
       setMeetingLinkInput('')
-      alert('✅ Link de clase actualizado exitosamente')
+      alert('Link de clase actualizado exitosamente')
     } catch (err: any) {
-      alert('❌ Error al actualizar: ' + (err?.response?.data?.error || 'No se pudo actualizar'))
+      alert('Error al actualizar: ' + (err?.response?.data?.error || 'No se pudo actualizar'))
     } finally {
       setSavingMeetingLink(false)
     }
@@ -1142,7 +1154,7 @@ export default function Profesor() {
                 }}
               >
                 <option value="">— Seleccionar —</option>
-                {allStudents.map(s => <option key={s.username} value={s.username}>👨‍🎓 {s.username}{s.name ? ` — ${s.name}` : ''}</option>)}
+                {allStudents.map(s => <option key={s.username} value={s.username}>{s.username}{s.name ? ` — ${s.name}` : ''}</option>)}
               </select>
             </div>
             <div>
@@ -1168,9 +1180,9 @@ export default function Profesor() {
                     })
                     setAllStudents(flat)
                     
-                    alert('✅ Progreso actualizado exitosamente'); 
+                    alert('Progreso actualizado exitosamente'); 
                   }
-                  catch { alert('❌ No se pudo guardar'); }
+                  catch { alert('No se pudo guardar'); }
                   finally { setSaving(false) }
                 }}
               >
@@ -1380,7 +1392,7 @@ export default function Profesor() {
       {/* Lista de estudiantes agrupados */}
       {levels.length === 0 ? (
         <div className="mt-6 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 text-center border-2 border-dashed border-gray-300">
-          <div className="text-6xl mb-3">👥</div>
+          <svg className="w-16 h-16 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
           <p className="text-lg font-semibold text-gray-600">Aún no tienes estudiantes asignados.</p>
         </div>
       ) : (
@@ -1395,7 +1407,7 @@ export default function Profesor() {
             return (
               <section key={level} className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-2xl p-6 shadow-xl border-2 border-indigo-200">
                 <div className="flex items-center gap-3 mb-5">
-                  <span className="text-3xl">📚</span>
+                  <svg className="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                   <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                     Nivel {level}
                   </h2>
@@ -1406,7 +1418,7 @@ export default function Profesor() {
                 
                 {allStudents.length === 0 ? (
                   <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center border border-indigo-200">
-                    <div className="text-4xl mb-2">📭</div>
+                    <svg className="w-10 h-10 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0l-2 8H6l-2-8m16 0H4" /></svg>
                     <p className="text-sm text-gray-600 font-semibold">Sin estudiantes en este nivel</p>
                   </div>
                 ) : (
@@ -1419,7 +1431,7 @@ export default function Profesor() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="font-bold text-gray-800 truncate">{s.name || s.username}</div>
-                            <div className="text-gray-500 text-xs truncate">👤 {s.username}</div>
+                            <div className="text-gray-500 text-xs truncate">{s.username}</div>
                           </div>
                         </div>
                       </div>
@@ -1462,7 +1474,7 @@ export default function Profesor() {
                 autoFocus
               />
               <p className="text-xs text-gray-600 mt-2">
-                📧 Los estudiantes recibirán este link automáticamente por correo cuando reserven la clase
+                Los estudiantes recibirán este link automáticamente por correo cuando reserven la clase
               </p>
             </div>
 
