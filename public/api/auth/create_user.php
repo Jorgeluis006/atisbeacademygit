@@ -29,7 +29,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 if (!preg_match('/^[a-zA-Z0-9_.-]{3,50}$/', $username)) {
     json_error('username inválido', 422);
 }
-if (!in_array($role, ['student','admin','teacher'], true)) { $role = 'student'; }
+if (!in_array($role, ['student','admin','teacher','coordinator'], true)) { $role = 'student'; }
 
 ensure_users_schema();
 ensure_teacher_fields();
@@ -43,7 +43,7 @@ try {
     try {
         require_once __DIR__ . '/../mailer.php';
         
-        $roleName = $role === 'student' ? 'estudiante' : ($role === 'teacher' ? 'profesor' : 'administrador');
+        $roleName = $role === 'student' ? 'estudiante' : ($role === 'teacher' ? 'profesor' : ($role === 'coordinator' ? 'coordinador' : 'administrador'));
         
         $emailSubject = '¡Bienvenido a Atisbe Academy!';
         $emailBody = '

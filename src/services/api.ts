@@ -105,7 +105,7 @@ export async function cancelReservation(id: number) {
 }
 
 // Admin: users
-export async function createUser(input: { username: string; password: string; name?: string; role?: 'student' | 'admin' | 'teacher'; email?: string }) {
+export async function createUser(input: { username: string; password: string; name?: string; role?: 'student' | 'admin' | 'teacher' | 'coordinator'; email?: string }) {
   return api.post('/auth/create_user.php', input)
 }
 
@@ -164,6 +164,84 @@ export async function deleteTeacherSlot(id: number) {
 export async function getTeacherReservations(): Promise<Reservation[]> {
   const res = await api.get('/teacher/reservations.php')
   return res.data?.reservations ?? []
+}
+
+// Coordinator: teacher schedule management
+export type CoordinatorTeacher = { id: number; username: string; name?: string | null; email?: string | null }
+export type TeacherScheduleBlock = {
+  id: number
+  teacher_id: number
+  starts_at: string
+  ends_at: string
+  reason?: string | null
+  created_by?: number | null
+  created_at?: string
+}
+
+export async function getCoordinatorTeachers(): Promise<CoordinatorTeacher[]> {
+  const res = await api.get('/coordinator/teachers.php')
+  return res.data?.items ?? []
+}
+
+export async function getCoordinatorTeacherSlots(teacherId: number): Promise<ScheduleSlot[]> {
+  const res = await api.get('/coordinator/slots.php', { params: { teacher_id: teacherId } })
+  return res.data?.slots ?? []
+}
+
+export async function createCoordinatorTeacherSlot(input: { teacher_id: number; datetime: string; tipo: string; modalidad: string; duration_minutes?: number; curso?: string; nivel?: string; meeting_link?: string; max_alumnos?: number }) {
+  return api.post('/coordinator/slots.php', input)
+}
+
+export async function updateCoordinatorTeacherSlotMeetingLink(id: number, meeting_link: string) {
+  return api.put('/coordinator/slots.php', { id, meeting_link })
+}
+
+export async function deleteCoordinatorTeacherSlot(id: number) {
+  return api.delete('/coordinator/slots.php', { data: { id } })
+}
+
+export async function getCoordinatorBlocks(teacherId: number): Promise<TeacherScheduleBlock[]> {
+  const res = await api.get('/coordinator/blocks.php', { params: { teacher_id: teacherId } })
+  return res.data?.items ?? []
+}
+
+export async function createCoordinatorBlock(input: { teacher_id: number; starts_at: string; ends_at: string; reason?: string }) {
+  return api.post('/coordinator/blocks.php', input)
+}
+
+export async function deleteCoordinatorBlock(id: number) {
+  return api.delete('/coordinator/blocks.php', { data: { id } })
+}
+
+// Class structure PDFs (admin/coordinator manage, teacher view)
+export type ClassStructureDoc = {
+  id?: number
+  title: string
+  pdf_url: string
+  is_published?: boolean
+  display_order?: number
+}
+
+export async function getAdminClassStructureDocs(): Promise<ClassStructureDoc[]> {
+  const res = await api.get('/admin/class_structure_docs.php')
+  return res.data?.items ?? []
+}
+
+export async function createClassStructureDoc(input: ClassStructureDoc) {
+  return api.post('/admin/class_structure_docs.php', input)
+}
+
+export async function updateClassStructureDoc(input: ClassStructureDoc) {
+  return api.put('/admin/class_structure_docs.php', input)
+}
+
+export async function deleteClassStructureDoc(id: number) {
+  return api.delete('/admin/class_structure_docs.php', { data: { id } })
+}
+
+export async function getTeacherClassStructureDocs(): Promise<ClassStructureDoc[]> {
+  const res = await api.get('/teacher/class_structure_docs.php')
+  return res.data?.items ?? []
 }
 
 // Admin: booking settings (días permitidos)

@@ -991,7 +991,7 @@ function CreateUserForm({ onDone, onError }: { onDone: (msg: string) => void; on
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
-  const [role, setRole] = useState<'student' | 'admin' | 'teacher'>('student')
+  const [role, setRole] = useState<'student' | 'admin' | 'teacher' | 'coordinator'>('student')
   const [loading, setLoading] = useState(false)
 
   async function submit(e: React.FormEvent) {
@@ -1024,6 +1024,7 @@ function CreateUserForm({ onDone, onError }: { onDone: (msg: string) => void; on
         <option value="student">Estudiante</option>
         <option value="admin">Admin</option>
         <option value="teacher">Profesor</option>
+        <option value="coordinator">Coordinador</option>
       </select>
       <div>
         <button className="btn-primary" type="submit" disabled={loading}>{loading ? 'Creando…' : 'Crear'}</button>

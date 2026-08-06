@@ -35,7 +35,7 @@ $teacher_id = $user ? (int)$user['teacher_id'] : null;
 
 // Si se proporciona slot_id, verificar que pertenezca al profesor del estudiante y que no supere el cupo
 if ($slot_id) {
-    $stmt = $pdo->prepare('SELECT teacher_id, max_alumnos FROM teacher_slots WHERE id = ?');
+    $stmt = $pdo->prepare('SELECT teacher_id, max_alumnos, datetime, duration_minutes, is_available FROM teacher_slots WHERE id = ?');
     $stmt->execute([$slot_id]);
     $slot = $stmt->fetch();
     if (!$slot) {
@@ -44,6 +44,24 @@ if ($slot_id) {
     if ($teacher_id && (int)$slot['teacher_id'] !== $teacher_id) {
         json_error('Este horario no pertenece a tu profesor asignado', 403);
     }
+    if ((int)$slot['is_available'] !== 1) {
+        json_error('Este horario no está disponible', 409);
+    }
+
+    $slotStart = (string)$slot['datetime'];
+    $slotEnd = date('Y-m-d H:i:s', strtotime($slotStart . ' +' . ((int)($slot['duration_minutes'] ?? 60)) . ' minutes'));
+    $blockStmt = $pdo->prepare('
+        SELECT COUNT(*)
+        FROM teacher_schedule_blocks
+        WHERE teacher_id = ?
+          AND ? < ends_at
+          AND ? > starts_at
+    ');
+    $blockStmt->execute([(int)$slot['teacher_id'], $slotStart, $slotEnd]);
+    if ((int)$blockStmt->fetchColumn() > 0) {
+        json_error('Este horario fue bloqueado por coordinación', 409);
+    }
+
     // Verificar cupo
     $stmt = $pdo->prepare('SELECT COUNT(*) FROM schedule_reservations WHERE slot_id = ?');
     $stmt->execute([$slot_id]);

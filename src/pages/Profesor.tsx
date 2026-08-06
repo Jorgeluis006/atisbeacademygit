@@ -13,8 +13,10 @@ import {
   deleteTeacherSlot,
   updateTeacherSlotMeetingLink,
   getTeacherReservations,
+  getTeacherClassStructureDocs,
   type ScheduleSlot,
   type Reservation,
+  type ClassStructureDoc,
   changePassword,
   
 } from '../services/api'
@@ -228,6 +230,9 @@ export default function Profesor() {
   const [prog, setProg] = useState<StudentProgress | null>(null)
   const [saving, setSaving] = useState(false)
   const [showChangePassword, setShowChangePassword] = useState(false)
+  const [classDocs, setClassDocs] = useState<ClassStructureDoc[]>([])
+  const [openDocUrl, setOpenDocUrl] = useState('')
+  const [openDocTitle, setOpenDocTitle] = useState('')
 
   // Slots y reservas
   const [slots, setSlots] = useState<ScheduleSlot[]>([])
@@ -420,12 +425,14 @@ export default function Profesor() {
           })
           setAllStudents(flat)
           // Cargar slots y reservas del profesor
-          const [slotsRes, reservationsRes] = await Promise.all([
+          const [slotsRes, reservationsRes, docsRes] = await Promise.all([
             getTeacherSlots(),
-            getTeacherReservations()
+            getTeacherReservations(),
+            getTeacherClassStructureDocs()
           ])
           setSlots(slotsRes)
           setReservations(reservationsRes)
+          setClassDocs(docsRes)
         }
       } finally { setLoading(false) }
     })()
@@ -484,6 +491,41 @@ export default function Profesor() {
             <button className="btn-secondary" onClick={async () => { try { await apiLogout() } finally { navigate('/', { replace: true }) } }}>Salir</button>
           </div>
         </div>
+
+      <section className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 mb-6">
+        <div className="flex items-center gap-3 mb-2">
+          <svg className="w-7 h-7 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V7l-5-5H7a2 2 0 00-2 2v15a2 2 0 002 2z" />
+          </svg>
+          <h2 className="text-2xl font-extrabold text-brand-purple">Estructura de clases</h2>
+        </div>
+        <p className="text-sm text-gray-600 mb-4">
+          Documentos en modo visualización. La descarga directa está deshabilitada dentro de la plataforma.
+        </p>
+
+        {classDocs.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-gray-300 p-5 text-sm text-gray-500">
+            No hay documentos publicados todavía.
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-3">
+            {classDocs.map(doc => (
+              <div key={doc.id} className="rounded-xl border border-gray-200 p-4 bg-gray-50">
+                <p className="font-bold text-gray-900 mb-3 line-clamp-2">{doc.title}</p>
+                <button
+                  className="btn-primary w-full"
+                  onClick={() => {
+                    setOpenDocTitle(doc.title)
+                    setOpenDocUrl(doc.pdf_url)
+                  }}
+                >
+                  Ver documento
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
 
       {/* Gestión de horarios */}
       <section className="bg-gradient-to-br from-brand-mauve/20 via-brand-cream to-brand-purple/10 rounded-2xl p-8 shadow-2xl border-2 border-brand-mauve/50 mt-6">
@@ -1444,6 +1486,36 @@ export default function Profesor() {
         </div>
       )}
       {showChangePassword && <ChangePasswordModal onClose={() => setShowChangePassword(false)} />}
+
+      {openDocUrl && (
+        <div className="fixed inset-0 bg-black/70 z-50 p-4 md:p-8">
+          <div className="bg-white rounded-2xl h-full max-h-[96vh] flex flex-col shadow-2xl overflow-hidden">
+            <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between gap-3">
+              <div>
+                <h3 className="font-extrabold text-lg text-gray-900">{openDocTitle}</h3>
+                <p className="text-xs text-gray-500">Visualización protegida (sin botón de descarga)</p>
+              </div>
+              <button
+                className="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold"
+                onClick={() => {
+                  setOpenDocUrl('')
+                  setOpenDocTitle('')
+                }}
+              >
+                Cerrar
+              </button>
+            </div>
+            <div className="flex-1 bg-gray-100">
+              <iframe
+                title={openDocTitle || 'Documento PDF'}
+                src={`${openDocUrl}#toolbar=0&navpanes=0&scrollbar=1`}
+                className="w-full h-full"
+                sandbox="allow-same-origin allow-scripts"
+              />
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Modal para editar meeting link */}
       {editingMeetingLink && (

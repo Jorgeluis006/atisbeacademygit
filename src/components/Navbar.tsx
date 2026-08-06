@@ -198,13 +198,14 @@ function MobileNavItem({ item, onNavigate }: { item: NavItem; onNavigate: () => 
 export function Navbar() {
   const [isAdmin, setIsAdmin] = useState(false)
   const [isTeacher, setIsTeacher] = useState(false)
+  const [isCoordinator, setIsCoordinator] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [courses, setCourses] = useState<Course[]>([])
   const [exams, setExams] = useState<Exam[]>([])
   const [corporativo, setCorporativo] = useState<CorporativoItem[]>([])
   // For now, force light theme to avoid visibility issues reported by user
   // Lightweight role check only
-  useEffect(() => { (async () => { try { const u = await me(); setIsAdmin(!!u && u.role === 'admin'); setIsTeacher(!!u && u.role === 'teacher') } catch {} })() }, [])
+  useEffect(() => { (async () => { try { const u = await me(); setIsAdmin(!!u && u.role === 'admin'); setIsTeacher(!!u && u.role === 'teacher'); setIsCoordinator(!!u && u.role === 'coordinator') } catch {} })() }, [])
 
   useEffect(() => {
     (async () => {
@@ -256,6 +257,14 @@ export function Navbar() {
               }
             >Profesor</NavLink>
           )}
+          {isCoordinator && (
+            <NavLink
+              to="/coordinador"
+              className={({ isActive }) =>
+                `text-sm font-medium ${isActive ? 'text-brand-purple' : 'text-brand-black/80 hover:text-brand-purple'}`
+              }
+            >Coordinador</NavLink>
+          )}
         </nav>
 
         {/* Mobile/Tablet hamburger */}
@@ -287,6 +296,9 @@ export function Navbar() {
             )}
             {isTeacher && (
               <NavLink to="/profesor" onClick={() => setMobileOpen(false)} className={({ isActive }) => `block px-2 py-2 rounded-md ${isActive ? 'text-brand-purple' : 'text-brand-black/80 hover:text-brand-purple'}`}>Profesor</NavLink>
+            )}
+            {isCoordinator && (
+              <NavLink to="/coordinador" onClick={() => setMobileOpen(false)} className={({ isActive }) => `block px-2 py-2 rounded-md ${isActive ? 'text-brand-purple' : 'text-brand-black/80 hover:text-brand-purple'}`}>Coordinador</NavLink>
             )}
           </div>
         </MobileDrawer>

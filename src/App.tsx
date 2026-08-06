@@ -17,6 +17,7 @@ import Tienda from './pages/Tienda'
 import Influencers from './pages/Influencers'
 import Admin from './pages/Admin'
 import Profesor from './pages/Profesor'
+import Coordinador from './pages/Coordinador'
 import ResetPassword from './pages/ResetPassword'
 import Modalidades from './pages/Modalidades'
 import Examenes from './pages/Examenes'
@@ -50,6 +51,7 @@ function App() {
           <Route path="/influencers" element={<Influencers />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/profesor" element={<Profesor />} />
+          <Route path="/coordinador" element={<Coordinador />} />
           <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
       </div>

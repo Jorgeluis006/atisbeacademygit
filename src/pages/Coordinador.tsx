@@ -1,0 +1,433 @@
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import {
+  me,
+  logout as apiLogout,
+  getCoordinatorTeachers,
+  getCoordinatorTeacherSlots,
+  createCoordinatorTeacherSlot,
+  deleteCoordinatorTeacherSlot,
+  updateCoordinatorTeacherSlotMeetingLink,
+  getCoordinatorBlocks,
+  createCoordinatorBlock,
+  deleteCoordinatorBlock,
+  getAdminClassStructureDocs,
+  createClassStructureDoc,
+  updateClassStructureDoc,
+  deleteClassStructureDoc,
+  type ClassStructureDoc,
+  type CoordinatorTeacher,
+  type ScheduleSlot,
+  type TeacherScheduleBlock,
+} from '../services/api'
+
+function toInputDateTime(value: string) {
+  if (!value) return ''
+  const d = new Date(value.replace(' ', 'T'))
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
+function formatDate(value: string) {
+  const d = new Date(value.replace(' ', 'T'))
+  if (Number.isNaN(d.getTime())) return value
+  return d.toLocaleString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+}
+
+export default function Coordinador() {
+  const navigate = useNavigate()
+  const [auth, setAuth] = useState<{ username: string; name: string; role: string } | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  const [teachers, setTeachers] = useState<CoordinatorTeacher[]>([])
+  const [teacherId, setTeacherId] = useState<number>(0)
+  const [slots, setSlots] = useState<ScheduleSlot[]>([])
+  const [blocks, setBlocks] = useState<TeacherScheduleBlock[]>([])
+  const [docs, setDocs] = useState<ClassStructureDoc[]>([])
+
+  const [slotForm, setSlotForm] = useState({ datetime: '', tipo: 'clase', modalidad: 'virtual', duration_minutes: 60, curso: 'Inglés', nivel: '', meeting_link: '', max_alumnos: 1 })
+  const [blockForm, setBlockForm] = useState({ starts_at: '', ends_at: '', reason: '' })
+  const [docForm, setDocForm] = useState<ClassStructureDoc>({ title: '', pdf_url: '', is_published: true, display_order: 0 })
+  const [editingDocId, setEditingDocId] = useState<number | null>(null)
+  const [msg, setMsg] = useState('')
+  const [err, setErr] = useState('')
+
+  async function loadTeachers() {
+    const list = await getCoordinatorTeachers()
+    setTeachers(list)
+    if (list.length > 0 && !teacherId) setTeacherId(list[0].id)
+  }
+
+  async function loadTeacherData(id: number) {
+    if (!id) return
+    const [slotData, blockData] = await Promise.all([
+      getCoordinatorTeacherSlots(id),
+      getCoordinatorBlocks(id),
+    ])
+    setSlots(slotData)
+    setBlocks(blockData)
+  }
+
+  async function loadDocs() {
+    const items = await getAdminClassStructureDocs()
+    setDocs(items)
+  }
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const u = await me()
+        if (!u || (u.role !== 'coordinator' && u.role !== 'admin')) {
+          setLoading(false)
+          return
+        }
+        setAuth({ username: u.username, name: u.name, role: u.role })
+        await Promise.all([loadTeachers(), loadDocs()])
+      } catch {
+      } finally {
+        setLoading(false)
+      }
+    })()
+  }, [])
+
+  useEffect(() => {
+    if (!teacherId) return
+    loadTeacherData(teacherId).catch(() => {
+      setErr('No se pudo cargar la información del profesor')
+    })
+  }, [teacherId])
+
+  async function createSlot() {
+    setMsg('')
+    setErr('')
+    if (!teacherId || !slotForm.datetime) {
+      setErr('Selecciona profesor y fecha/hora')
+      return
+    }
+    try {
+      await createCoordinatorTeacherSlot({ teacher_id: teacherId, ...slotForm })
+      setMsg('Horario creado')
+      await loadTeacherData(teacherId)
+    } catch (e: any) {
+      setErr(e?.response?.data?.error || 'No se pudo crear el horario')
+    }
+  }
+
+  async function removeSlot(id?: number) {
+    if (!id) return
+    setMsg('')
+    setErr('')
+    try {
+      await deleteCoordinatorTeacherSlot(id)
+      setMsg('Horario eliminado')
+      await loadTeacherData(teacherId)
+    } catch (e: any) {
+      setErr(e?.response?.data?.error || 'No se pudo eliminar el horario')
+    }
+  }
+
+  async function updateMeetingLink(id?: number) {
+    if (!id) return
+    const link = prompt('Nuevo enlace de clase (Zoom/Meet/Teams):')
+    if (link === null) return
+    setMsg('')
+    setErr('')
+    try {
+      await updateCoordinatorTeacherSlotMeetingLink(id, link)
+      setMsg('Enlace actualizado')
+      await loadTeacherData(teacherId)
+    } catch (e: any) {
+      setErr(e?.response?.data?.error || 'No se pudo actualizar el enlace')
+    }
+  }
+
+  async function addBlock() {
+    setMsg('')
+    setErr('')
+    if (!teacherId || !blockForm.starts_at || !blockForm.ends_at) {
+      setErr('Completa inicio y fin del bloqueo')
+      return
+    }
+    try {
+      await createCoordinatorBlock({
+        teacher_id: teacherId,
+        starts_at: blockForm.starts_at,
+        ends_at: blockForm.ends_at,
+        reason: blockForm.reason,
+      })
+      setMsg('Bloqueo guardado')
+      setBlockForm({ starts_at: '', ends_at: '', reason: '' })
+      await loadTeacherData(teacherId)
+    } catch (e: any) {
+      setErr(e?.response?.data?.error || 'No se pudo crear el bloqueo')
+    }
+  }
+
+  async function removeBlock(id: number) {
+    setMsg('')
+    setErr('')
+    try {
+      await deleteCoordinatorBlock(id)
+      setMsg('Bloqueo eliminado')
+      await loadTeacherData(teacherId)
+    } catch (e: any) {
+      setErr(e?.response?.data?.error || 'No se pudo eliminar el bloqueo')
+    }
+  }
+
+  async function doLogout() {
+    await apiLogout()
+    navigate('/zona-estudiantes')
+  }
+
+  function resetDocForm() {
+    setEditingDocId(null)
+    setDocForm({ title: '', pdf_url: '', is_published: true, display_order: 0 })
+  }
+
+  async function saveDoc() {
+    setMsg('')
+    setErr('')
+    if (!docForm.title.trim() || !docForm.pdf_url.trim()) {
+      setErr('Completa título y URL del PDF')
+      return
+    }
+    try {
+      if (editingDocId) {
+        await updateClassStructureDoc({ ...docForm, id: editingDocId })
+        setMsg('Documento actualizado')
+      } else {
+        await createClassStructureDoc(docForm)
+        setMsg('Documento creado')
+      }
+      resetDocForm()
+      await loadDocs()
+    } catch (e: any) {
+      setErr(e?.response?.data?.error || 'No se pudo guardar el documento')
+    }
+  }
+
+  function editDoc(doc: ClassStructureDoc) {
+    setEditingDocId(doc.id || null)
+    setDocForm({
+      title: doc.title,
+      pdf_url: doc.pdf_url,
+      is_published: !!doc.is_published,
+      display_order: doc.display_order ?? 0,
+    })
+  }
+
+  async function removeDoc(id?: number) {
+    if (!id) return
+    setMsg('')
+    setErr('')
+    try {
+      await deleteClassStructureDoc(id)
+      setMsg('Documento eliminado')
+      if (editingDocId === id) resetDocForm()
+      await loadDocs()
+    } catch (e: any) {
+      setErr(e?.response?.data?.error || 'No se pudo eliminar el documento')
+    }
+  }
+
+  if (loading) {
+    return <main className="container-padded py-16">Cargando…</main>
+  }
+
+  if (!auth) {
+    return (
+      <main className="container-padded py-16 text-center">
+        <p className="text-lg text-brand-black/70">No autorizado. Inicia sesión como coordinador.</p>
+      </main>
+    )
+  }
+
+  return (
+    <main className="bg-brand-beige min-h-screen py-8">
+      <div className="container-padded space-y-6">
+        <section className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div>
+              <h1 className="text-3xl font-extrabold text-brand-purple">Panel Coordinador</h1>
+              <p className="text-gray-600">Gestiona horarios de profesores y bloquea días/horas disponibles.</p>
+            </div>
+            <button onClick={doLogout} className="btn-secondary">Cerrar sesión</button>
+          </div>
+        </section>
+
+        <section className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <label className="block text-sm font-semibold mb-2">Profesor</label>
+          <select className="w-full md:w-96 border border-gray-300 rounded-lg px-4 py-3" value={teacherId} onChange={e => setTeacherId(Number(e.target.value))}>
+            {teachers.map(t => <option key={t.id} value={t.id}>{t.name || t.username}</option>)}
+          </select>
+        </section>
+
+        <section className="grid lg:grid-cols-2 gap-6">
+          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+            <h2 className="text-xl font-bold mb-4">Bloquear disponibilidad</h2>
+            <div className="grid gap-3">
+              <label className="text-sm font-semibold">Inicio</label>
+              <input type="datetime-local" className="border border-gray-300 rounded-lg px-4 py-2.5" value={blockForm.starts_at} onChange={e => setBlockForm(f => ({ ...f, starts_at: e.target.value }))} />
+              <label className="text-sm font-semibold">Fin</label>
+              <input type="datetime-local" className="border border-gray-300 rounded-lg px-4 py-2.5" value={blockForm.ends_at} onChange={e => setBlockForm(f => ({ ...f, ends_at: e.target.value }))} />
+              <label className="text-sm font-semibold">Motivo (opcional)</label>
+              <input className="border border-gray-300 rounded-lg px-4 py-2.5" value={blockForm.reason} onChange={e => setBlockForm(f => ({ ...f, reason: e.target.value }))} placeholder="Vacaciones, reunión, incapacidad..." />
+              <button onClick={addBlock} className="btn-primary">Guardar bloqueo</button>
+            </div>
+
+            <div className="mt-5 space-y-2 max-h-64 overflow-auto">
+              {blocks.length === 0 ? <p className="text-sm text-gray-500">Sin bloqueos activos.</p> : blocks.map(b => (
+                <div key={b.id} className="rounded-lg border border-gray-200 p-3 flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold">{formatDate(b.starts_at)} - {formatDate(b.ends_at)}</p>
+                    {b.reason && <p className="text-xs text-gray-600">{b.reason}</p>}
+                  </div>
+                  <button onClick={() => removeBlock(b.id)} className="text-red-600 text-sm font-semibold">Eliminar</button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+            <h2 className="text-xl font-bold mb-4">Crear horario para profesor</h2>
+            <div className="grid gap-3">
+              <label className="text-sm font-semibold">Fecha y hora</label>
+              <input type="datetime-local" className="border border-gray-300 rounded-lg px-4 py-2.5" value={slotForm.datetime} onChange={e => setSlotForm(f => ({ ...f, datetime: e.target.value }))} />
+              <div className="grid grid-cols-2 gap-3">
+                <select className="border border-gray-300 rounded-lg px-4 py-2.5" value={slotForm.tipo} onChange={e => setSlotForm(f => ({ ...f, tipo: e.target.value }))}>
+                  <option value="clase">Clase</option>
+                  <option value="examen">Examen</option>
+                </select>
+                <select className="border border-gray-300 rounded-lg px-4 py-2.5" value={slotForm.modalidad} onChange={e => setSlotForm(f => ({ ...f, modalidad: e.target.value }))}>
+                  <option value="virtual">Virtual</option>
+                  <option value="presencial">Presencial</option>
+                  <option value="hibrido">Híbrido</option>
+                </select>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <input className="border border-gray-300 rounded-lg px-4 py-2.5" placeholder="Curso" value={slotForm.curso} onChange={e => setSlotForm(f => ({ ...f, curso: e.target.value }))} />
+                <input className="border border-gray-300 rounded-lg px-4 py-2.5" placeholder="Nivel (A1, B2...)" value={slotForm.nivel} onChange={e => setSlotForm(f => ({ ...f, nivel: e.target.value }))} />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <input type="number" min={15} className="border border-gray-300 rounded-lg px-4 py-2.5" placeholder="Duración (min)" value={slotForm.duration_minutes} onChange={e => setSlotForm(f => ({ ...f, duration_minutes: Number(e.target.value) }))} />
+                <input type="number" min={1} className="border border-gray-300 rounded-lg px-4 py-2.5" placeholder="Máx alumnos" value={slotForm.max_alumnos} onChange={e => setSlotForm(f => ({ ...f, max_alumnos: Number(e.target.value) }))} />
+              </div>
+              <input className="border border-gray-300 rounded-lg px-4 py-2.5" placeholder="Enlace de clase (opcional)" value={slotForm.meeting_link} onChange={e => setSlotForm(f => ({ ...f, meeting_link: e.target.value }))} />
+              <button onClick={createSlot} className="btn-primary">Crear horario</button>
+            </div>
+          </div>
+        </section>
+
+        {(msg || err) && (
+          <section className={`rounded-xl p-4 border ${err ? 'bg-red-50 border-red-200 text-red-700' : 'bg-green-50 border-green-200 text-green-700'}`}>
+            {err || msg}
+          </section>
+        )}
+
+        <section className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <h2 className="text-xl font-bold mb-4">Horarios del profesor seleccionado</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left border-b">
+                  <th className="py-2">Fecha</th>
+                  <th className="py-2">Tipo</th>
+                  <th className="py-2">Modalidad</th>
+                  <th className="py-2">Curso</th>
+                  <th className="py-2">Cupos</th>
+                  <th className="py-2">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {slots.map(s => (
+                  <tr key={s.id} className="border-b last:border-b-0">
+                    <td className="py-2 pr-4">{formatDate(s.datetime)}</td>
+                    <td className="py-2 pr-4">{s.tipo}</td>
+                    <td className="py-2 pr-4">{s.modalidad}</td>
+                    <td className="py-2 pr-4">{s.curso || '-'}</td>
+                    <td className="py-2 pr-4">{s.max_alumnos || 1}</td>
+                    <td className="py-2">
+                      <div className="flex gap-2">
+                        <button className="text-brand-purple font-semibold" onClick={() => updateMeetingLink(s.id)}>Enlace</button>
+                        <button className="text-red-600 font-semibold" onClick={() => removeSlot(s.id)}>Eliminar</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {slots.length === 0 && <p className="text-sm text-gray-500 mt-3">No hay horarios creados.</p>}
+          </div>
+        </section>
+
+        <section className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <h2 className="text-xl font-bold mb-4">Estructura de clases (PDF)</h2>
+          <p className="text-sm text-gray-600 mb-4">
+            Estos documentos se muestran al profesor en modo visualización embebida, sin botón de descarga en la plataforma.
+          </p>
+
+          <div className="grid lg:grid-cols-2 gap-6">
+            <div className="grid gap-3">
+              <input
+                className="border border-gray-300 rounded-lg px-4 py-2.5"
+                placeholder="Título del documento"
+                value={docForm.title}
+                onChange={e => setDocForm(f => ({ ...f, title: e.target.value }))}
+              />
+              <input
+                className="border border-gray-300 rounded-lg px-4 py-2.5"
+                placeholder="URL del PDF (https://...)"
+                value={docForm.pdf_url}
+                onChange={e => setDocForm(f => ({ ...f, pdf_url: e.target.value }))}
+              />
+              <div className="grid grid-cols-2 gap-3">
+                <input
+                  type="number"
+                  className="border border-gray-300 rounded-lg px-4 py-2.5"
+                  placeholder="Orden"
+                  value={docForm.display_order ?? 0}
+                  onChange={e => setDocForm(f => ({ ...f, display_order: Number(e.target.value) }))}
+                />
+                <label className="border border-gray-300 rounded-lg px-4 py-2.5 flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={!!docForm.is_published}
+                    onChange={e => setDocForm(f => ({ ...f, is_published: e.target.checked }))}
+                  />
+                  Publicado
+                </label>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={saveDoc} className="btn-primary">{editingDocId ? 'Actualizar PDF' : 'Crear PDF'}</button>
+                {editingDocId && (
+                  <button onClick={resetDocForm} className="btn-secondary">Cancelar edición</button>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-2 max-h-72 overflow-auto">
+              {docs.length === 0 ? (
+                <p className="text-sm text-gray-500">No hay PDFs configurados.</p>
+              ) : (
+                docs.map(d => (
+                  <div key={d.id} className="rounded-lg border border-gray-200 p-3 flex items-start justify-between gap-3">
+                    <div>
+                      <p className="font-semibold text-sm">{d.title}</p>
+                      <p className="text-xs text-gray-500 break-all">{d.pdf_url}</p>
+                      <p className="text-xs text-gray-600 mt-1">Orden: {d.display_order ?? 0} · {d.is_published ? 'Publicado' : 'Oculto'}</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <button className="text-brand-purple text-sm font-semibold" onClick={() => editDoc(d)}>Editar</button>
+                      <button className="text-red-600 text-sm font-semibold" onClick={() => removeDoc(d.id)}>Eliminar</button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  )
+}

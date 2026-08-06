@@ -49,6 +49,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         json_error('Ya existe un horario en esa fecha y hora');
     }
 
+    $slotEnd = date('Y-m-d H:i:s', strtotime($datetime . ' +' . $duration . ' minutes'));
+    $blockStmt = $pdo->prepare('
+        SELECT COUNT(*)
+        FROM teacher_schedule_blocks
+        WHERE teacher_id = ?
+          AND ? < ends_at
+          AND ? > starts_at
+    ');
+    $blockStmt->execute([$teacher_id, $datetime, $slotEnd]);
+    if ((int)$blockStmt->fetchColumn() > 0) {
+        json_error('Este horario está bloqueado por coordinación');
+    }
+
     $stmt = $pdo->prepare('
         INSERT INTO teacher_slots (teacher_id, datetime, tipo, modalidad, duration_minutes, curso, nivel, meeting_link, max_alumnos)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
