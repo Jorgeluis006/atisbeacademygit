@@ -510,6 +510,7 @@ export default function ZonaEstudiantes() {
         const u = await apiMe()
         if (u && u.role === 'admin') { navigate('/admin', { replace: true }); return }
         if (u && u.role === 'teacher') { navigate('/profesor', { replace: true }); return }
+        if (u && u.role === 'coordinator') { navigate('/coordinador', { replace: true }); return }
         setUser(u ? { username: u.username, name: u.name, role: u.role } : null)
         if (u && u.role === 'student') {
           await loadStudentData()
@@ -557,6 +558,7 @@ export default function ZonaEstudiantes() {
                   const u = await apiMe();
                   if (u && u.role === 'admin') { navigate('/admin', { replace: true }); return }
                   if (u && u.role === 'teacher') { navigate('/profesor', { replace: true }); return }
+                  if (u && u.role === 'coordinator') { navigate('/coordinador', { replace: true }); return }
                   setUser(u ? { username: u.username, name: u.name, role: u.role } : null)
                   if (u && u.role === 'student') {
                     await loadStudentData()
