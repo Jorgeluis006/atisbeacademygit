@@ -28,6 +28,18 @@ function formatDate(value: string) {
   return d.toLocaleString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
 }
 
+function formatScheduleDay(value: string) {
+  const d = new Date(value.replace(' ', 'T'))
+  if (Number.isNaN(d.getTime())) return value
+  return d.toLocaleDateString('es-CO', { weekday: 'long', day: '2-digit', month: 'long' })
+}
+
+function formatScheduleTime(value: string) {
+  const d = new Date(value.replace(' ', 'T'))
+  if (Number.isNaN(d.getTime())) return value
+  return d.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })
+}
+
 export default function Coordinador() {
   const navigate = useNavigate()
   const [auth, setAuth] = useState<{ username: string; name: string; role: string } | null>(null)
@@ -258,6 +270,12 @@ export default function Coordinador() {
     )
   }
 
+  const slotsByDay = slots.reduce<Record<string, ScheduleSlot[]>>((result, slot) => {
+    const day = slot.datetime.slice(0, 10)
+    result[day] = [...(result[day] || []), slot]
+    return result
+  }, {})
+
   return (
     <main className="bg-brand-beige min-h-screen py-8">
       <div className="container-padded space-y-6">
@@ -342,6 +360,29 @@ export default function Coordinador() {
 
         <section className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
           <h2 className="text-xl font-bold mb-4">Horarios del profesor seleccionado</h2>
+          {slots.length > 0 && (
+            <div className="mb-6 overflow-x-auto">
+              <div className="flex gap-4 min-w-max pb-2">
+                {Object.entries(slotsByDay).map(([day, daySlots]) => (
+                  <div key={day} className="w-64 shrink-0 rounded-xl border border-brand-purple/20 bg-brand-beige/40 overflow-hidden">
+                    <div className="bg-brand-purple px-4 py-3 text-white">
+                      <p className="text-xs uppercase font-semibold opacity-80">Agenda</p>
+                      <p className="font-bold capitalize">{formatScheduleDay(day)}</p>
+                    </div>
+                    <div className="p-3 space-y-2">
+                      {daySlots.map(slot => (
+                        <div key={slot.id} className="bg-white border-l-4 border-brand-orange rounded-lg px-3 py-2 shadow-sm">
+                          <p className="font-extrabold text-brand-purple">{formatScheduleTime(slot.datetime)}</p>
+                          <p className="text-sm font-semibold text-gray-800">{slot.curso || 'Clase'} {slot.nivel ? `· ${slot.nivel}` : ''}</p>
+                          <p className="text-xs text-gray-500 capitalize">{slot.tipo} · {slot.modalidad} · {slot.duration_minutes || 60} min</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
