@@ -598,6 +598,17 @@ export async function uploadVideo(file: File): Promise<string> {
   return res.data?.url
 }
 
+// Upload PDF (estructura de clases)
+export async function uploadClassStructurePdf(file: File): Promise<string> {
+  const formData = new FormData()
+  formData.append('pdf', file)
+  const res = await api.post('/upload_pdf.php', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 120000
+  })
+  return res.data?.url
+}
+
 // Password management
 export async function changePassword(currentPassword: string, newPassword: string) {
   return api.post('/auth/change_password.php', { 

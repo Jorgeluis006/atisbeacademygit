@@ -18,6 +18,9 @@ public/api/config.local.php
 # Uploaded images
 public/uploads/*
 !public/uploads/.gitkeep
+!public/uploads/docs/
+public/uploads/docs/*
+!public/uploads/docs/.htaccess
 
 # Keep logos
 !public/images/logoheader.jpeg

@@ -1,0 +1,9 @@
+# Servir PDFs en línea (visor del navegador) en lugar de forzar descarga
+<IfModule mod_headers.c>
+    <FilesMatch "\.pdf$">
+        Header set Content-Disposition inline
+        Header set X-Content-Type-Options nosniff
+    </FilesMatch>
+</IfModule>
+
+Options -Indexes

@@ -15,6 +15,7 @@ import {
   createClassStructureDoc,
   updateClassStructureDoc,
   deleteClassStructureDoc,
+  uploadClassStructurePdf,
   type ClassStructureDoc,
   type CoordinatorTeacher,
   type ScheduleSlot,
@@ -42,6 +43,7 @@ export default function Coordinador() {
   const [blockForm, setBlockForm] = useState({ starts_at: '', ends_at: '', reason: '' })
   const [docForm, setDocForm] = useState<ClassStructureDoc>({ title: '', pdf_url: '', is_published: true, display_order: 0 })
   const [editingDocId, setEditingDocId] = useState<number | null>(null)
+  const [uploadingPdf, setUploadingPdf] = useState(false)
   const [msg, setMsg] = useState('')
   const [err, setErr] = useState('')
 
@@ -178,11 +180,31 @@ export default function Coordinador() {
     setDocForm({ title: '', pdf_url: '', is_published: true, display_order: 0 })
   }
 
+  async function handleUploadPdf(file: File | null) {
+    if (!file) return
+    setMsg('')
+    setErr('')
+    if (file.type !== 'application/pdf') {
+      setErr('Solo se permiten archivos PDF')
+      return
+    }
+    setUploadingPdf(true)
+    try {
+      const url = await uploadClassStructurePdf(file)
+      setDocForm(f => ({ ...f, pdf_url: url }))
+      setMsg('PDF subido correctamente')
+    } catch (e: any) {
+      setErr(e?.response?.data?.error || 'No se pudo subir el PDF')
+    } finally {
+      setUploadingPdf(false)
+    }
+  }
+
   async function saveDoc() {
     setMsg('')
     setErr('')
     if (!docForm.title.trim() || !docForm.pdf_url.trim()) {
-      setErr('Completa título y URL del PDF')
+      setErr('Completa título y sube el archivo PDF')
       return
     }
     try {
@@ -368,12 +390,20 @@ export default function Coordinador() {
                 value={docForm.title}
                 onChange={e => setDocForm(f => ({ ...f, title: e.target.value }))}
               />
-              <input
-                className="border border-gray-300 rounded-lg px-4 py-2.5"
-                placeholder="URL del PDF (https://...)"
-                value={docForm.pdf_url}
-                onChange={e => setDocForm(f => ({ ...f, pdf_url: e.target.value }))}
-              />
+              <div>
+                <label className="text-sm font-semibold block mb-1">Archivo PDF</label>
+                <input
+                  type="file"
+                  accept="application/pdf"
+                  className="border border-gray-300 rounded-lg px-4 py-2.5 w-full"
+                  onChange={e => handleUploadPdf(e.target.files?.[0] || null)}
+                  disabled={uploadingPdf}
+                />
+                {uploadingPdf && <p className="text-xs text-brand-purple mt-1">Subiendo PDF…</p>}
+                {docForm.pdf_url && (
+                  <p className="text-xs text-gray-500 mt-1 break-all">Archivo: {docForm.pdf_url}</p>
+                )}
+              </div>
               <div className="grid grid-cols-2 gap-3">
                 <input
                   type="number"
@@ -392,7 +422,7 @@ export default function Coordinador() {
                 </label>
               </div>
               <div className="flex gap-2">
-                <button onClick={saveDoc} className="btn-primary">{editingDocId ? 'Actualizar PDF' : 'Crear PDF'}</button>
+                <button onClick={saveDoc} disabled={uploadingPdf} className="btn-primary disabled:opacity-50">{editingDocId ? 'Actualizar PDF' : 'Crear PDF'}</button>
                 {editingDocId && (
                   <button onClick={resetDocForm} className="btn-secondary">Cancelar edición</button>
                 )}
