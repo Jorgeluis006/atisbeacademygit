@@ -1,37 +1,56 @@
 import { Link, NavLink } from 'react-router-dom'
-import { useEffect, useRef, useState } from 'react'
-import { me } from '../services/api'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { me, getCourses, getExams, type Course, type Exam } from '../services/api'
 
 type NavChild = { to: string; label: string }
 type NavItem = { to: string; label: string; children?: NavChild[] }
 
-const navItems: NavItem[] = [
-  { to: '/quienes-somos', label: 'Quiénes somos' },
-  {
-    to: '/cursos',
-    label: 'Cursos',
-    children: [
-      { to: '/cursos?category=cursos-idiomas', label: 'Cursos de idiomas' },
-      { to: '/cursos?category=refuerzos', label: 'Refuerzos escolares' },
-      { to: '/cursos?category=conversarte', label: 'ConversArte' },
-    ],
-  },
-  { to: '/corporativo', label: 'Corporativo' },
-  { to: '/examenes', label: 'Exámenes' },
-  { to: '/blog', label: 'Blog' },
-  { to: '/contacto', label: 'Contacto' },
-  { to: '/pago', label: 'Pago' },
-  {
-    to: '/tienda',
-    label: 'Tienda',
-    children: [
-      { to: '/tienda?category=curso', label: 'Cursos' },
-      { to: '/tienda?category=material', label: 'Materiales' },
-      { to: '/tienda?category=club', label: 'Clubs' },
-      { to: '/tienda?category=taller', label: 'Talleres' },
-    ],
-  },
-]
+// Cursos y exámenes se listan dinámicamente: al crear uno nuevo desde Admin, aparece aquí sin tocar código.
+function buildNavItems(courses: Course[], exams: Exam[]): NavItem[] {
+  const courseChildren: NavChild[] = [
+    { to: '/cursos', label: 'Ver todos los cursos' },
+    ...courses
+      .filter(c => c.is_published !== false)
+      .map(c => ({ to: `/cursos/${c.id}/modalidades`, label: c.title })),
+  ]
+
+  const examChildren: NavChild[] = [
+    { to: '/examenes', label: 'Ver todos los exámenes' },
+    ...exams
+      .filter(e => e.is_published !== false)
+      .map(e => ({ to: `/examenes/${e.slug}`, label: e.title })),
+  ]
+
+  return [
+    { to: '/quienes-somos', label: 'Quiénes somos' },
+    { to: '/cursos', label: 'Cursos', children: courseChildren.length > 1 ? courseChildren : undefined },
+    { to: '/corporativo', label: 'Corporativo' },
+    { to: '/examenes', label: 'Exámenes', children: examChildren.length > 1 ? examChildren : undefined },
+    {
+      to: '/blog',
+      label: 'Blog',
+      children: [
+        { to: '/blog?category=consejos', label: 'Consejos' },
+        { to: '/blog?category=gramatica', label: 'Gramática' },
+        { to: '/blog?category=vocabulario', label: 'Vocabulario' },
+        { to: '/blog?category=cultura', label: 'Cultura' },
+        { to: '/blog?category=recursos', label: 'Recursos' },
+      ],
+    },
+    { to: '/contacto', label: 'Contacto' },
+    { to: '/pago', label: 'Pago' },
+    {
+      to: '/tienda',
+      label: 'Tienda',
+      children: [
+        { to: '/tienda?category=curso', label: 'Cursos' },
+        { to: '/tienda?category=material', label: 'Materiales' },
+        { to: '/tienda?category=club', label: 'Clubs' },
+        { to: '/tienda?category=taller', label: 'Talleres' },
+      ],
+    },
+  ]
+}
 
 function ChevronIcon({ open }: { open: boolean }) {
   return (
@@ -94,7 +113,7 @@ function DesktopNavItem({ item }: { item: NavItem }) {
       </NavLink>
       {open && (
         <div className="absolute top-full left-0 pt-3">
-          <div className="min-w-[220px] bg-white rounded-xl shadow-lg border border-brand-black/10 py-2 overflow-hidden">
+          <div className="min-w-[240px] max-h-80 overflow-y-auto bg-white rounded-xl shadow-lg border border-brand-black/10 py-2">
             {item.children.map((child) => (
               <Link
                 key={child.to}
@@ -173,9 +192,25 @@ export function Navbar() {
   const [isAdmin, setIsAdmin] = useState(false)
   const [isTeacher, setIsTeacher] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [courses, setCourses] = useState<Course[]>([])
+  const [exams, setExams] = useState<Exam[]>([])
   // For now, force light theme to avoid visibility issues reported by user
   // Lightweight role check only
   useEffect(() => { (async () => { try { const u = await me(); setIsAdmin(!!u && u.role === 'admin'); setIsTeacher(!!u && u.role === 'teacher') } catch {} })() }, [])
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const [coursesData, examsData] = await Promise.all([getCourses(), getExams()])
+        setCourses(coursesData)
+        setExams(examsData)
+      } catch {
+        // Si falla, el menú simplemente no muestra submenús para Cursos/Exámenes
+      }
+    })()
+  }, [])
+
+  const navItems = useMemo(() => buildNavItems(courses, exams), [courses, exams])
 
   useEffect(() => {
     const root = document.documentElement
@@ -271,7 +306,7 @@ function MobileDrawer({ children, onClose }: { children: React.ReactNode; onClos
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>
         </div>
-        <div className="px-4">
+        <div className="px-4 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 56px)' }}>
           {children}
         </div>
       </div>

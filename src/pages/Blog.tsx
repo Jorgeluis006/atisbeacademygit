@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { getBlogPosts, type BlogPost } from '../services/api'
 
 export default function Blog() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedCategory, setSelectedCategory] = useState<string>('all')
+  const [selectedCategory, setSelectedCategory] = useState<string>(searchParams.get('category') || 'all')
 
   const blogCategories = [
     { value: 'all', label: 'Todos los artículos' },
@@ -16,6 +17,10 @@ export default function Blog() {
     { value: 'cultura', label: 'Cultura' },
     { value: 'recursos', label: 'Recursos' }
   ]
+
+  useEffect(() => {
+    setSelectedCategory(searchParams.get('category') || 'all')
+  }, [searchParams])
 
   useEffect(() => {
     (async () => {
