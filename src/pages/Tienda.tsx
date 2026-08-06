@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-// removed unused useNavigate import
+import { useSearchParams } from 'react-router-dom'
 import axios from 'axios'
 import PaymentDrawer from '../components/PaymentDrawer'
 
@@ -14,9 +14,10 @@ interface Product {
 }
 
 export default function Tienda() {
+  const [searchParams] = useSearchParams()
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedCategory, setSelectedCategory] = useState<string>('all')
+  const [selectedCategory, setSelectedCategory] = useState<string>(searchParams.get('category') || 'all')
   
 
   useEffect(() => {

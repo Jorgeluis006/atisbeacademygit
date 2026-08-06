@@ -30,6 +30,7 @@ export default function Footer() {
               <li><a href="/cursos" className="hover:underline" style={{ color: '#791eba', fontWeight: '600' }}>Cursos</a></li>
               <li><a href="/testimonios" className="hover:underline" style={{ color: '#791eba', fontWeight: '600' }}>Testimonios</a></li>
               <li><a href="/blog" className="hover:underline" style={{ color: '#791eba', fontWeight: '600' }}>Blog</a></li>
+              <li><a href="/preguntas-frecuentes" className="hover:underline" style={{ color: '#791eba', fontWeight: '600' }}>Preguntas frecuentes</a></li>
             </ul>
           </div>
 

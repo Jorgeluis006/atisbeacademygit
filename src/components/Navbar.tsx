@@ -1,17 +1,173 @@
 import { Link, NavLink } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { me } from '../services/api'
 
-const navItems = [
+type NavChild = { to: string; label: string }
+type NavItem = { to: string; label: string; children?: NavChild[] }
+
+const navItems: NavItem[] = [
   { to: '/quienes-somos', label: 'Quiénes somos' },
-  { to: '/cursos', label: 'Cursos' },
+  {
+    to: '/cursos',
+    label: 'Cursos',
+    children: [
+      { to: '/cursos?category=cursos-idiomas', label: 'Cursos de idiomas' },
+      { to: '/cursos?category=refuerzos', label: 'Refuerzos escolares' },
+      { to: '/cursos?category=conversarte', label: 'ConversArte' },
+    ],
+  },
   { to: '/corporativo', label: 'Corporativo' },
   { to: '/examenes', label: 'Exámenes' },
   { to: '/blog', label: 'Blog' },
   { to: '/contacto', label: 'Contacto' },
   { to: '/pago', label: 'Pago' },
-  { to: '/tienda', label: 'Tienda' },
+  {
+    to: '/tienda',
+    label: 'Tienda',
+    children: [
+      { to: '/tienda?category=curso', label: 'Cursos' },
+      { to: '/tienda?category=material', label: 'Materiales' },
+      { to: '/tienda?category=club', label: 'Clubs' },
+      { to: '/tienda?category=taller', label: 'Talleres' },
+    ],
+  },
 ]
+
+function ChevronIcon({ open }: { open: boolean }) {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+    >
+      <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+  )
+}
+
+function DesktopNavItem({ item }: { item: NavItem }) {
+  const [open, setOpen] = useState(false)
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const scheduleClose = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current)
+    closeTimer.current = setTimeout(() => setOpen(false), 150)
+  }
+  const cancelClose = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current)
+  }
+
+  if (!item.children) {
+    return (
+      <NavLink
+        to={item.to}
+        className={({ isActive }) =>
+          `text-sm font-medium ${isActive ? 'text-brand-purple' : 'text-brand-black/80 hover:text-brand-purple dark:text-white/80 dark:hover:text-white'}`
+        }
+      >
+        {item.label}
+      </NavLink>
+    )
+  }
+
+  return (
+    <div
+      className="relative"
+      onMouseEnter={() => { cancelClose(); setOpen(true) }}
+      onMouseLeave={scheduleClose}
+    >
+      <NavLink
+        to={item.to}
+        className={({ isActive }) =>
+          `flex items-center gap-1 text-sm font-medium ${isActive ? 'text-brand-purple' : 'text-brand-black/80 hover:text-brand-purple dark:text-white/80 dark:hover:text-white'}`
+        }
+        onClick={() => setOpen(false)}
+      >
+        {item.label}
+        <ChevronIcon open={open} />
+      </NavLink>
+      {open && (
+        <div className="absolute top-full left-0 pt-3">
+          <div className="min-w-[220px] bg-white rounded-xl shadow-lg border border-brand-black/10 py-2 overflow-hidden">
+            {item.children.map((child) => (
+              <Link
+                key={child.to}
+                to={child.to}
+                onClick={() => setOpen(false)}
+                className="block px-4 py-2 text-sm text-brand-black/80 hover:bg-brand-purple/10 hover:text-brand-purple"
+              >
+                {child.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function MobileNavItem({ item, onNavigate }: { item: NavItem; onNavigate: () => void }) {
+  const [open, setOpen] = useState(false)
+
+  if (!item.children) {
+    return (
+      <NavLink
+        to={item.to}
+        onClick={onNavigate}
+        className={({ isActive }) =>
+          `block px-2 py-2 rounded-md ${isActive ? 'text-brand-purple' : 'text-brand-black/80 hover:text-brand-purple'}`
+        }
+      >
+        {item.label}
+      </NavLink>
+    )
+  }
+
+  return (
+    <div>
+      <div className="flex items-center">
+        <NavLink
+          to={item.to}
+          onClick={onNavigate}
+          className={({ isActive }) =>
+            `flex-1 block px-2 py-2 rounded-md ${isActive ? 'text-brand-purple' : 'text-brand-black/80 hover:text-brand-purple'}`
+          }
+        >
+          {item.label}
+        </NavLink>
+        <button
+          type="button"
+          aria-label={`Mostrar opciones de ${item.label}`}
+          aria-expanded={open}
+          onClick={() => setOpen(v => !v)}
+          className="px-2 py-2 text-brand-black/60"
+        >
+          <ChevronIcon open={open} />
+        </button>
+      </div>
+      {open && (
+        <div className="pl-4 border-l border-brand-black/10 ml-2 space-y-1">
+          {item.children.map((child) => (
+            <Link
+              key={child.to}
+              to={child.to}
+              onClick={onNavigate}
+              className="block px-2 py-2 rounded-md text-sm text-brand-black/70 hover:text-brand-purple"
+            >
+              {child.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
 
 export function Navbar() {
   const [isAdmin, setIsAdmin] = useState(false)
@@ -37,15 +193,7 @@ export function Navbar() {
         {/* Desktop nav */}
         <nav className="hidden lg:flex items-center gap-6">
           {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                `text-sm font-medium ${isActive ? 'text-brand-purple' : 'text-brand-black/80 hover:text-brand-purple dark:text-white/80 dark:hover:text-white'}`
-              }
-            >
-              {item.label}
-            </NavLink>
+            <DesktopNavItem key={item.to} item={item} />
           ))}
           <Link to="/zona-estudiantes" className="btn-primary">Zona de estudiantes</Link>
           {isAdmin && (
@@ -87,16 +235,7 @@ export function Navbar() {
         <MobileDrawer onClose={() => setMobileOpen(false)}>
           <div className="py-4 space-y-1">
             {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                onClick={() => setMobileOpen(false)}
-                className={({ isActive }) =>
-                  `block px-2 py-2 rounded-md ${isActive ? 'text-brand-purple' : 'text-brand-black/80 hover:text-brand-purple'}`
-                }
-              >
-                {item.label}
-              </NavLink>
+              <MobileNavItem key={item.to} item={item} onNavigate={() => setMobileOpen(false)} />
             ))}
             <Link to="/zona-estudiantes" onClick={() => setMobileOpen(false)} className="btn-primary w-full">Zona de estudiantes</Link>
             {isAdmin && (

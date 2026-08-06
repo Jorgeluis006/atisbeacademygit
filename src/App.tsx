@@ -8,6 +8,7 @@ import QuienesSomos from './pages/QuienesSomos'
 import Cursos from './pages/Cursos'
 import Testimonios from './pages/Testimonios'
 import Blog from './pages/Blog'
+import BlogDetalle from './pages/BlogDetalle'
 import Contacto from './pages/Contacto'
 import Pago from './pages/Pago'
 import PoliticasPrivacidad from './pages/PoliticasPrivacidad'
@@ -21,6 +22,7 @@ import Modalidades from './pages/Modalidades'
 import Examenes from './pages/Examenes'
 import ExamenDetalle from './pages/ExamenDetalle'
 import Corporativo from './pages/Corporativo'
+import PreguntasFrecuentes from './pages/PreguntasFrecuentes'
 
 function App() {
   return (
@@ -38,7 +40,9 @@ function App() {
           <Route path="/examenes/:id" element={<ExamenDetalle />} />
           <Route path="/testimonios" element={<Testimonios />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:id" element={<BlogDetalle />} />
           <Route path="/contacto" element={<Contacto />} />
+          <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentes />} />
           <Route path="/pago" element={<Pago />} />
           <Route path="/politicas-privacidad" element={<PoliticasPrivacidad />} />
           <Route path="/zona-estudiantes" element={<ZonaEstudiantes />} />

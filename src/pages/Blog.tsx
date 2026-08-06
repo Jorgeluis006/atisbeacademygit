@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { getBlogPosts, type BlogPost } from '../services/api'
 
 export default function Blog() {
+  const navigate = useNavigate()
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
-  const [expandedPosts, setExpandedPosts] = useState<Set<number>>(new Set())
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
 
   const blogCategories = [
@@ -15,18 +16,6 @@ export default function Blog() {
     { value: 'cultura', label: 'Cultura' },
     { value: 'recursos', label: 'Recursos' }
   ]
-
-  const toggleExpanded = (id: number) => {
-    setExpandedPosts(prev => {
-      const newSet = new Set(prev)
-      if (newSet.has(id)) {
-        newSet.delete(id)
-      } else {
-        newSet.add(id)
-      }
-      return newSet
-    })
-  }
 
   useEffect(() => {
     (async () => {
@@ -91,14 +80,12 @@ export default function Blog() {
             {posts
               .filter(p => selectedCategory === 'all' || p.category === selectedCategory)
               .map((p) => {
-                const postId = p.id || 0
-                const isExpanded = expandedPosts.has(postId)
-                const isLongText = p.content && p.content.length > 500
-                
                 return (
                 <article 
                   key={p.id} 
-                  className="group relative bg-white border-b-2 border-gray-100 pb-12 last:border-b-0 hover:bg-gray-50/50 transition-all duration-300 rounded-2xl p-6"
+                  onClick={() => navigate(`/blog/${p.id}`)}
+                  className="group relative bg-white border-b-2 border-gray-100 pb-12 last:border-b-0 hover:bg-gray-50/50 transition-all duration-300 rounded-2xl p-6 cursor-pointer"
+                  aria-label={`Abrir ${p.title}`}
                 >
                 {/* Category & Date */}
                 <div className="flex items-center gap-4 mb-4 text-sm">
@@ -141,38 +128,14 @@ export default function Blog() {
                   </p>
                 )}
 
-                {/* Content */}
-                {p.content && (
-                  <div className="mb-6">
-                    <div 
-                      className="text-gray-700 leading-relaxed"
-                      style={{ whiteSpace: 'pre-wrap' }}
-                    >
-                      {isExpanded || !isLongText ? p.content : p.content.substring(0, 500) + '...'}
-                    </div>
-                    {isLongText && (
-                      <button
-                        onClick={() => toggleExpanded(postId)}
-                        className="mt-4 text-brand-purple font-semibold hover:text-brand-purple/80 transition-colors flex items-center gap-2"
-                      >
-                        {isExpanded ? (
-                          <>
-                            Ver menos 
-                            <span className="text-xl">↑</span>
-                          </>
-                        ) : (
-                          <>
-                            Ver más 
-                            <span className="text-xl">↓</span>
-                          </>
-                        )}
-                      </button>
-                    )}
-                  </div>
-                )}
+                {/* Read more */}
+                <div className="text-brand-purple font-semibold group-hover:text-brand-purple/80 transition-colors flex items-center gap-2">
+                  Leer artículo completo
+                  <span className="text-xl">→</span>
+                </div>
 
                 {/* Author */}
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mt-6">
                   {p.author_name && (
                     <div className="flex items-center gap-2">
                       <div className="w-10 h-10 bg-brand-purple/10 rounded-full flex items-center justify-center">
