@@ -141,19 +141,6 @@ export default function Hero() {
           </div>
           <p className="mt-3 text-sm text-white/60">Atendemos 24/7 • Cupos limitados por curso</p>
 
-          {/* Mascota discreta, sin protagonismo, integrada al fondo */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="mt-8 w-28 sm:w-32"
-          >
-            <img
-              src="/images/Mascota[1].png"
-              alt="Mascota Atisbe"
-              className="w-full h-auto object-contain scale-x-[-1] opacity-90 drop-shadow-md"
-            />
-          </motion.div>
         </div>
 
         <div className="flex justify-center lg:justify-end">
