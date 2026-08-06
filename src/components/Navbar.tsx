@@ -1,12 +1,12 @@
 import { Link, NavLink } from 'react-router-dom'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { me, getCourses, getExams, type Course, type Exam } from '../services/api'
+import { me, getCourses, getExams, getCorporativo, type Course, type Exam, type CorporativoItem } from '../services/api'
 
 type NavChild = { to: string; label: string }
 type NavItem = { to: string; label: string; children?: NavChild[] }
 
-// Cursos y exámenes se listan dinámicamente: al crear uno nuevo desde Admin, aparece aquí sin tocar código.
-function buildNavItems(courses: Course[], exams: Exam[]): NavItem[] {
+// Cursos, exámenes y corporativo se listan dinámicamente: al crear uno nuevo desde Admin, aparece aquí sin tocar código.
+function buildNavItems(courses: Course[], exams: Exam[], corporativo: CorporativoItem[]): NavItem[] {
   const courseChildren: NavChild[] = [
     { to: '/cursos', label: 'Ver todos los cursos' },
     ...courses
@@ -21,10 +21,17 @@ function buildNavItems(courses: Course[], exams: Exam[]): NavItem[] {
       .map(e => ({ to: `/examenes/${e.slug}`, label: e.title })),
   ]
 
+  const corporativoChildren: NavChild[] = [
+    { to: '/corporativo', label: 'Ver todo corporativo' },
+    ...corporativo
+      .filter(c => c.is_published !== false)
+      .map(c => ({ to: `/corporativo?section=${c.slug || ''}`, label: c.title })),
+  ]
+
   return [
     { to: '/quienes-somos', label: 'Quiénes somos' },
     { to: '/cursos', label: 'Cursos', children: courseChildren.length > 1 ? courseChildren : undefined },
-    { to: '/corporativo', label: 'Corporativo' },
+    { to: '/corporativo', label: 'Corporativo', children: corporativoChildren.length > 1 ? corporativoChildren : undefined },
     { to: '/examenes', label: 'Exámenes', children: examChildren.length > 1 ? examChildren : undefined },
     {
       to: '/blog',
@@ -194,6 +201,7 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [courses, setCourses] = useState<Course[]>([])
   const [exams, setExams] = useState<Exam[]>([])
+  const [corporativo, setCorporativo] = useState<CorporativoItem[]>([])
   // For now, force light theme to avoid visibility issues reported by user
   // Lightweight role check only
   useEffect(() => { (async () => { try { const u = await me(); setIsAdmin(!!u && u.role === 'admin'); setIsTeacher(!!u && u.role === 'teacher') } catch {} })() }, [])
@@ -201,16 +209,17 @@ export function Navbar() {
   useEffect(() => {
     (async () => {
       try {
-        const [coursesData, examsData] = await Promise.all([getCourses(), getExams()])
+        const [coursesData, examsData, corporativoData] = await Promise.all([getCourses(), getExams(), getCorporativo()])
         setCourses(coursesData)
         setExams(examsData)
+        setCorporativo(corporativoData)
       } catch {
-        // Si falla, el menú simplemente no muestra submenús para Cursos/Exámenes
+        // Si falla, el menú simplemente no muestra submenús para Cursos/Exámenes/Corporativo
       }
     })()
   }, [])
 
-  const navItems = useMemo(() => buildNavItems(courses, exams), [courses, exams])
+  const navItems = useMemo(() => buildNavItems(courses, exams, corporativo), [courses, exams, corporativo])
 
   useEffect(() => {
     const root = document.documentElement

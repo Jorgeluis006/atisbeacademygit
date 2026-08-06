@@ -15,6 +15,12 @@ export default function Corporativo() {
     })()
   }, [])
 
+  useEffect(() => {
+    if (!section) return
+    const el = document.getElementById(`corporativo-${section}`)
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [section, cards])
+
   function comenzar(prefill: Partial<Record<string, string>>) {
     const entries = Object.entries(prefill).filter(([, v]) => typeof v === 'string' && v.length > 0) as [string, string][]
     const qs = new URLSearchParams(entries).toString()
@@ -35,7 +41,7 @@ export default function Corporativo() {
       <div className="container-padded py-10">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {cards.map(c => (
-            <article key={c.id || c.slug || c.title} className={`bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 ${section && (section === c.slug) ? 'ring-2 ring-brand-purple' : ''}`}>
+            <article key={c.id || c.slug || c.title} id={`corporativo-${c.slug || ''}`} className={`bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 ${section && (section === c.slug) ? 'ring-2 ring-brand-purple' : ''}`}>
               <div className="w-full aspect-[16/9] bg-gray-50 overflow-hidden">
                 <img src={c.image_url || '/images/A2.png'} alt={c.title} className="w-full h-full object-cover" />
               </div>
