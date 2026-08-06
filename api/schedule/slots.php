@@ -36,9 +36,17 @@ $stmt = $pdo->prepare('
                 max_alumnos
         FROM teacher_slots
         WHERE teacher_id = ? 
+            AND is_available = 1
             AND (
                 DATE(datetime) = DATE(NOW())
                 OR datetime >= NOW()
+            )
+            AND NOT EXISTS (
+                SELECT 1
+                FROM teacher_schedule_blocks b
+                WHERE b.teacher_id = teacher_slots.teacher_id
+                  AND teacher_slots.datetime < b.ends_at
+                  AND DATE_ADD(teacher_slots.datetime, INTERVAL teacher_slots.duration_minutes MINUTE) > b.starts_at
             )
         ORDER BY datetime ASC
 ');

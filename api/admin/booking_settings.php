@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../_bootstrap.php';
-require_admin();
+require_admin_or_coordinator();
 
 // Endpoint simple para obtener/actualizar los días permitidos para reservas (configuración GLOBAL)
 // GET -> devuelve { blocked_days: ["Monday","Tuesday",...] }

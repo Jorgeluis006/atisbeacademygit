@@ -238,12 +238,37 @@ function ensure_schedule_schema() {
             $pdo->exec("INSERT INTO booking_settings (id, allowed_days) VALUES (1, NULL)");
         }
     } catch (Throwable $e) {}
+
+    // Bloqueos puntuales de disponibilidad por profesor (día/hora)
+    try {
+        $sql = "CREATE TABLE IF NOT EXISTS teacher_schedule_blocks (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            teacher_id INT UNSIGNED NOT NULL,
+            starts_at DATETIME NOT NULL,
+            ends_at DATETIME NOT NULL,
+            reason VARCHAR(255) DEFAULT NULL,
+            created_by INT UNSIGNED NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_teacher_block_window (teacher_id, starts_at, ends_at),
+            CONSTRAINT fk_teacher_block_teacher FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE,
+            CONSTRAINT fk_teacher_block_actor FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+        $pdo->exec($sql);
+    } catch (Throwable $e) {}
 }
 
 function require_admin() {
     require_auth();
     $role = isset($_SESSION['role']) ? (string)$_SESSION['role'] : '';
     if ($role !== 'admin') {
+        json_error('No autorizado', 403);
+    }
+}
+
+function require_admin_or_coordinator() {
+    require_auth();
+    $role = isset($_SESSION['role']) ? (string)$_SESSION['role'] : '';
+    if ($role !== 'admin' && $role !== 'coordinator') {
         json_error('No autorizado', 403);
     }
 }
