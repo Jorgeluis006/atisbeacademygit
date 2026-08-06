@@ -21,13 +21,6 @@ import {
   type TeacherScheduleBlock,
 } from '../services/api'
 
-function toInputDateTime(value: string) {
-  if (!value) return ''
-  const d = new Date(value.replace(' ', 'T'))
-  const pad = (n: number) => String(n).padStart(2, '0')
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
-}
-
 function formatDate(value: string) {
   const d = new Date(value.replace(' ', 'T'))
   if (Number.isNaN(d.getTime())) return value
