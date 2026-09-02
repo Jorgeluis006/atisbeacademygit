@@ -51,7 +51,19 @@ export default function Coordinador() {
   const [blocks, setBlocks] = useState<TeacherScheduleBlock[]>([])
   const [docs, setDocs] = useState<ClassStructureDoc[]>([])
 
-  const [slotForm, setSlotForm] = useState({ datetime: '', tipo: 'clase', modalidad: 'virtual', duration_minutes: 60, curso: 'Inglés', nivel: '', meeting_link: '', max_alumnos: 1 })
+  const [slotForm, setSlotForm] = useState({
+    datetime: '',
+    tipo: 'clase',
+    modalidad: 'virtual',
+    duration_minutes: 60,
+    curso: 'Inglés',
+    nivel: '',
+    meeting_link: '',
+    max_alumnos: 1,
+    repeat_days: ['1', '2', '3', '4', '5'],
+    repeat_until: '',
+    repeat_weeks: 1,
+  })
   const [blockForm, setBlockForm] = useState({ starts_at: '', ends_at: '', reason: '' })
   const [docForm, setDocForm] = useState<ClassStructureDoc>({ title: '', pdf_url: '', is_published: true, display_order: 0 })
   const [editingDocId, setEditingDocId] = useState<number | null>(null)
@@ -104,6 +116,28 @@ export default function Coordinador() {
     })
   }, [teacherId])
 
+  const repeatDays = [
+    { value: '1', label: 'Lun' },
+    { value: '2', label: 'Mar' },
+    { value: '3', label: 'Mié' },
+    { value: '4', label: 'Jue' },
+    { value: '5', label: 'Vie' },
+    { value: '6', label: 'Sáb' },
+    { value: '7', label: 'Dom' },
+  ]
+
+  function toggleRepeatDay(day: string) {
+    setSlotForm(f => {
+      const previous = new Set(f.repeat_days)
+      if (previous.has(day)) {
+        previous.delete(day)
+      } else {
+        previous.add(day)
+      }
+      return { ...f, repeat_days: Array.from(previous).sort((a, b) => Number(a) - Number(b)) }
+    })
+  }
+
   async function createSlot() {
     setMsg('')
     setErr('')
@@ -111,9 +145,32 @@ export default function Coordinador() {
       setErr('Selecciona profesor y fecha/hora')
       return
     }
+
+    const selectedRepeatDays = slotForm.repeat_days ?? []
+    if (selectedRepeatDays.length > 0 && !slotForm.repeat_until) {
+      setErr('Selecciona la fecha final de la repetición o desmarca los días para un solo horario')
+      return
+    }
+
     try {
-      await createCoordinatorTeacherSlot({ teacher_id: teacherId, ...slotForm })
-      setMsg('Horario creado')
+      const payload = {
+        teacher_id: teacherId,
+        datetime: slotForm.datetime,
+        tipo: slotForm.tipo,
+        modalidad: slotForm.modalidad,
+        duration_minutes: slotForm.duration_minutes,
+        curso: slotForm.curso,
+        nivel: slotForm.nivel,
+        meeting_link: slotForm.meeting_link,
+        max_alumnos: slotForm.max_alumnos,
+        repeat_days: selectedRepeatDays,
+        repeat_until: slotForm.repeat_until,
+        repeat_weeks: slotForm.repeat_weeks,
+      }
+
+      const res = await createCoordinatorTeacherSlot(payload)
+      const createdCount = res?.data?.created_count ?? 1
+      setMsg(createdCount > 1 ? `Se crearon ${createdCount} horarios repetidos.` : 'Horario creado')
       await loadTeacherData(teacherId)
     } catch (e: any) {
       setErr(e?.response?.data?.error || 'No se pudo crear el horario')
@@ -327,6 +384,56 @@ export default function Coordinador() {
             <div className="grid gap-3">
               <label className="text-sm font-semibold">Fecha y hora</label>
               <input type="datetime-local" className="border border-gray-300 rounded-lg px-4 py-2.5" value={slotForm.datetime} onChange={e => setSlotForm(f => ({ ...f, datetime: e.target.value }))} />
+
+              <div className="rounded-xl border border-gray-200 bg-gray-50 p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-sm font-semibold">Repetir por días</label>
+                  <button
+                    type="button"
+                    className="text-xs font-semibold text-brand-purple"
+                    onClick={() => setSlotForm(f => ({ ...f, repeat_days: [] }))}
+                  >
+                    Limpiar
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {repeatDays.map(day => {
+                    const active = slotForm.repeat_days.includes(day.value)
+                    return (
+                      <button
+                        key={day.value}
+                        type="button"
+                        className={`px-3 py-2 rounded-full text-sm font-semibold border transition ${active ? 'bg-brand-purple text-white border-brand-purple' : 'bg-white text-gray-700 border-gray-300 hover:border-brand-purple'}`}
+                        onClick={() => toggleRepeatDay(day.value)}
+                      >
+                        {day.label}
+                      </button>
+                    )
+                  })}
+                </div>
+                <div className="mt-3 grid md:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">Hasta</label>
+                    <input
+                      type="date"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2.5"
+                      value={slotForm.repeat_until}
+                      onChange={e => setSlotForm(f => ({ ...f, repeat_until: e.target.value }))}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">Cada N semanas</label>
+                    <input
+                      type="number"
+                      min={1}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2.5"
+                      value={slotForm.repeat_weeks}
+                      onChange={e => setSlotForm(f => ({ ...f, repeat_weeks: Number(e.target.value) || 1 }))}
+                    />
+                  </div>
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 gap-3">
                 <select className="border border-gray-300 rounded-lg px-4 py-2.5" value={slotForm.tipo} onChange={e => setSlotForm(f => ({ ...f, tipo: e.target.value }))}>
                   <option value="clase">Clase</option>
