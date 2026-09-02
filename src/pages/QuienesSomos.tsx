@@ -18,7 +18,7 @@ export default function QuienesSomos() {
         <div className="max-w-5xl mx-auto">
           
           {/* Introduction Card */}
-          <div className="bg-white rounded-2xl p-8 md:p-12 shadow-lg mb-12 border-l-4 border-brand-purple">
+          <div className="bg-[#f9f4fb] rounded-2xl p-8 md:p-12 shadow-lg mb-12 border border-brand-purple/10">
             <p className="text-xl md:text-2xl leading-relaxed text-gray-700">
               Atisbe es una academia <span className="font-bold text-brand-purple">cercana, alegre, disciplinada, motivadora y flexible</span>. 
               Aplicamos el método ATIKA para lograr avances sostenibles paso a paso.
@@ -29,7 +29,7 @@ export default function QuienesSomos() {
           <div className="grid md:grid-cols-2 gap-8 mb-12">
             
             {/* Origen del nombre */}
-            <div className="bg-gradient-to-br from-brand-purple/5 to-purple-100/30 rounded-2xl p-8 shadow-md hover:shadow-xl transition-shadow">
+            <div className="bg-[#f3eef9] rounded-2xl p-8 shadow-md hover:shadow-xl transition-shadow border border-brand-purple/10">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-12 h-12 bg-brand-purple rounded-full flex items-center justify-center text-white text-2xl">
                   <img src="/images/value-cercana.svg" alt="Origen del nombre" className="w-6 h-6 text-white" style={{ filter: 'brightness(0) invert(1)' }} />
@@ -44,7 +44,7 @@ export default function QuienesSomos() {
             </div>
 
             {/* Método ATIKA */}
-            <div className="bg-gradient-to-br from-pink-50 to-purple-100/30 rounded-2xl p-8 shadow-md hover:shadow-xl transition-shadow">
+            <div className="bg-[#f7edf5] rounded-2xl p-8 shadow-md hover:shadow-xl transition-shadow border border-brand-purple/10">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-12 h-12 bg-brand-pink rounded-full flex items-center justify-center text-white text-2xl">
                   <img src="/images/value-motivadora.svg" alt="Método ATIKA" className="w-6 h-6 text-white" style={{ filter: 'brightness(0) invert(1)' }} />
@@ -72,7 +72,7 @@ export default function QuienesSomos() {
           </div>
 
           {/* Values Section */}
-          <div className="bg-white rounded-2xl p-8 md:p-12 shadow-lg">
+          <div className="bg-[#f6f3ec] rounded-2xl p-8 md:p-12 shadow-lg border border-brand-purple/10">
             <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
               Nuestros valores
             </h2>
@@ -84,7 +84,7 @@ export default function QuienesSomos() {
                 { title: 'Motivadora', color: 'from-blue-500 to-blue-600' },
                 { title: 'Flexible', color: 'from-green-500 to-green-600' }
               ].map((value, index) => (
-                <div key={index} className="text-center bg-brand-purple/5 rounded-xl p-4 min-h-[110px] flex items-center justify-center">
+                <div key={index} className="text-center bg-white/70 rounded-xl p-4 min-h-[110px] flex items-center justify-center border border-brand-purple/10 shadow-sm">
                   <h3 className="font-bold text-gray-900 text-lg">{value.title}</h3>
                 </div>
               ))}

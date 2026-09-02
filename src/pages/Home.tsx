@@ -47,7 +47,7 @@ export default function Home() {
           
           <div className="max-w-5xl mx-auto">
             {/* Introduction */}
-            <div className="bg-white rounded-2xl p-8 md:p-12 shadow-lg mb-8">
+            <div className="bg-[#f7f2fb] rounded-2xl p-8 md:p-12 shadow-lg mb-8 border border-brand-purple/10">
               <p className="text-xl md:text-2xl leading-relaxed text-gray-700 text-center">
                 Atisbe es una academia <span className="font-bold text-brand-purple">cercana, alegre, disciplinada, motivadora y flexible</span>. 
                 Aplicamos el método ATIKA para lograr avances sostenibles paso a paso.
@@ -63,7 +63,7 @@ export default function Home() {
                 { title: 'Motivadora', color: 'from-blue-500 to-blue-600' },
                 { title: 'Flexible', color: 'from-green-500 to-green-600' }
               ].map((value, index) => (
-                <div key={index} className="text-center bg-white/10 backdrop-blur-sm rounded-xl p-5 min-h-[120px] flex items-center justify-center">
+                <div key={index} className="text-center bg-white/10 backdrop-blur-sm rounded-xl p-5 min-h-[120px] flex items-center justify-center border border-white/10">
                   <h3 className="font-bold text-white text-lg">{value.title}</h3>
                 </div>
               ))}
