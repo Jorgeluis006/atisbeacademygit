@@ -84,23 +84,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $generatedDates = [$datetime];
     if (!empty($repeatDays)) {
-        $startDate = date('Y-m-d', strtotime($datetime));
-        $repeatUntilDate = $repeatUntil !== '' ? date('Y-m-d', strtotime($repeatUntil)) : date('Y-m-d', strtotime($datetime . ' +30 days'));
-        if ($repeatUntilDate < $startDate) {
-            $repeatUntilDate = $startDate;
+        $startDateTime = new DateTimeImmutable($datetime);
+        $endDate = $repeatUntil !== '' ? new DateTimeImmutable($repeatUntil . ' 23:59:59') : $startDateTime->modify('+30 days');
+        if ($endDate < $startDateTime) {
+            $endDate = $startDateTime;
         }
 
-        $cursor = new DateTimeImmutable($startDate . ' 00:00:00');
-        $limit = new DateTimeImmutable($repeatUntilDate . ' 23:59:59');
-        $startDayOfWeek = (int)$cursor->format('N');
         $generatedDates = [];
+        $selectedDays = array_flip($repeatDays);
+        $cursor = new DateTimeImmutable($startDateTime->format('Y-m-d') . ' 00:00:00');
 
-        while ($cursor <= $limit) {
+        while ($cursor <= $endDate) {
             $dayNumber = (int)$cursor->format('N');
-            $weeksSinceStart = (int)floor($cursor->diff(new DateTimeImmutable($startDate . ' 00:00:00'))->days / 7);
-            if (in_array($dayNumber, $repeatDays, true) && ($weeksSinceStart % $repeatWeeks === 0)) {
-                $slotDate = $cursor->format('Y-m-d') . ' ' . date('H:i:s', strtotime($datetime));
-                $generatedDates[] = $slotDate;
+            if (isset($selectedDays[$dayNumber])) {
+                $weekIndex = (int)floor($cursor->diff($startDateTime->setTime(0, 0, 0))->days / 7);
+                if ($weekIndex % $repeatWeeks === 0) {
+                    $candidate = new DateTimeImmutable($cursor->format('Y-m-d') . ' ' . $startDateTime->format('H:i:s'));
+                    if ($candidate >= $startDateTime && $candidate <= $endDate) {
+                        $generatedDates[] = $candidate->format('Y-m-d H:i:s');
+                    }
+                }
             }
             $cursor = $cursor->modify('+1 day');
         }
