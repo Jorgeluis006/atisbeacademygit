@@ -61,43 +61,98 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         json_error('Fecha y hora requeridas', 422);
     }
 
-    $checkDup = $pdo->prepare('SELECT COUNT(*) FROM teacher_slots WHERE teacher_id = ? AND datetime = ?');
-    $checkDup->execute([$teacherId, $datetime]);
-    if ((int)$checkDup->fetchColumn() > 0) {
-        json_error('Ya existe un horario en esa fecha y hora', 409);
+    $rawRepeatDays = $input['repeat_days'] ?? [];
+    $repeatDays = [];
+    if (is_array($rawRepeatDays)) {
+        foreach ($rawRepeatDays as $day) {
+            $dayNum = (int)$day;
+            if ($dayNum >= 1 && $dayNum <= 7) {
+                $repeatDays[] = $dayNum;
+            }
+        }
+    } elseif (is_string($rawRepeatDays)) {
+        foreach (preg_split('/[,|\s]+/', trim($rawRepeatDays)) as $day) {
+            $dayNum = (int)$day;
+            if ($dayNum >= 1 && $dayNum <= 7) {
+                $repeatDays[] = $dayNum;
+            }
+        }
+    }
+    $repeatDays = array_values(array_unique($repeatDays));
+    $repeatUntil = trim((string)($input['repeat_until'] ?? ''));
+    $repeatWeeks = max(1, (int)($input['repeat_weeks'] ?? 1));
+
+    $generatedDates = [$datetime];
+    if (!empty($repeatDays)) {
+        $startDate = date('Y-m-d', strtotime($datetime));
+        $repeatUntilDate = $repeatUntil !== '' ? date('Y-m-d', strtotime($repeatUntil)) : date('Y-m-d', strtotime($datetime . ' +30 days'));
+        if ($repeatUntilDate < $startDate) {
+            $repeatUntilDate = $startDate;
+        }
+
+        $cursor = new DateTimeImmutable($startDate . ' 00:00:00');
+        $limit = new DateTimeImmutable($repeatUntilDate . ' 23:59:59');
+        $startDayOfWeek = (int)$cursor->format('N');
+        $generatedDates = [];
+
+        while ($cursor <= $limit) {
+            $dayNumber = (int)$cursor->format('N');
+            $weeksSinceStart = (int)floor($cursor->diff(new DateTimeImmutable($startDate . ' 00:00:00'))->days / 7);
+            if (in_array($dayNumber, $repeatDays, true) && ($weeksSinceStart % $repeatWeeks === 0)) {
+                $slotDate = $cursor->format('Y-m-d') . ' ' . date('H:i:s', strtotime($datetime));
+                $generatedDates[] = $slotDate;
+            }
+            $cursor = $cursor->modify('+1 day');
+        }
     }
 
-    $checkBlocked = $pdo->prepare('
-        SELECT COUNT(*)
-        FROM teacher_schedule_blocks
-        WHERE teacher_id = ?
-          AND ? < ends_at
-          AND ? > starts_at
-    ');
-    $slotStart = $datetime;
-    $slotEnd = date('Y-m-d H:i:s', strtotime($datetime . ' +' . $duration . ' minutes'));
-    $checkBlocked->execute([$teacherId, $slotStart, $slotEnd]);
-    if ((int)$checkBlocked->fetchColumn() > 0) {
-        json_error('El horario cae dentro de un bloque de disponibilidad del coordinador', 409);
+    $createdCount = 0;
+
+    foreach ($generatedDates as $slotDate) {
+        $checkDup = $pdo->prepare('SELECT COUNT(*) FROM teacher_slots WHERE teacher_id = ? AND datetime = ?');
+        $checkDup->execute([$teacherId, $slotDate]);
+        if ((int)$checkDup->fetchColumn() > 0) {
+            continue;
+        }
+
+        $checkBlocked = $pdo->prepare('
+            SELECT COUNT(*)
+            FROM teacher_schedule_blocks
+            WHERE teacher_id = ?
+              AND ? < ends_at
+              AND ? > starts_at
+        ');
+        $slotStart = $slotDate;
+        $slotEnd = date('Y-m-d H:i:s', strtotime($slotDate . ' +' . $duration . ' minutes'));
+        $checkBlocked->execute([$teacherId, $slotStart, $slotEnd]);
+        if ((int)$checkBlocked->fetchColumn() > 0) {
+            continue;
+        }
+
+        $stmt = $pdo->prepare('
+            INSERT INTO teacher_slots (teacher_id, datetime, tipo, modalidad, duration_minutes, curso, nivel, meeting_link, max_alumnos)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ');
+        $stmt->execute([
+            $teacherId,
+            $slotDate,
+            $tipo,
+            $modalidad,
+            $duration,
+            $curso,
+            $nivel !== '' ? $nivel : null,
+            $meetingLink !== '' ? $meetingLink : null,
+            $maxAlumnos,
+        ]);
+
+        $createdCount++;
     }
 
-    $stmt = $pdo->prepare('
-        INSERT INTO teacher_slots (teacher_id, datetime, tipo, modalidad, duration_minutes, curso, nivel, meeting_link, max_alumnos)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ');
-    $stmt->execute([
-        $teacherId,
-        $datetime,
-        $tipo,
-        $modalidad,
-        $duration,
-        $curso,
-        $nivel !== '' ? $nivel : null,
-        $meetingLink !== '' ? $meetingLink : null,
-        $maxAlumnos,
-    ]);
+    if ($createdCount === 0) {
+        json_error('No se pudo crear ningún horario con este patrón de repetición', 409);
+    }
 
-    json_ok(['id' => (int)$pdo->lastInsertId()]);
+    json_ok(['id' => (int)$pdo->lastInsertId(), 'created_count' => $createdCount, 'slots' => $generatedDates]);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
