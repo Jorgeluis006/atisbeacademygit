@@ -1,0 +1,30 @@
+export const palette = {
+  purple: { name: 'Morado vibrante', hex: '#901d94', rgb: [144, 29, 148], cmyk: [47, 100, 0, 0] },
+  electric: { name: 'Morado eléctrico', hex: '#791eba', rgb: [121, 30, 186], cmyk: [67, 89, 0, 0] },
+  eggplant: { name: 'Morado berenjena', hex: '#4c1050', rgb: [76, 16, 80], cmyk: [70, 100, 32, 33] },
+  plum: { name: 'Morado ciruela oscuro', hex: '#361938', rgb: [54, 25, 56], cmyk: [72, 93, 44, 53] },
+  mauve: { name: 'Lila suave', hex: '#b789a3', rgb: [183, 137, 163], cmyk: [25, 53, 17, 0] },
+  cream: { name: 'Marfil muy claro', hex: '#fefaf6', rgb: [254, 250, 246], cmyk: [0, 1, 2, 0] },
+  beige: { name: 'Beige claro', hex: '#f6eee3', rgb: [246, 238, 227], cmyk: [2, 5, 10, 0] },
+  sand: { name: 'Beige arena', hex: '#d7c8b5', rgb: [251, 200, 181], cmyk: [14, 19, 29, 0] },
+  taupe: { name: 'Gris topo cálido', hex: '#87796c', rgb: [135, 121, 108], cmyk: [44, 47, 55, 12] },
+  brownGray: { name: 'Gris marrón', hex: '#76655b', rgb: [118, 101, 91], cmyk: [48, 54, 59, 22] },
+  brown: { name: 'Café chocolate oscuro', hex: '#382a1d', rgb: [56, 42, 29], cmyk: [55, 66, 78, 67] },
+  cacao: { name: 'Café cacao', hex: '#413124', rgb: [65, 49, 36], cmyk: [52, 66, 77, 61] },
+  coffee: { name: 'Café topo', hex: '#54473c', rgb: [85, 71, 60], cmyk: [53, 61, 69, 43] },
+  yellow: { name: 'Amarillo dorado intenso', hex: '#f2c02a', rgb: [253, 192, 42], cmyk: [0, 29, 100, 0] },
+  honey: { name: 'Amarillo miel', hex: '#f9c555', rgb: [249, 197, 85], cmyk: [0, 26, 87, 0] },
+  mustard: { name: 'Mostaza oscura', hex: '#c5921d', rgb: [197, 146, 29], cmyk: [19, 44, 100, 2] },
+  ochre: { name: 'Ocre oscuro', hex: '#7c5506', rgb: [124, 85, 6], cmyk: [37, 62, 100, 29] },
+  orange: { name: 'Naranja vibrante', hex: '#ffa02e', rgb: [255, 160, 46], cmyk: [0, 48, 100, 0] },
+  green: { name: 'Verde lima brillante', hex: '#99ce45', rgb: [153, 206, 69], cmyk: [51, 0, 100, 0] },
+  leaf: { name: 'Verde hoja', hex: '#77a42f', rgb: [119, 164, 47], cmyk: [64, 13, 100, 1] },
+  olive: { name: 'Verde oliva', hex: '#5c7035', rgb: [92, 112, 53], cmyk: [67, 36, 100, 22] },
+  forest: { name: 'Verde bosque', hex: '#384d0c', rgb: [56, 77, 12], cmyk: [73, 45, 100, 44] },
+  blue: { name: 'Azul corporativo', hex: '#4466c6', rgb: [68, 102, 198], cmyk: [80, 62, 0, 0] },
+  turquoise: { name: 'Turquesa pastel', hex: '#b9fcfa', rgb: [185, 252, 250], cmyk: [28, 0, 8, 0] },
+}
+
+export const paletteHex = Object.fromEntries(
+  Object.entries(palette).map(([name, color]) => [name, color.hex]),
+)

@@ -10,7 +10,7 @@
   body {
     @apply bg-brand-beige text-brand-black font-sans antialiased min-h-screen;
   }
-  .dark body { @apply bg-[#0b0b0b] text-white/90; }
+  .dark body { @apply bg-brand-plum text-white/90; }
   h1, h2, h3, h4, h5, h6 {
     @apply font-serif text-brand-black;
   }
@@ -68,8 +68,8 @@
     @apply dark:bg-brand-purple/20 dark:text-white dark:border-brand-purple/40;
   }
   .badge-role-student {
-    @apply badge bg-emerald-100 text-emerald-700 border border-emerald-300;
-    @apply dark:bg-emerald-500/20 dark:text-emerald-200 dark:border-emerald-400/40;
+    @apply badge bg-brand-green/20 text-brand-forest border border-brand-green/50;
+    @apply dark:bg-brand-green/20 dark:text-brand-green dark:border-brand-green/40;
   }
   .table-clean {
     @apply min-w-[700px] w-full text-sm;

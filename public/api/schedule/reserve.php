@@ -139,13 +139,13 @@ if ($slot_id) {
             <head>
                 <meta charset="UTF-8">
                 <style>
-                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #382a1d; }
                     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                    .header { background: linear-gradient(135deg, #791eba 0%, #bfa6a4 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-                    .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-                    .info-box { background: #fff; border-left: 4px solid #791eba; padding: 15px; margin: 20px 0; border-radius: 4px; }
-                    .button { display: inline-block; background: #791eba; color: white !important; padding: 15px 30px; text-decoration: none; border-radius: 8px; margin: 20px 0; font-weight: bold; }
-                    .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+                    .header { background: linear-gradient(135deg, #791eba 0%, #b789a3 100%); color: #fefaf6; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+                    .content { background: #fefaf6; padding: 30px; border-radius: 0 0 10px 10px; }
+                    .info-box { background: #fefaf6; border-left: 4px solid #791eba; padding: 15px; margin: 20px 0; border-radius: 4px; }
+                    .button { display: inline-block; background: #791eba; color: #fefaf6 !important; padding: 15px 30px; text-decoration: none; border-radius: 8px; margin: 20px 0; font-weight: bold; }
+                    .footer { text-align: center; margin-top: 30px; color: #54473c; font-size: 12px; }
                 </style>
             </head>
             <body>
@@ -174,15 +174,15 @@ if ($slot_id) {
                             <a href="' . htmlspecialchars($meetingLink) . '" class="button">🔗 Unirse a la clase</a>
                         </p>
                         
-                        <p style="font-size: 12px; color: #666; text-align: center;">O copia y pega este enlace en tu navegador:</p>
+                        <p style="font-size: 12px; color: #54473c; text-align: center;">O copia y pega este enlace en tu navegador:</p>
                         <p style="font-size: 12px; word-break: break-all; color: #791eba; text-align: center;">' . htmlspecialchars($meetingLink) . '</p>
                         ' : '
-                        <p style="text-align: center; margin: 30px 0; padding: 15px; background: #fff3cd; border-radius: 8px; color: #856404;">
+                        <p style="text-align: center; margin: 30px 0; padding: 15px; background: #f6eee3; border-radius: 8px; color: #856404;">
                             ℹ️ El profesor agregará el enlace de la videollamada próximamente.
                         </p>
                         ') . '
                         
-                        <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
+                        <hr style="margin: 30px 0; border: none; border-top: 1px solid #d7c8b5;">
                         
                         <p><strong>Recomendaciones:</strong></p>
                         <ul>
@@ -220,12 +220,12 @@ if ($slot_id) {
                 <head>
                     <meta charset="UTF-8">
                     <style>
-                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #382a1d; }
                         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                        .header { background: linear-gradient(135deg, #791eba 0%, #bfa6a4 100%); color: white; padding: 20px; text-align: center; border-radius: 10px; }
-                        .content { background: #f9f9f9; padding: 20px; border-radius: 8px; }
-                        .button { display: inline-block; background: #791eba; color: white; padding: 10px 18px; text-decoration: none; border-radius: 6px; margin: 12px 0; font-weight: bold; }
-                        .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+                        .header { background: linear-gradient(135deg, #791eba 0%, #b789a3 100%); color: #fefaf6; padding: 20px; text-align: center; border-radius: 10px; }
+                        .content { background: #fefaf6; padding: 20px; border-radius: 8px; }
+                        .button { display: inline-block; background: #791eba; color: #fefaf6; padding: 10px 18px; text-decoration: none; border-radius: 6px; margin: 12px 0; font-weight: bold; }
+                        .footer { text-align: center; margin-top: 20px; color: #54473c; font-size: 12px; }
                     </style>
                 </head>
                 <body>
@@ -245,7 +245,7 @@ if ($slot_id) {
                             </ul>
                             ' . ($meetingLink ? '
                             <p style="text-align:center;"><a href="' . htmlspecialchars($meetingLink) . '" class="button">🔗 Ir al enlace de la videollamada</a></p>
-                            <p style="font-size:12px;color:#666;text-align:center;">O copia y pega este enlace en tu navegador: ' . htmlspecialchars($meetingLink) . '</p>
+                            <p style="font-size:12px;color:#54473c;text-align:center;">O copia y pega este enlace en tu navegador: ' . htmlspecialchars($meetingLink) . '</p>
                             ' : '') . '
                             ' . ($notas ? '<p><strong>Notas del estudiante:</strong> ' . htmlspecialchars($notas) . '</p>' : '') . '
                             <p style="margin-top:16px;">Puedes ver más detalles en el panel de administración.</p>

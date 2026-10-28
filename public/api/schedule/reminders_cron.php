@@ -65,13 +65,13 @@ foreach ($rows as $row) {
 <head>
     <meta charset="UTF-8">
     <style>
-        body { font-family: Arial, sans-serif; color: #333; line-height: 1.5; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; color: #382a1d; line-height: 1.5; margin: 0; padding: 0; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: linear-gradient(135deg, #791eba, #bfa6a4); color: #fff; padding: 25px; text-align: center; border-radius: 10px 10px 0 0; }
-        .content { background: #f9f9f9; padding: 25px; border-radius: 0 0 10px 10px; }
-        .button { display: inline-block; background: #791eba; color: #fff !important; padding: 12px 24px; text-decoration: none; border-radius: 8px; margin: 20px 0; font-weight: bold; }
-        .info-box { background: #fff; border-left: 4px solid #791eba; padding: 15px; margin: 20px 0; border-radius: 6px; }
-        .footer { text-align: center; font-size: 12px; color: #666; margin-top: 25px; }
+        .header { background: linear-gradient(135deg, #791eba, #b789a3); color: #fefaf6; padding: 25px; text-align: center; border-radius: 10px 10px 0 0; }
+        .content { background: #fefaf6; padding: 25px; border-radius: 0 0 10px 10px; }
+        .button { display: inline-block; background: #791eba; color: #fefaf6 !important; padding: 12px 24px; text-decoration: none; border-radius: 8px; margin: 20px 0; font-weight: bold; }
+        .info-box { background: #fefaf6; border-left: 4px solid #791eba; padding: 15px; margin: 20px 0; border-radius: 6px; }
+        .footer { text-align: center; font-size: 12px; color: #54473c; margin-top: 25px; }
     </style>
 </head>
 <body>
@@ -89,10 +89,10 @@ foreach ($rows as $row) {
                 <p><strong>💻 Modalidad:</strong> ' . htmlspecialchars(ucfirst($modalidad)) . '</p>
             </div>
             
-            ' . ($meetingLink ? '<p style="text-align: center;"><a href="' . htmlspecialchars($meetingLink) . '" class="button">🔗 Unirse a la clase</a></p>' : '<p style="background: #fff3cd; padding: 12px; border-radius: 6px; color: #856404; margin: 20px 0;">El enlace de la videollamada será agregado por el profesor.</p>') . '
+            ' . ($meetingLink ? '<p style="text-align: center;"><a href="' . htmlspecialchars($meetingLink) . '" class="button">🔗 Unirse a la clase</a></p>' : '<p style="background: #f6eee3; padding: 12px; border-radius: 6px; color: #856404; margin: 20px 0;">El enlace de la videollamada será agregado por el profesor.</p>') . '
             
             <p>Prepárate con tu material y verifica cámara/micrófono.</p>
-            <p style="font-size: 12px; color: #666; margin-top: 20px;">Si la clase ya inició o este mensaje no aplica, puedes ignorarlo.</p>
+            <p style="font-size: 12px; color: #54473c; margin-top: 20px;">Si la clase ya inició o este mensaje no aplica, puedes ignorarlo.</p>
             
             <div class="footer">
                 Este es un correo automático. &copy; ' . date('Y') . ' Atisbe Academy.

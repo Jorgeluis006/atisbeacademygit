@@ -76,13 +76,13 @@ function sendWindowReminders(PDO $pdo, int $minutes, string $column): array {
         <head>
           <meta charset="UTF-8">
           <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #382a1d; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #791eba 0%, #FFFF00 100%); color: white; padding: 24px; text-align: center; border-radius: 10px 10px 0 0; }
-            .content { background: #fffdf0; padding: 24px; border-radius: 0 0 10px 10px; }
-            .info-box { background: #ffffff; border-left: 4px solid #791eba; padding: 12px; margin: 16px 0; border-radius: 6px; }
-            .button { display: inline-block; background: #791eba; color: white !important; padding: 12px 22px; text-decoration: none; border-radius: 8px; margin: 16px 0; font-weight: bold; }
-            .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+            .header { background: linear-gradient(135deg, #791eba 0%, #f9c555 100%); color: #fefaf6; padding: 24px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #f6eee3; padding: 24px; border-radius: 0 0 10px 10px; }
+            .info-box { background: #fefaf6; border-left: 4px solid #791eba; padding: 12px; margin: 16px 0; border-radius: 6px; }
+            .button { display: inline-block; background: #791eba; color: #fefaf6 !important; padding: 12px 22px; text-decoration: none; border-radius: 8px; margin: 16px 0; font-weight: bold; }
+            .footer { text-align: center; margin-top: 20px; color: #54473c; font-size: 12px; }
           </style>
         </head>
         <body>
@@ -101,7 +101,7 @@ function sendWindowReminders(PDO $pdo, int $minutes, string $column): array {
                 <p><strong>💻 Modalidad:</strong> ' . htmlspecialchars(ucfirst((string)$r['modalidad'])) . '</p>
               </div>
               ' . ($meetingLink ? '<p style="text-align:center;"><a href="' . htmlspecialchars($meetingLink) . '" class="button">🔗 Unirse a la clase</a></p>' : '') . '
-              <p style="font-size:12px;color:#666;">Por favor verifica tu conexión y únete puntualmente.</p>
+              <p style="font-size:12px;color:#54473c;">Por favor verifica tu conexión y únete puntualmente.</p>
             </div>
             <div class="footer">&copy; ' . date('Y') . ' Atisbe Academy</div>
           </div>
@@ -121,12 +121,12 @@ function sendWindowReminders(PDO $pdo, int $minutes, string $column): array {
             <head>
               <meta charset="UTF-8">
               <style>
-                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #382a1d; }
                 .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                .header { background: linear-gradient(135deg, #791eba 0%, #FFFF00 100%); color: white; padding: 20px; text-align: center; border-radius: 10px; }
-                .content { background: #fffdf0; padding: 20px; border-radius: 8px; }
-                .info-box { background: #fff; border-left: 4px solid #791eba; padding: 12px; margin: 16px 0; border-radius: 6px; }
-                .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+                .header { background: linear-gradient(135deg, #791eba 0%, #f9c555 100%); color: #fefaf6; padding: 20px; text-align: center; border-radius: 10px; }
+                .content { background: #f6eee3; padding: 20px; border-radius: 8px; }
+                .info-box { background: #fefaf6; border-left: 4px solid #791eba; padding: 12px; margin: 16px 0; border-radius: 6px; }
+                .footer { text-align: center; margin-top: 20px; color: #54473c; font-size: 12px; }
               </style>
             </head>
             <body>

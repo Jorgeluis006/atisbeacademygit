@@ -1,4 +1,6 @@
-# React + TypeScript + Vite
+# Atisbe Academy — Frontend
+
+Sitio web en React + TypeScript + Vite con Tailwind CSS. `colores.js` es la fuente de verdad de la paleta; `tailwind.config.js` la conecta con los colores de marca y las clases estándar del sitio. Incluye morados (#901D94, #791EBA, #4C1050, #361938), lila (#B789A3), neutros cálidos (#FEFAF6, #F6EEE3, #D7C8B5, #87796C, #76655B), cafés (#382A1D, #413124, #54473C), amarillos y naranja (#F2C02A, #F9C555, #C5921D, #7C5506, #FFA02E), verdes (#99CE45, #77A42F, #5C7035, #384D0C) y azul/turquesa (#4466C6, #B9FCFA).
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
@@ -21,7 +23,7 @@ export default defineConfig([
   {
     # Atisbe Academy — Frontend
 
-    Sitio web en React + TypeScript + Vite con Tailwind CSS, diseñado para ser minimalista, elegante y totalmente responsivo. Marca aplicada con paleta: morado (#791EBA), rosa (#C89AB2), fondo marfil (#FFFEF1), amarillo (#FFF810), ámbar (#FDBB0F), más verde y negro.
+    Sitio web en React + TypeScript + Vite con Tailwind CSS, diseñado para ser minimalista, elegante y totalmente responsivo. La marca usa morados (#901D94, #791EBA, #4C1050, #361938), lila (#B789A3), neutros cálidos (#FEFAF6, #F6EEE3, #D7C8B5, #87796C, #76655B), cafés (#382A1D, #413124, #54473C), amarillos y naranja (#F2C02A, #F9C555, #C5921D, #7C5506, #FFA02E), verdes (#99CE45, #77A42F, #5C7035, #384D0C) y azul/turquesa (#4466C6, #B9FCFA).
 
     ## Rutas principales
 

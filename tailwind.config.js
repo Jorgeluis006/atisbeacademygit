@@ -1,4 +1,105 @@
+import { paletteHex as palette } from './colores.js'
+
 /** @type {import('tailwindcss').Config} */
+
+const purpleScale = {
+  50: '#f9eff9',
+  100: '#f1ddf2',
+  200: '#e2bce4',
+  300: '#d39bd6',
+  400: '#c47ac8',
+  500: '#b35ab8',
+  600: '#a23ea6',
+  700: palette.purple,
+  800: palette.electric,
+  900: palette.eggplant,
+  950: palette.plum,
+}
+
+const mauveScale = {
+  50: '#faf5f8',
+  100: '#f2e7ed',
+  200: '#e6d2dd',
+  300: '#d9bdce',
+  400: palette.mauve,
+  500: '#a87591',
+  600: '#925d79',
+  700: '#794963',
+  800: '#61394f',
+  900: '#4b2c3d',
+  950: '#361f2c',
+}
+
+const yellowScale = {
+  50: '#fff9e8',
+  100: '#fef0c2',
+  200: '#fce18a',
+  300: '#f9d254',
+  400: palette.honey,
+  500: palette.yellow,
+  600: palette.mustard,
+  700: '#a77715',
+  800: palette.ochre,
+  900: '#604307',
+  950: '#422e05',
+}
+
+const orangeScale = {
+  50: '#fff5e9',
+  100: '#ffe7c9',
+  200: '#ffd19b',
+  300: '#ffbb6d',
+  400: palette.orange,
+  500: '#e98720',
+  600: '#c56c12',
+  700: '#9e5410',
+  800: '#78400e',
+  900: '#54300f',
+  950: '#38200a',
+}
+
+const greenScale = {
+  50: '#f4f8e9',
+  100: '#e8f1d2',
+  200: '#d1e4a5',
+  300: '#b9d778',
+  400: palette.green,
+  500: palette.leaf,
+  600: '#63882a',
+  700: palette.olive,
+  800: palette.forest,
+  900: '#2d3e0a',
+  950: '#1e2907',
+}
+
+const blueScale = {
+  50: '#eef1fb',
+  100: '#dce3f7',
+  200: '#bdcbef',
+  300: '#9eb3e7',
+  400: '#7f9add',
+  500: '#607fd2',
+  600: palette.blue,
+  700: '#3955a8',
+  800: '#2f4688',
+  900: '#263867',
+  950: '#1b2849',
+}
+
+const neutralScale = {
+  50: palette.cream,
+  100: palette.beige,
+  200: palette.sand,
+  300: '#b9a895',
+  400: palette.taupe,
+  500: palette.brownGray,
+  600: palette.coffee,
+  700: palette.cacao,
+  800: palette.brown,
+  900: palette.plum,
+  950: '#241a13',
+}
+
 export default {
   darkMode: 'class',
   content: [
@@ -9,28 +110,78 @@ export default {
     extend: {
       colors: {
         brand: {
-          purple: '#791eba',      // Morado principal de la paleta
-          mauve: '#bfa6a4',       // Rosado/mauve de la paleta
-          orange: '#fcb500',      // Naranja/amarillo de la paleta
-          yellow: '#fff700',      // Amarillo brillante de la paleta
-          cream: '#fffef1',       // Blanco/crema de la paleta
-          pink: '#C89AB2',        // Rosa secundario
-          surface: '#FFFEF1',
-          amber: '#FDBB0F',
-          green: '#16A34A',
-          black: '#0B0B0B',
-          beige: '#F5F5DC',
+          purple: palette.purple,
+          electric: palette.electric,
+          plum: palette.plum,
+          eggplant: palette.eggplant,
+          mauve: palette.mauve,
+          pink: palette.mauve,
+          orange: palette.orange,
+          yellow: palette.yellow,
+          honey: palette.honey,
+          mustard: palette.mustard,
+          ochre: palette.ochre,
+          cream: palette.cream,
+          surface: palette.cream,
+          amber: palette.yellow,
+          beige: palette.beige,
+          sand: palette.sand,
+          taupe: palette.taupe,
+          warmgray: palette.brownGray,
+          brown: palette.brown,
+          cacao: palette.cacao,
+          coffee: palette.coffee,
+          green: palette.green,
+          leaf: palette.leaf,
+          olive: palette.olive,
+          forest: palette.forest,
+          blue: palette.blue,
+          turquoise: palette.turquoise,
+          black: palette.brown,
         },
+        purple: purpleScale,
+        violet: purpleScale,
+        indigo: purpleScale,
+        pink: mauveScale,
+        rose: mauveScale,
+        fuchsia: mauveScale,
+        yellow: yellowScale,
+        amber: yellowScale,
+        orange: orangeScale,
+        green: greenScale,
+        emerald: greenScale,
+        lime: greenScale,
+        blue: blueScale,
+        sky: blueScale,
+        cyan: {
+          ...blueScale,
+          300: '#d1fdfb',
+          400: '#b9fcfa',
+          500: '#8de8e5',
+          600: '#65cecb',
+        },
+        teal: {
+          ...blueScale,
+          400: '#8de8e5',
+          500: '#65cecb',
+          600: '#429f9c',
+        },
+        gray: neutralScale,
+        slate: neutralScale,
+        stone: neutralScale,
+        zinc: neutralScale,
+        neutral: neutralScale,
+        white: palette.cream,
+        black: palette.brown,
       },
       fontFamily: {
         serif: ['Merriweather', 'Georgia', 'Cambria', 'Times New Roman', 'serif'],
         sans: ['Inter', 'system-ui', 'Avenir', 'Helvetica', 'Arial', 'sans-serif'],
       },
       boxShadow: {
-        soft: '0 10px 30px rgba(121, 30, 186, 0.12)',
+        soft: '0 10px 30px rgba(144, 29, 148, 0.12)',
       },
     },
   },
   plugins: [],
 }
-

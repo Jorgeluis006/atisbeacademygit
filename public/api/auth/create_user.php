@@ -52,13 +52,13 @@ try {
         <head>
             <meta charset="UTF-8">
             <style>
-                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #382a1d; }
                 .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                .header { background: linear-gradient(135deg, #791eba 0%, #bfa6a4 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-                .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-                .credentials { background: white; padding: 20px; margin: 20px 0; border-left: 4px solid #791eba; border-radius: 5px; }
-                .button { display: inline-block; background: #791eba; color: white !important; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
-                .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+                .header { background: linear-gradient(135deg, #791eba 0%, #b789a3 100%); color: #fefaf6; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+                .content { background: #fefaf6; padding: 30px; border-radius: 0 0 10px 10px; }
+                .credentials { background: #fefaf6; padding: 20px; margin: 20px 0; border-left: 4px solid #791eba; border-radius: 5px; }
+                .button { display: inline-block; background: #791eba; color: #fefaf6 !important; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+                .footer { text-align: center; margin-top: 30px; color: #54473c; font-size: 12px; }
             </style>
         </head>
         <body>

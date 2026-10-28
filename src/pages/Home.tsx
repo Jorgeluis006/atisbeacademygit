@@ -46,7 +46,7 @@ export default function Home() {
           </div>
           
           <div className="max-w-5xl mx-auto">
-            <div className="bg-[#f6f0f7] rounded-[28px] p-8 md:p-12 shadow-lg mb-8 border border-brand-purple/10">
+            <div className="bg-brand-cream rounded-[28px] p-8 md:p-12 shadow-lg mb-8 border border-brand-purple/10">
               <p className="text-xl md:text-2xl leading-relaxed text-gray-700 text-center">
                 Atisbe es una academia <span className="font-bold text-brand-purple">cercana, alegre, disciplinada, motivadora y flexible</span>.
                 Aplicamos el método ATIKA para lograr avances sostenibles paso a paso.
@@ -55,14 +55,14 @@ export default function Home() {
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
               {[
-                { title: 'Cercana', color: 'bg-[#7b1ea2]' },
-                { title: 'Alegre', color: 'bg-[#e83f72]' },
-                { title: 'Disciplinada', color: 'bg-[#f59e0b]' },
-                { title: 'Motivadora', color: 'bg-[#3b82f6]' },
-                { title: 'Flexible', color: 'bg-[#22c55e]' }
+                { title: 'Cercana', color: 'text-brand-electric' },
+                { title: 'Alegre', color: 'text-pink-800' },
+                { title: 'Disciplinada', color: 'text-brand-ochre' },
+                { title: 'Motivadora', color: 'text-brand-blue' },
+                { title: 'Flexible', color: 'text-brand-forest' }
               ].map((value, index) => (
                 <div key={index} className="text-center bg-white/10 backdrop-blur-sm rounded-xl p-5 min-h-[120px] flex items-center justify-center border border-white/10">
-                  <h3 className="font-bold text-white text-lg">{value.title}</h3>
+                  <h3 className={`font-bold ${value.color} text-lg`}>{value.title}</h3>
                 </div>
               ))}
             </div>

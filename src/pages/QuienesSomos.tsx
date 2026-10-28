@@ -17,7 +17,7 @@ export default function QuienesSomos() {
       <div className="container-padded py-16">
         <div className="max-w-5xl mx-auto">
           
-          <div className="bg-[#f9f4fb] rounded-[28px] p-8 md:p-12 shadow-lg mb-12 border border-brand-purple/10">
+          <div className="bg-brand-cream rounded-[28px] p-8 md:p-12 shadow-lg mb-12 border border-brand-purple/10">
             <p className="text-xl md:text-2xl leading-relaxed text-gray-700">
               Atisbe es una academia <span className="font-bold text-brand-purple">cercana, alegre, disciplinada, motivadora y flexible</span>.
               Aplicamos el método ATIKA para lograr avances sostenibles paso a paso.
@@ -25,7 +25,7 @@ export default function QuienesSomos() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-12">
-            <div className="bg-[#f3eef9] rounded-[28px] p-8 shadow-md hover:shadow-xl transition-shadow border border-brand-purple/10">
+            <div className="bg-brand-beige rounded-[28px] p-8 shadow-md hover:shadow-xl transition-shadow border border-brand-purple/10">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-12 h-12 bg-brand-purple rounded-full flex items-center justify-center text-white text-2xl">
                   <img src="/images/value-cercana.svg" alt="Origen del nombre" className="w-6 h-6 text-white" style={{ filter: 'brightness(0) invert(1)' }} />
@@ -39,9 +39,9 @@ export default function QuienesSomos() {
               </p>
             </div>
 
-            <div className="bg-[#f7edf5] rounded-[28px] p-8 shadow-md hover:shadow-xl transition-shadow border border-brand-purple/10">
+            <div className="bg-brand-sand rounded-[28px] p-8 shadow-md hover:shadow-xl transition-shadow border border-brand-purple/10">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-[#d971a6] rounded-full flex items-center justify-center text-white text-2xl">
+                <div className="w-12 h-12 bg-brand-mauve rounded-full flex items-center justify-center text-white text-2xl">
                   <img src="/images/value-motivadora.svg" alt="Método ATIKA" className="w-6 h-6 text-white" style={{ filter: 'brightness(0) invert(1)' }} />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900">Método ATIKA</h2>
@@ -66,20 +66,20 @@ export default function QuienesSomos() {
             </div>
           </div>
 
-          <div className="bg-[#f5f2e7] rounded-[28px] p-8 md:p-12 shadow-lg border border-brand-purple/10">
+          <div className="bg-brand-beige rounded-[28px] p-8 md:p-12 shadow-lg border border-brand-purple/10">
             <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
               Nuestros valores
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-4xl mx-auto">
               {[
-                { title: 'Cercana', color: 'bg-[#7b1ea2]' },
-                { title: 'Alegre', color: 'bg-[#e83f72]' },
-                { title: 'Disciplinada', color: 'bg-[#f59e0b]' },
-                { title: 'Motivadora', color: 'bg-[#3b82f6]' },
-                { title: 'Flexible', color: 'bg-[#22c55e]' }
+                { title: 'Cercana', color: 'text-brand-electric' },
+                { title: 'Alegre', color: 'text-pink-800' },
+                { title: 'Disciplinada', color: 'text-brand-ochre' },
+                { title: 'Motivadora', color: 'text-brand-blue' },
+                { title: 'Flexible', color: 'text-brand-forest' }
               ].map((value, index) => (
                 <div key={index} className="text-center bg-white/70 rounded-xl p-4 min-h-[110px] flex items-center justify-center border border-brand-purple/10 shadow-sm">
-                  <h3 className="font-bold text-gray-900 text-lg">{value.title}</h3>
+                  <h3 className={`font-bold ${value.color} text-lg`}>{value.title}</h3>
                 </div>
               ))}
             </div>
