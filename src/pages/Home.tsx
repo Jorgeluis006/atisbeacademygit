@@ -71,19 +71,30 @@ export default function Home() {
       </section>
       
       {/* Cursos Section */}
-      <section className="bg-brand-beige py-20">
+      <section className="relative overflow-hidden bg-brand-beige py-20 md:py-24">
+        <div className="pointer-events-none absolute -right-32 top-20 h-80 w-80 rounded-full border-[48px] border-brand-yellow/10" aria-hidden="true" />
+        <div className="pointer-events-none absolute -left-24 bottom-0 h-64 w-64 rounded-full border-[40px] border-brand-purple/5" aria-hidden="true" />
         <div className="container-padded">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
-              Cursos
+          <div className="relative mx-auto mb-10 max-w-3xl text-center md:mb-14">
+            <span className="inline-flex items-center gap-2 rounded-full border border-brand-purple/15 bg-brand-cream px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-brand-purple shadow-sm">
+              <span className="h-2 w-2 rounded-full bg-brand-yellow" />
+              Aprende a tu manera
+            </span>
+            <h2 className="mt-5 font-serif text-4xl font-bold tracking-tight text-brand-black md:text-5xl">
+              Encuentra tu próximo <span className="text-brand-purple">gran comienzo</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Encuentra el curso perfecto para ti
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-brand-coffee md:text-lg">
+              Programas diseñados para avanzar con confianza, acompañamiento cercano y el método ATIKA.
             </p>
           </div>
           <CoursesCarousel />
           <div className="text-center mt-12">
-            <Link className="btn-primary inline-flex" to="/cursos">Ver todos los cursos</Link>
+            <Link className="btn-primary inline-flex gap-2" to="/cursos">
+              Explorar todos los cursos
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
           </div>
         </div>
       </section>
