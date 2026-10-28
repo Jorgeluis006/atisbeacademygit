@@ -27,9 +27,6 @@ export default function QuienesSomos() {
           <div className="grid md:grid-cols-2 gap-8 mb-12">
             <div className="bg-brand-beige rounded-[28px] p-8 shadow-md hover:shadow-xl transition-shadow border border-brand-purple/10">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-brand-purple rounded-full flex items-center justify-center text-white text-2xl">
-                  <img src="/images/value-cercana.svg" alt="Origen del nombre" className="w-6 h-6 text-white" style={{ filter: 'brightness(0) invert(1)' }} />
-                </div>
                 <h2 className="text-2xl font-bold text-gray-900">Origen del nombre</h2>
               </div>
               <p className="text-gray-700 leading-relaxed">
@@ -41,9 +38,6 @@ export default function QuienesSomos() {
 
             <div className="bg-brand-sand rounded-[28px] p-8 shadow-md hover:shadow-xl transition-shadow border border-brand-purple/10">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-brand-mauve rounded-full flex items-center justify-center text-white text-2xl">
-                  <img src="/images/value-motivadora.svg" alt="Método ATIKA" className="w-6 h-6 text-white" style={{ filter: 'brightness(0) invert(1)' }} />
-                </div>
                 <h2 className="text-2xl font-bold text-gray-900">Método ATIKA</h2>
               </div>
               <p className="text-gray-700 leading-relaxed mb-4">
