@@ -483,9 +483,9 @@ function ensure_cms_schema() {
         $count = (int)$pdo->query("SELECT COUNT(*) FROM corporativo_items")->fetchColumn();
         if ($count === 0) {
             $stmt = $pdo->prepare("INSERT INTO corporativo_items (title, slug, description, image_url, default_modality, is_published, display_order) VALUES (?,?,?,?,?,?,?)");
-            $stmt->execute(['Cursos empresariales', 'empresariales', 'Curso de estudio de manera presencial en casa u oficina de los estudiantes. Las clases se desarrollan a partir del estilo de aprendizaje preferido de los estudiantes, con apoyo de contenidos programáticos cuidadosamente elegidos y de acuerdo al idioma a aprender con enfoque a negocios o interacción general.', '/images/B2.png', NULL, true, 1]);
+            $stmt->execute(['Cursos empresariales', 'empresariales', 'Curso virtual de estudio para empresas. Las clases se desarrollan a partir del estilo de aprendizaje preferido de los estudiantes, con apoyo de contenidos programáticos cuidadosamente elegidos y de acuerdo al idioma a aprender con enfoque a negocios o interacción general.', '/images/B2.png', NULL, true, 1]);
             $stmt->execute(['Cursos en colegios', 'colegios', 'Nuestros cursos de inglés en colegios apoyan a instituciones educativas que desean llevar a sus estudiantes hacia el bilingüismo desde primaria hasta bachillerato, a través de cursos extra curriculares que facilitan la práctica del inglés como lengua extranjera.', '/images/B1.png', NULL, true, 2]);
-            $stmt->execute(['Personalizado', 'personalizado', 'Nuestros cursos presenciales y virtuales con profesor privado permiten a los estudiantes abrir puertas e incrementar sus aptitudes laborales y visión frente al futuro.', '/images/A2.png', 'virtual', true, 3]);
+            $stmt->execute(['Personalizado', 'personalizado', 'Nuestros cursos virtuales con profesor privado permiten a los estudiantes abrir puertas e incrementar sus aptitudes laborales y visión frente al futuro.', '/images/A2.png', 'virtual', true, 3]);
         }
     } catch (Throwable $e) {}
 
@@ -628,15 +628,15 @@ function ensure_cms_schema() {
         if ($count == 0) {
             $pdo->exec("
                 INSERT INTO courses (title, description, price, duration, level, modality, is_published, display_order) VALUES
-                ('Inglés', 'Todos los niveles - Método ATIKA personalizado para mejorar tu fluidez en inglés', 150000, '3 meses', 'Todos los niveles', 'Virtual/Presencial', TRUE, 1),
+                ('Inglés', 'Todos los niveles - Método ATIKA personalizado para mejorar tu fluidez en inglés', 150000, '3 meses', 'Todos los niveles', 'Virtual', TRUE, 1),
                 ('Francés', 'Nivel A1–C1 - Aprende francés desde cero o perfecciona tu nivel actual', 160000, '3 meses', 'A1-C1', 'Virtual', TRUE, 2),
-                ('Español para extranjeros', 'Cultura + lenguaje - Aprende español con inmersión cultural colombiana', 140000, '2 meses', 'Básico-Avanzado', 'Presencial', TRUE, 3),
+                ('Español para extranjeros', 'Cultura + lenguaje - Aprende español con inmersión cultural colombiana', 140000, '2 meses', 'Básico-Avanzado', 'Virtual', TRUE, 3),
                 ('Club Conversacional', 'Práctica guiada - Mejora tu speaking con conversaciones reales', 80000, '1 mes', 'Intermedio-Avanzado', 'Virtual', TRUE, 4),
-                ('ConversArte', 'Arte + idioma - Combina el aprendizaje de idiomas con expresión artística', 120000, '2 meses', 'Todos', 'Presencial', TRUE, 5),
-                ('Tour Cafetero', 'Experiencia inmersiva - Aprende español mientras exploras la región cafetera', 350000, '1 semana', 'Básico-Intermedio', 'Presencial', TRUE, 6),
-                ('Cursos para niños', 'Lúdico y efectivo - Metodología especializada para el aprendizaje infantil', 130000, '3 meses', 'Niños 6-12 años', 'Virtual/Presencial', TRUE, 7),
-                ('Clases personalizadas', '100% a tu medida - Diseñamos el curso perfecto según tus objetivos', 200000, 'Flexible', 'Personalizado', 'Virtual/Presencial', TRUE, 8),
-                ('General', 'Curso general de idiomas', 100000, 'Flexible', 'Todos', 'Virtual/Presencial', TRUE, 9)
+                ('Experiencias', 'Arte + idioma - Combina el aprendizaje de idiomas con expresión artística', 120000, '2 meses', 'Todos', 'Virtual', TRUE, 5),
+                ('Tour Cafetero', 'Experiencia inmersiva - Aprende español mientras exploras la región cafetera', 350000, '1 semana', 'Básico-Intermedio', 'Virtual', TRUE, 6),
+                ('Cursos para niños', 'Lúdico y efectivo - Metodología especializada para el aprendizaje infantil', 130000, '3 meses', 'Niños 6-12 años', 'Virtual', TRUE, 7),
+                ('Clases personalizadas', '100% a tu medida - Diseñamos el curso perfecto según tus objetivos', 200000, 'Flexible', 'Personalizado', 'Virtual', TRUE, 8),
+                ('General', 'Curso general de idiomas', 100000, 'Flexible', 'Todos', 'Virtual', TRUE, 9)
             ");
         }
     } catch (Exception $e) {

@@ -81,11 +81,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $repeatDays = array_values(array_unique($repeatDays));
     $repeatUntil = trim((string)($input['repeat_until'] ?? ''));
     $repeatWeeks = max(1, (int)($input['repeat_weeks'] ?? 1));
+    $repeatForWeeks = max(1, (int)($input['repeat_for_weeks'] ?? 1));
 
     $generatedDates = [$datetime];
     if (!empty($repeatDays)) {
         $startDateTime = new DateTimeImmutable($datetime);
-        $endDate = $repeatUntil !== '' ? new DateTimeImmutable($repeatUntil . ' 23:59:59') : $startDateTime->modify('+30 days');
+        $endDate = array_key_exists('repeat_for_weeks', $input)
+            ? $startDateTime->modify('+' . ($repeatForWeeks * 7 - 1) . ' days')->setTime(23, 59, 59)
+            : ($repeatUntil !== '' ? new DateTimeImmutable($repeatUntil . ' 23:59:59') : $startDateTime->modify('+30 days'));
         if ($endDate < $startDateTime) {
             $endDate = $startDateTime;
         }

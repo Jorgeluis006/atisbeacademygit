@@ -13,7 +13,7 @@ if (!is_array($data)) {
     $data = $_POST;
 }
 
-$required = ['nombre','email','idioma','modalidad','franja'];
+$required = ['nombre','email','telefono','idioma','modalidad','franja'];
 foreach ($required as $k) {
     if (!isset($data[$k]) || trim((string)$data[$k]) === '') {
         json_error('Campo requerido faltante: ' . $k, 422);
@@ -148,7 +148,7 @@ try {
                     <ul>
                         <li>✅ Profesores certificados y especializados</li>
                         <li>✅ Horarios flexibles adaptados a ti</li>
-                        <li>✅ Modalidad virtual y presencial</li>
+                        <li>✅ Clases virtuales</li>
                         <li>✅ Metodología personalizada y efectiva</li>
                         <li>✅ Precios competitivos y accesibles</li>
                     </ul>
