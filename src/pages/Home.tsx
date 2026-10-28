@@ -74,7 +74,7 @@ export default function Home() {
               <span className="h-2 w-2 rounded-full bg-brand-yellow" />
               Aprende a tu manera
             </span>
-            <h2 className="mt-5 font-serif text-4xl font-bold tracking-tight text-brand-black md:text-5xl">
+            <h2 className="mt-5 font-serif text-4xl font-bold leading-[1.15] tracking-tight text-brand-black md:text-5xl">
               Encuentra tu próximo <span className="text-brand-purple">gran comienzo</span>
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-brand-coffee md:text-lg">
