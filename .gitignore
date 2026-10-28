@@ -23,6 +23,7 @@ public/uploads/docs/*
 !public/uploads/docs/.htaccess
 
 # Keep logos
+!public/images/logos-01.png
 !public/images/logoheader.jpeg
 !public/images/logofooter.jpeg
 

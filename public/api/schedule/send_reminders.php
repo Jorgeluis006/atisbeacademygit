@@ -69,7 +69,7 @@ function sendWindowReminders(PDO $pdo, int $minutes, string $column): array {
         $fechaFormateada = $dt->format('d/m/Y \a \l\a\s H:i');
         $minLabel = ($minutes === 1) ? '1 minuto' : ($minutes . ' minutos');
         $subject = 'Recordatorio: tu clase empieza en ' . $minLabel;
-        $logoUrl = htmlspecialchars($baseUrl . '/images/logoheader.png');
+        $logoUrl = htmlspecialchars($baseUrl . '/images/logos-01.png');
         $body = '
         <!DOCTYPE html>
         <html>
