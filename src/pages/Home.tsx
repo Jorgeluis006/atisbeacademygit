@@ -54,15 +54,9 @@ export default function Home() {
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
-              {[
-                { title: 'Cercana', color: 'text-brand-electric' },
-                { title: 'Alegre', color: 'text-pink-800' },
-                { title: 'Disciplinada', color: 'text-brand-ochre' },
-                { title: 'Motivadora', color: 'text-brand-blue' },
-                { title: 'Flexible', color: 'text-brand-forest' }
-              ].map((value, index) => (
-                <div key={index} className="text-center bg-white/10 backdrop-blur-sm rounded-xl p-5 min-h-[120px] flex items-center justify-center border border-white/10">
-                  <h3 className={`font-bold ${value.color} text-lg`}>{value.title}</h3>
+              {['Cercana', 'Alegre', 'Disciplinada', 'Motivadora', 'Flexible'].map((value) => (
+                <div key={value} className="text-center bg-white/15 backdrop-blur-sm rounded-xl p-5 min-h-[120px] flex items-center justify-center border border-white/20 shadow-sm">
+                  <h3 className="font-bold text-white text-lg">{value}</h3>
                 </div>
               ))}
             </div>
