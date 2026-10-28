@@ -8,6 +8,8 @@ export default function Testimonios() {
   const [videos, setVideos] = useState<Video[]>([])
   const [loading, setLoading] = useState(true)
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set())
+  const hasDemoTestimonials = items.some((item) => item.author_name.startsWith('[MUESTRA]'))
+  const hasDemoVideos = videos.some((video) => video.video_url.startsWith('/images/muestras/'))
 
   const toggleExpanded = (id: number) => {
     setExpandedItems(prev => {
@@ -44,10 +46,12 @@ export default function Testimonios() {
       <div className="bg-gradient-to-r from-brand-purple to-purple-600 text-white py-20">
         <div className="container-padded text-center">
           <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-4">
-            Lo que dicen nuestros estudiantes
+            {hasDemoTestimonials ? 'Experiencias de muestra' : 'Lo que dicen nuestros estudiantes'}
           </h1>
           <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto">
-            Historias reales de personas que han transformado su inglés con nosotros
+            {hasDemoTestimonials
+              ? 'Los perfiles y comentarios identificados como MUESTRA son ficticios y solo sirven para previsualizar el diseño.'
+              : 'Historias reales de personas que han transformado su inglés con nosotros'}
           </p>
         </div>
       </div>
@@ -64,23 +68,16 @@ export default function Testimonios() {
           </div>
         ) : (
           <div className="max-w-6xl mx-auto">
-            {/* Stats Bar */}
-            <div className="grid grid-cols-3 gap-4 mb-12 bg-white rounded-2xl p-8 shadow-lg">
-              <div className="text-center">
-                <div className="text-4xl font-bold text-brand-purple mb-2">{items.length}+</div>
-                <div className="text-gray-600">Testimonios</div>
+            {hasDemoTestimonials ? (
+              <p className="mb-12 rounded-xl border border-brand-mauve/40 bg-white p-4 text-center text-sm text-brand-purple">
+                Atención: esta galería contiene contenido ficticio de demostración, no reseñas reales.
+              </p>
+            ) : (
+              <div className="mb-12 rounded-2xl bg-white p-8 text-center shadow-lg">
+                <div className="text-4xl font-bold text-brand-purple">{items.length}</div>
+                <div className="mt-2 text-gray-600">Testimonios publicados</div>
               </div>
-              <div className="text-center border-x border-gray-200">
-                <div className="text-4xl font-bold text-brand-purple mb-2">5.0</div>
-                <div className="text-gray-600 flex items-center justify-center gap-1">
-                  <span className="text-brand-amber">★★★★★</span>
-                </div>
-              </div>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-brand-purple mb-2">98%</div>
-                <div className="text-gray-600">Satisfacción</div>
-              </div>
-            </div>
+            )}
 
             {/* Testimonials Grid - Equal Size */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -117,7 +114,7 @@ export default function Testimonios() {
 
                     {/* Rating */}
                     <div className="flex items-center gap-1 mb-3">
-                      {Array.from({ length: t.rating || 5 }).map((_, i) => (
+                      {Array.from({ length: t.rating ?? 5 }).map((_, i) => (
                         <span key={i} className="text-brand-amber text-lg">★</span>
                       ))}
                     </div>
@@ -155,7 +152,9 @@ export default function Testimonios() {
                 Testimonios en video
               </h2>
               <p className="text-xl text-gray-600">
-                Escucha directamente de nuestros estudiantes
+                {hasDemoVideos
+                  ? 'Las tarjetas MUESTRA son vistas previas ilustrativas, no videos reales.'
+                  : 'Escucha directamente de nuestros estudiantes'}
               </p>
             </div>
 
@@ -179,7 +178,12 @@ export default function Testimonios() {
                     
                     {/* Video Player - Large */}
                     <div className="aspect-video bg-gray-900">
-                      {video.video_url.includes('youtube') || video.video_url.includes('vimeo') ? (
+                      {video.video_url.startsWith('/images/muestras/') ? (
+                        <div className="relative h-full w-full">
+                          <img src={video.thumbnail_url || video.video_url} alt="Vista previa de contenido de muestra; no es un video real" className="h-full w-full object-cover" />
+                          <span className="absolute bottom-4 left-4 rounded-full bg-brand-plum/90 px-4 py-2 text-sm font-bold text-white">VISTA PREVIA · MUESTRA</span>
+                        </div>
+                      ) : video.video_url.includes('youtube') || video.video_url.includes('vimeo') ? (
                         <iframe
                           src={video.video_url}
                           title={video.title || 'Video testimonio'}
@@ -211,10 +215,12 @@ export default function Testimonios() {
       <div className="bg-brand-purple text-white py-16">
         <div className="container-padded text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
-            ¿Listo para ser nuestro próximo testimonio de éxito?
+            {hasDemoTestimonials ? '¿Quieres compartir tu experiencia?' : '¿Listo para ser nuestro próximo testimonio de éxito?'}
           </h2>
           <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
-            Únete a cientos de estudiantes que han alcanzado sus metas en inglés
+            {hasDemoTestimonials
+              ? 'Contáctanos para conocer más sobre nuestros programas.'
+              : 'Únete a cientos de estudiantes que han alcanzado sus metas en inglés'}
           </p>
           <button 
             onClick={() => navigate('/contacto')}

@@ -41,6 +41,7 @@ import {
   type CorporativoItem,
   getAdminAllProgress,
   getAdminStudentProgressHistory,
+  manageDemoContent,
   type AdminStudentProgressItem,
   type StudentProgress,
   type StudentProgressHistoryItem,
@@ -488,6 +489,23 @@ export default function Admin() {
   const [err, setErr] = useState('')
   const [activeTab, setActiveTab] = useState<'contacts' | 'users' | 'grades' | 'testimonials' | 'courses' | 'corporativo' | 'exams' | 'blog' | 'videos' | 'products'>('users')
   const [showChangePassword, setShowChangePassword] = useState(false)
+  const [demoContentBusy, setDemoContentBusy] = useState(false)
+
+  const handleDemoContent = async (action: 'seed' | 'remove') => {
+    if (action === 'remove' && !window.confirm('¿Eliminar únicamente el contenido marcado como MUESTRA?')) return
+
+    setDemoContentBusy(true)
+    try {
+      const result = await manageDemoContent(action)
+      setMsg(result.message || (action === 'seed' ? 'Contenido de muestra cargado.' : 'Contenido de muestra eliminado.'))
+      setErr('')
+    } catch (error) {
+      setMsg('')
+      setErr(`No se pudo ${action === 'seed' ? 'cargar' : 'eliminar'} el contenido de muestra: ${error instanceof Error ? error.message : 'Error desconocido'}`)
+    } finally {
+      setDemoContentBusy(false)
+    }
+  }
 
   useEffect(() => {
     (async () => {
@@ -544,6 +562,36 @@ export default function Admin() {
           </button>
           <button className="btn-secondary" onClick={async () => { try { await apiLogout() } finally { navigate('/', { replace: true }) } }}>Salir</button>
         </div>
+
+      <section className="mb-8 rounded-2xl border border-brand-mauve/40 bg-white p-6 shadow-sm">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-brand-purple">Contenido de demostración</h2>
+            <p className="mt-1 max-w-3xl text-sm text-brand-black/70">
+              Agrega ejemplos con imágenes a cursos, blog, testimonios, videos, exámenes, corporativo y tienda.
+              Se publican en el sitio y quedan marcados como MUESTRA; puedes retirarlos aquí sin borrar contenido normal.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={() => void handleDemoContent('seed')}
+              disabled={demoContentBusy}
+            >
+              {demoContentBusy ? 'Procesando…' : 'Cargar muestras'}
+            </button>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => void handleDemoContent('remove')}
+              disabled={demoContentBusy}
+            >
+              Retirar muestras
+            </button>
+          </div>
+        </div>
+      </section>
 
       {/* Tabs */}
       <div className="flex gap-2 border-b border-brand-black/10 mb-6">

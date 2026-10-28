@@ -5,6 +5,11 @@ const baseURL = import.meta.env.VITE_API_BASE_URL || '/api'
 
 export const api = axios.create({ baseURL, timeout: 10000 })
 
+export async function manageDemoContent(action: 'seed' | 'remove') {
+  const res = await api.post('/admin/demo_content.php', { action })
+  return res.data
+}
+
 export type ContactPayload = {
   nombre: string
   edad: string

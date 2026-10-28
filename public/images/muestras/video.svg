@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-labelledby="title">
+  <title id="title">Vista previa de muestra; no contiene un video real</title>
+  <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#34223d"/><stop offset="1" stop-color="#855e83"/></linearGradient></defs>
+  <rect width="900" height="560" fill="url(#bg)"/>
+  <circle cx="450" cy="245" r="118" fill="#fffaf0" opacity=".94"/>
+  <path d="M418 184l102 61-102 61z" fill="#4b294f"/>
+  <circle cx="450" cy="245" r="151" fill="none" stroke="#e9c476" stroke-width="3" opacity=".72"/>
+  <rect x="290" y="425" width="320" height="52" rx="26" fill="#fffaf0"/>
+  <text x="450" y="458" text-anchor="middle" fill="#4b294f" font-family="Arial,sans-serif" font-size="19" font-weight="700" letter-spacing="2">VISTA PREVIA · MUESTRA</text>
+</svg>

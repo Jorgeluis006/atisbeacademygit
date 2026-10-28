@@ -9,6 +9,8 @@ export default function Home() {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
   const [videos, setVideos] = useState<Video[]>([])
   const [loading, setLoading] = useState(true)
+  const hasDemoTestimonials = testimonials.some((item) => item.author_name.startsWith('[MUESTRA]'))
+  const hasDemoVideos = videos.some((video) => video.video_url.startsWith('/images/muestras/'))
 
   useEffect(() => {
     (async () => {
@@ -98,10 +100,12 @@ export default function Home() {
         <div className="container-padded">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4">
-              Testimonios reales
+              {hasDemoTestimonials ? 'Experiencias de muestra' : 'Testimonios reales'}
             </h2>
             <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              Opiniones auténticas de nuestros estudiantes
+              {hasDemoTestimonials
+                ? 'Esta sección incluye perfiles y comentarios ficticios identificados como MUESTRA.'
+                : 'Opiniones auténticas de nuestros estudiantes'}
             </p>
           </div>
           {loading ? (
@@ -123,7 +127,7 @@ export default function Home() {
                   </div>
                 )}
                 <div className="flex items-center gap-1 mb-3">
-                  {Array.from({ length: t.rating || 5 }).map((_, i) => (
+                  {Array.from({ length: t.rating ?? 5 }).map((_, i) => (
                     <span key={i} className="text-brand-amber text-lg">★</span>
                   ))}
                 </div>
@@ -151,7 +155,9 @@ export default function Home() {
               Videos de testimonios
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Escucha directamente de nuestros estudiantes
+              {hasDemoVideos
+                ? 'Las tarjetas MUESTRA son vistas previas ilustrativas, no videos reales.'
+                : 'Escucha directamente de nuestros estudiantes'}
             </p>
           </div>
           {loading ? (
@@ -165,7 +171,12 @@ export default function Home() {
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
             {videos.map((video) => (
               <div key={video.id} className="aspect-video rounded-2xl overflow-hidden bg-gray-900 shadow-lg hover:shadow-2xl transition-shadow">
-                {video.video_url.includes('youtube') || video.video_url.includes('vimeo') ? (
+                {video.video_url.startsWith('/images/muestras/') ? (
+                  <div className="relative h-full w-full">
+                    <img src={video.thumbnail_url || video.video_url} alt="Vista previa de contenido de muestra; no es un video real" className="h-full w-full object-cover" />
+                    <span className="absolute bottom-3 left-3 rounded-full bg-brand-plum/90 px-3 py-1 text-xs font-bold text-white">VISTA PREVIA · MUESTRA</span>
+                  </div>
+                ) : video.video_url.includes('youtube') || video.video_url.includes('vimeo') ? (
                   <iframe
                     src={video.video_url}
                     title={video.title || 'Video'}

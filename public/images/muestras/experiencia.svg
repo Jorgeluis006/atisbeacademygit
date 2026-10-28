@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-labelledby="title">
+  <title id="title">Ilustración de muestra para experiencias</title>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#34223d"/><stop offset="1" stop-color="#754f79"/></linearGradient>
+  </defs>
+  <rect width="900" height="560" fill="url(#bg)"/>
+  <circle cx="450" cy="245" r="150" fill="#e9c476" opacity=".92"/>
+  <path d="M0 425c175-70 291-29 450-75s288-34 450 31v179H0z" fill="#251d33" opacity=".45"/>
+  <path d="M450 95v294M303 242h294" stroke="#fffaf0" stroke-width="8" stroke-linecap="round" opacity=".85"/>
+  <path d="M348 145l204 196M552 145L348 341" stroke="#fffaf0" stroke-width="5" stroke-linecap="round" opacity=".45"/>
+  <circle cx="450" cy="242" r="52" fill="#fffaf0"/>
+  <path d="M434 224l39 18-39 18z" fill="#4b294f"/>
+  <rect x="302" y="425" width="296" height="52" rx="26" fill="#fffaf0"/>
+  <text x="450" y="459" text-anchor="middle" fill="#4b294f" font-family="Arial,sans-serif" font-size="20" font-weight="700" letter-spacing="3">MUESTRA</text>
+</svg>

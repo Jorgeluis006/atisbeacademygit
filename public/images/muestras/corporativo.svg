@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-labelledby="title">
+  <title id="title">Ilustración de muestra para programas corporativos</title>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#46304d"/><stop offset="1" stop-color="#936e8c"/></linearGradient>
+  </defs>
+  <rect width="900" height="560" fill="url(#bg)"/>
+  <path d="M0 432c171-81 278-36 437-72s316-24 463 43v157H0z" fill="#241f32" opacity=".4"/>
+  <rect x="200" y="115" width="500" height="280" rx="24" fill="#fffaf0"/>
+  <rect x="235" y="150" width="430" height="205" rx="15" fill="#e8d9c2"/>
+  <rect x="268" y="182" width="208" height="118" rx="12" fill="#4b294f"/>
+  <path d="M292 270l47-47 35 33 33-38 47 52z" fill="#e5c27e"/>
+  <circle cx="377" cy="219" r="11" fill="#fffaf0"/>
+  <g fill="#9d6c95"><circle cx="531" cy="213" r="17"/><circle cx="580" cy="213" r="17"/></g>
+  <path d="M500 271c3-39 59-39 62 0M551 271c3-39 59-39 62 0" fill="#9d6c95"/>
+  <rect x="360" y="397" width="180" height="23" rx="11" fill="#d6b985"/>
+  <rect x="290" y="427" width="320" height="51" rx="25" fill="#fffaf0"/>
+  <text x="450" y="461" text-anchor="middle" fill="#4b294f" font-family="Arial,sans-serif" font-size="20" font-weight="700" letter-spacing="3">MUESTRA</text>
+</svg>
