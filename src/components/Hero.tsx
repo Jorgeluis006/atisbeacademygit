@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { sendContactForm, type ContactPayload } from '../services/api'
+import CountryPhoneInput from './CountryPhoneInput'
 
 const initialForm: ContactPayload = {
   nombre: '', edad: '', nacionalidad: '', email: '', telefono: '', idioma: '', modalidad: '', franja: '',
@@ -51,14 +52,13 @@ function HeroRegisterForm() {
         <input className={inputClass} name="nombre" placeholder="Nombre completo" required value={form.nombre} onChange={onChange} />
         <div className="grid grid-cols-2 gap-3">
           <input className={inputClass} type="email" name="email" placeholder="Correo electrónico" required value={form.email} onChange={onChange} />
-          <input className={inputClass} name="telefono" placeholder="Teléfono (+57...)" value={form.telefono} onChange={onChange} />
+          <CountryPhoneInput className="col-span-2" value={form.telefono} onChange={value => setForm(f => ({ ...f, telefono: value }))} required />
         </div>
         <select className={inputClass} name="idioma" required value={form.idioma} onChange={onChange}>
           <option value="">Idioma que deseas aprender</option>
           <option>Inglés</option>
           <option>Francés</option>
           <option>Español para extranjeros</option>
-          <option>Alemán</option>
           <option>Italiano</option>
           <option>Portugués</option>
         </select>
@@ -67,7 +67,6 @@ function HeroRegisterForm() {
             <option value="">Modalidad</option>
             <option>personalizada - virtual</option>
             <option>grupal - virtual</option>
-            <option>Personalizada - presencial</option>
           </select>
           <select className={inputClass} name="franja" required value={form.franja} onChange={onChange}>
             <option value="">Horario</option>
@@ -77,7 +76,7 @@ function HeroRegisterForm() {
           </select>
         </div>
         <label className="flex items-start gap-2 text-xs text-brand-black/70">
-          <input type="checkbox" className="mt-0.5" checked={consent} onChange={e => setConsent(e.target.checked)} />
+          <input type="checkbox" className="mt-0.5" checked={consent} onChange={e => setConsent(e.target.checked)} required />
           <span>
             Autorizo el tratamiento de mis datos según la{' '}
             <Link to="/politicas-privacidad" target="_blank" className="text-brand-purple underline">política de privacidad</Link>.

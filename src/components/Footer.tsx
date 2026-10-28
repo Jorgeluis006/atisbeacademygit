@@ -1,15 +1,4 @@
 export default function Footer() {
-  const courseCategories = [
-    { value: 'ingles', label: 'Inglés' },
-    { value: 'frances', label: 'Francés' },
-    { value: 'espanol', label: 'Español' },
-    { value: 'club-conversacional', label: 'Club Conversacional' },
-    { value: 'conversarte', label: 'ConversArte' },
-    { value: 'ninos', label: 'Niños' },
-    { value: 'personalizadas', label: 'Personalizadas' },
-    { value: 'general', label: 'Otros' }
-  ]
-
   return (
     <footer className="mt-24 text-white" style={{ backgroundColor: '#FFFF00' }}>
   <div className="container-padded py-12">
@@ -34,17 +23,13 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Nuestros Cursos */}
+          {/* Nosotros */}
           <div className="text-center md:text-left md:border-r" style={{ borderColor: '#791eba', borderRightWidth: '2px' }}>
-            <h4 className="font-serif font-bold text-lg mb-4" style={{ color: '#791eba', fontWeight: '700' }}>Nuestros Cursos</h4>
+            <h4 className="font-serif font-bold text-lg mb-4" style={{ color: '#791eba', fontWeight: '700' }}>Nosotros</h4>
             <ul className="space-y-2 text-sm" style={{ color: '#791eba', opacity: 0.95, fontWeight: '600' }}>
-              {courseCategories.map(cat => (
-                <li key={cat.value}>
-                  <a href={`/cursos?category=${cat.value}`} className="hover:underline" style={{ color: '#791eba', fontWeight: '600' }}>
-                    {cat.label}
-                  </a>
-                </li>
-              ))}
+              <li><a href="/quienes-somos" className="hover:underline" style={{ color: '#791eba', fontWeight: '600' }}>Quiénes somos</a></li>
+              <li><a href="/cursos" className="hover:underline" style={{ color: '#791eba', fontWeight: '600' }}>Cursos</a></li>
+              <li><a href="/corporativo" className="hover:underline" style={{ color: '#791eba', fontWeight: '600' }}>Corporativo</a></li>
             </ul>
           </div>
 

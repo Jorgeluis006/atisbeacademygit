@@ -1,19 +1,12 @@
 import { Link, NavLink } from 'react-router-dom'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { me, getCourses, getExams, getCorporativo, type Course, type Exam, type CorporativoItem } from '../services/api'
+import { me, getExams, getCorporativo, type Exam, type CorporativoItem } from '../services/api'
 
 type NavChild = { to: string; label: string }
 type NavItem = { to: string; label: string; children?: NavChild[] }
 
-// Cursos, exámenes y corporativo se listan dinámicamente: al crear uno nuevo desde Admin, aparece aquí sin tocar código.
-function buildNavItems(courses: Course[], exams: Exam[], corporativo: CorporativoItem[]): NavItem[] {
-  const courseChildren: NavChild[] = [
-    { to: '/cursos', label: 'Ver todos los cursos' },
-    ...courses
-      .filter(c => c.is_published !== false)
-      .map(c => ({ to: `/cursos/${c.id}/modalidades`, label: c.title })),
-  ]
-
+// Exámenes y corporativo se listan dinámicamente; Cursos mantiene un enlace directo para evitar un menú extenso.
+function buildNavItems(exams: Exam[], corporativo: CorporativoItem[]): NavItem[] {
   const examChildren: NavChild[] = [
     { to: '/examenes', label: 'Ver todos los exámenes' },
     ...exams
@@ -29,8 +22,7 @@ function buildNavItems(courses: Course[], exams: Exam[], corporativo: Corporativ
   ]
 
   return [
-    { to: '/quienes-somos', label: 'Quiénes somos' },
-    { to: '/cursos', label: 'Cursos', children: courseChildren.length > 1 ? courseChildren : undefined },
+    { to: '/cursos', label: 'Cursos' },
     { to: '/corporativo', label: 'Corporativo', children: corporativoChildren.length > 1 ? corporativoChildren : undefined },
     { to: '/examenes', label: 'Exámenes', children: examChildren.length > 1 ? examChildren : undefined },
     {
@@ -44,18 +36,18 @@ function buildNavItems(courses: Course[], exams: Exam[], corporativo: Corporativ
         { to: '/blog?category=recursos', label: 'Recursos' },
       ],
     },
-    { to: '/contacto', label: 'Contacto' },
-    { to: '/pago', label: 'Pago' },
     {
       to: '/tienda',
       label: 'Tienda',
       children: [
+        { to: '/pago', label: 'Pago' },
         { to: '/tienda?category=curso', label: 'Cursos' },
         { to: '/tienda?category=material', label: 'Materiales' },
         { to: '/tienda?category=club', label: 'Clubs' },
         { to: '/tienda?category=taller', label: 'Talleres' },
       ],
     },
+    { to: '/quienes-somos', label: 'Quiénes somos' },
   ]
 }
 
@@ -200,7 +192,6 @@ export function Navbar() {
   const [isTeacher, setIsTeacher] = useState(false)
   const [isCoordinator, setIsCoordinator] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [courses, setCourses] = useState<Course[]>([])
   const [exams, setExams] = useState<Exam[]>([])
   const [corporativo, setCorporativo] = useState<CorporativoItem[]>([])
   // For now, force light theme to avoid visibility issues reported by user
@@ -210,8 +201,7 @@ export function Navbar() {
   useEffect(() => {
     (async () => {
       try {
-        const [coursesData, examsData, corporativoData] = await Promise.all([getCourses(), getExams(), getCorporativo()])
-        setCourses(coursesData)
+        const [examsData, corporativoData] = await Promise.all([getExams(), getCorporativo()])
         setExams(examsData)
         setCorporativo(corporativoData)
       } catch {
@@ -220,7 +210,7 @@ export function Navbar() {
     })()
   }, [])
 
-  const navItems = useMemo(() => buildNavItems(courses, exams, corporativo), [courses, exams, corporativo])
+  const navItems = useMemo(() => buildNavItems(exams, corporativo), [exams, corporativo])
 
   useEffect(() => {
     const root = document.documentElement
@@ -240,7 +230,7 @@ export function Navbar() {
           {navItems.map((item) => (
             <DesktopNavItem key={item.to} item={item} />
           ))}
-          <Link to="/zona-estudiantes" className="btn-primary">Zona de estudiantes</Link>
+          <Link to="/zona-estudiantes" className="btn-primary">Soy estudiante</Link>
           {isAdmin && (
             <NavLink
               to="/admin"
@@ -290,7 +280,7 @@ export function Navbar() {
             {navItems.map((item) => (
               <MobileNavItem key={item.to} item={item} onNavigate={() => setMobileOpen(false)} />
             ))}
-            <Link to="/zona-estudiantes" onClick={() => setMobileOpen(false)} className="btn-primary w-full">Zona de estudiantes</Link>
+            <Link to="/zona-estudiantes" onClick={() => setMobileOpen(false)} className="btn-primary w-full">Soy estudiante</Link>
             {isAdmin && (
               <NavLink to="/admin" onClick={() => setMobileOpen(false)} className={({ isActive }) => `block px-2 py-2 rounded-md ${isActive ? 'text-brand-purple' : 'text-brand-black/80 hover:text-brand-purple'}`}>Admin</NavLink>
             )}

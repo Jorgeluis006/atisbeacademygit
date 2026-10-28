@@ -15,6 +15,7 @@ import {
   deleteTestimonial,
   type Testimonial,
   getAdminCourses,
+  getCourseDisplayTitle,
   createCourse,
   updateCourse,
   deleteCourse,
@@ -746,7 +747,6 @@ function CorporativoManager() {
                 <select className="select-control" value={editing.default_modality || ''} onChange={e => setEditing({ ...editing, default_modality: e.target.value })}>
                   <option value="">—</option>
                   <option value="virtual">Virtual</option>
-                  <option value="presencial">Presencial</option>
                 </select>
               </div>
               <div>
@@ -1117,7 +1117,6 @@ function AssignStudentForm({ onDone, onError }: { onDone: (msg: string) => void;
               <select className="select-control" value={modality} onChange={e => setModality(e.target.value)}>
                 <option value="">Sin definir</option>
                 <option value="virtual">Virtual</option>
-                <option value="presencial">Presencial</option>
               </select>
             </div>
           </div>
@@ -1415,7 +1414,7 @@ function CoursesManager() {
 
   const getCourseTypeLabel = (type: string) => {
     const labels: Record<string, string> = {
-      'conversarte': 'ConversArte',
+      'conversarte': 'Experiencias',
       'cursos-idiomas': 'Cursos de idiomas',
       'refuerzos': 'Refuerzos escolares'
     }
@@ -1451,10 +1450,11 @@ function CoursesManager() {
 
   async function handleSave(item: Course) {
     try {
-      if (item.id) {
-        await updateCourse(item)
+      const courseToSave = { ...item, title: getCourseDisplayTitle(item.title), modality: 'virtual' }
+      if (courseToSave.id) {
+        await updateCourse(courseToSave)
       } else {
-        await createCourse(item)
+        await createCourse(courseToSave)
       }
       setEditing(null)
       await load()
@@ -1522,14 +1522,12 @@ function CoursesManager() {
                 <label className="label">Modalidad</label>
                 <select className="select-control" value={editing.modality || 'virtual'} onChange={e => setEditing({ ...editing, modality: e.target.value })}>
                   <option value="virtual">Virtual</option>
-                  <option value="presencial">Presencial</option>
-                  <option value="hibrido">Híbrido</option>
                 </select>
               </div>
               <div>
                 <label className="label">Tipo de curso</label>
                 <select className="select-control" value={editing.course_type || 'conversarte'} onChange={e => setEditing({ ...editing, course_type: e.target.value })}>
-                  <option value="conversarte">ConversArte</option>
+                  <option value="conversarte">Experiencias</option>
                   <option value="cursos-idiomas">Cursos de idiomas</option>
                   <option value="refuerzos">Refuerzos escolares</option>
                 </select>
@@ -1602,15 +1600,15 @@ function CoursesManager() {
             <tbody>
               {items.map(item => (
                 <tr key={item.id}>
-                  <td className="font-semibold">{item.title}</td>
+                  <td className="font-semibold">{getCourseDisplayTitle(item.title)}</td>
                   <td className="text-sm">{getCourseTypeLabel(item.course_type || 'conversarte')}</td>
                   <td>{item.level || '—'}</td>
-                  <td>{item.modality}</td>
+                  <td>Virtual</td>
                   <td>{item.price ? `$${item.price}` : '—'}</td>
                   <td>{item.is_published ? <span className="text-brand-purple font-semibold">✓</span> : <span className="text-brand-mauve/60">✗</span>}</td>
                   <td>{item.display_order}</td>
                   <td className="flex gap-2">
-                    <button className="btn-ghost text-sm" onClick={() => setEditing(item)}>Editar</button>
+                    <button className="btn-ghost text-sm" onClick={() => setEditing({ ...item, title: getCourseDisplayTitle(item.title), modality: 'virtual' })}>Editar</button>
                     <button className="btn-ghost text-sm text-brand-purple hover:text-brand-purple/80" onClick={() => setModCourse(item)}>Modalidades</button>
                     <button className="btn-ghost text-sm text-brand-orange hover:text-brand-orange/80" onClick={() => handleDelete(item.id!)}>Eliminar</button>
                   </td>
@@ -1686,7 +1684,7 @@ function CourseModalitiesManager({ course, onClose }: { course: Course; onClose:
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={onClose}>
       <div className="bg-white rounded-2xl p-6 shadow-xl w-full max-w-3xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-bold">Modalidades — {course.title}</h3>
+          <h3 className="text-xl font-bold">Modalidades — {getCourseDisplayTitle(course.title)}</h3>
           <button className="text-gray-500 hover:text-gray-700" onClick={onClose}>✕</button>
         </div>
 

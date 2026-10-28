@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import axios from 'axios'
 import PaymentDrawer from '../components/PaymentDrawer'
+import { getCourseDisplayTitle } from '../services/api'
 
 interface Product {
   id: number
@@ -136,7 +137,7 @@ export default function Tienda() {
                     {product.image_url ? (
                       <img 
                         src={product.image_url} 
-                        alt={product.name} 
+                        alt={getCourseDisplayTitle(product.name)}
                         className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                     ) : (
@@ -170,7 +171,7 @@ export default function Tienda() {
                     
                     {/* Product Name */}
                     <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-brand-purple transition-colors">
-                      {product.name}
+                      {getCourseDisplayTitle(product.name)}
                     </h3>
                     
                     {/* Description */}
@@ -214,7 +215,7 @@ export default function Tienda() {
               <PaymentDrawer
                 open={drawerOpen}
                 onClose={() => { setDrawerOpen(false); setSelectedProduct(null) }}
-                productName={selectedProduct.name}
+                productName={getCourseDisplayTitle(selectedProduct.name)}
                 price={selectedProduct.price}
               />
             )}

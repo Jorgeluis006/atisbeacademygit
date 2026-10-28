@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { sendContactForm } from '../services/api'
+import CountryPhoneInput from './CountryPhoneInput'
 
 const initial = { nombre: '', edad: '', nacionalidad: '', email: '', telefono: '', idioma: '', modalidad: '', franja: '', curso: '', dia_interes: '' }
 
@@ -40,11 +41,11 @@ export default function ContactForm({ prefill, title = 'Contacto' }: { prefill?:
     }
   }
 
-  function handleWhatsAppClick(e: React.FormEvent) {
+  function handleWhatsAppClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault()
 
-    if (!form.nombre || !form.curso || !form.dia_interes) {
-      alert('Por favor completa Nombre, Curso y Día de interés')
+    const formElement = e.currentTarget.form
+    if (!formElement || !formElement.reportValidity()) {
       return
     }
 
@@ -69,13 +70,12 @@ export default function ContactForm({ prefill, title = 'Contacto' }: { prefill?:
               <input className="border border-gray-300 rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" name="edad" placeholder="Edad" required value={form.edad} onChange={onChange} />
               <input className="border border-gray-300 rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" name="nacionalidad" placeholder="Nacionalidad" required value={form.nacionalidad} onChange={onChange} />
               <input className="border border-gray-300 rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" type="email" name="email" placeholder="Correo electrónico" required value={form.email} onChange={onChange} />
-              <input className="border border-gray-300 rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" name="telefono" placeholder="Indicativo ej: +57 y número de contacto" required value={form.telefono} onChange={onChange} />
+              <CountryPhoneInput className="w-full md:col-span-2" value={form.telefono} onChange={value => setForm(f => ({ ...f, telefono: value }))} required />
               <select className="border border-gray-300 rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" name="idioma" required value={form.idioma} onChange={onChange}>
                 <option value="">Idioma que desea aprender</option>
                 <option>Inglés</option>
                 <option>Francés</option>
                 <option>Español para extranjeros</option>
-                <option>Alemán</option>
                 <option>Italiano</option>
                 <option>Portugués</option>
               </select>
@@ -84,7 +84,6 @@ export default function ContactForm({ prefill, title = 'Contacto' }: { prefill?:
                 <option value="">Modalidad preferida</option>
                 <option>personalizada - virtual</option>
                 <option>grupal - virtual</option>
-                <option>Personalizada - presencial</option>
               </select>
               <select className="border border-gray-300 rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent" name="dia_interes" required value={form.dia_interes} onChange={onChange}>
                 <option value="">Día de interés</option>
@@ -100,7 +99,7 @@ export default function ContactForm({ prefill, title = 'Contacto' }: { prefill?:
               </select>
             </div>
             <label className="flex items-start gap-3 text-xs sm:text-sm text-gray-700">
-              <input type="checkbox" className="mt-1" checked={consent} onChange={e => setConsent(e.target.checked)} />
+              <input type="checkbox" className="mt-1" checked={consent} onChange={e => setConsent(e.target.checked)} required />
               <span>
                 Autorizo de manera previa, expresa, informada e inequívoca a <strong>ATISBE</strong> para que los datos suministrados en este formulario sean tratados de conformidad con la política de tratamiento de datos, la cual podrás consultar
                 {' '}<a href="/politicas-privacidad" target="_blank" rel="noopener" className="text-brand-purple underline">aquí</a>.
@@ -111,6 +110,7 @@ export default function ContactForm({ prefill, title = 'Contacto' }: { prefill?:
                 {status==='sending' ? 'Enviando…' : 'ENVIAR FORMULARIO'}
               </button>
               <button 
+                type="button"
                 onClick={handleWhatsAppClick}
                 className="w-full sm:flex-1 min-h-[44px] bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2"
               >

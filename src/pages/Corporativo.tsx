@@ -33,7 +33,7 @@ export default function Corporativo() {
         <div className="container-padded text-center">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white mb-4 uppercase">Corporativo</h1>
           <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-4xl mx-auto">
-            Nuestros cursos presenciales y en línea con docente privado permiten a los estudiantes abrir puertas e incrementar sus aptitudes laborales y visión frente al futuro.
+            Nuestros cursos virtuales con docente privado permiten a los estudiantes abrir puertas e incrementar sus aptitudes laborales y visión frente al futuro.
           </p>
         </div>
       </div>
@@ -48,7 +48,7 @@ export default function Corporativo() {
               <div className="p-6">
                 <h3 className="text-2xl font-bold mb-3">{c.title}</h3>
                 <p className="text-gray-600 leading-relaxed mb-4">{c.description}</p>
-                <button onClick={() => comenzar({ curso: c.title, modalidad: c.default_modality || '' })} className="bg-brand-purple hover:bg-purple-700 text-white font-semibold px-5 py-2 rounded-xl">
+                <button onClick={() => comenzar({ curso: c.title, modalidad: 'personalizada - virtual' })} className="bg-brand-purple hover:bg-purple-700 text-white font-semibold px-5 py-2 rounded-xl">
                   Comenzar
                 </button>
               </div>

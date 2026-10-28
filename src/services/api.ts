@@ -16,6 +16,10 @@ export type ContactPayload = {
   franja: string
 }
 
+export function getCourseDisplayTitle(title: string): string {
+  return title.toLocaleLowerCase('es') === 'conversarte' ? 'Experiencias' : title
+}
+
 export async function sendContactForm(payload: ContactPayload) {
   return api.post('/contact.php', payload)
 }
@@ -188,7 +192,7 @@ export async function getCoordinatorTeacherSlots(teacherId: number): Promise<Sch
   return res.data?.slots ?? []
 }
 
-export async function createCoordinatorTeacherSlot(input: { teacher_id: number; datetime: string; tipo: string; modalidad: string; duration_minutes?: number; curso?: string; nivel?: string; meeting_link?: string; max_alumnos?: number }) {
+export async function createCoordinatorTeacherSlot(input: { teacher_id: number; datetime: string; tipo: string; modalidad: string; duration_minutes?: number; curso?: string; nivel?: string; meeting_link?: string; max_alumnos?: number; repeat_days?: string[]; repeat_weeks?: number; repeat_for_weeks?: number }) {
   return api.post('/coordinator/slots.php', input)
 }
 

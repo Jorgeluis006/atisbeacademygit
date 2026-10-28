@@ -61,8 +61,8 @@ export default function Coordinador() {
     meeting_link: '',
     max_alumnos: 1,
     repeat_days: ['1', '2', '3', '4', '5'],
-    repeat_until: '',
     repeat_weeks: 1,
+    repeat_for_weeks: 1,
   })
   const [blockForm, setBlockForm] = useState({ starts_at: '', ends_at: '', reason: '' })
   const [docForm, setDocForm] = useState<ClassStructureDoc>({ title: '', pdf_url: '', is_published: true, display_order: 0 })
@@ -147,8 +147,8 @@ export default function Coordinador() {
     }
 
     const selectedRepeatDays = slotForm.repeat_days ?? []
-    if (selectedRepeatDays.length > 0 && !slotForm.repeat_until) {
-      setErr('Selecciona la fecha final de la repetición o desmarca los días para un solo horario')
+    if (selectedRepeatDays.length > 0 && slotForm.repeat_for_weeks < 1) {
+      setErr('Indica durante cuántas semanas se repetirá el horario')
       return
     }
 
@@ -164,8 +164,8 @@ export default function Coordinador() {
         meeting_link: slotForm.meeting_link,
         max_alumnos: slotForm.max_alumnos,
         repeat_days: selectedRepeatDays,
-        repeat_until: slotForm.repeat_until,
         repeat_weeks: slotForm.repeat_weeks,
+        repeat_for_weeks: slotForm.repeat_for_weeks,
       }
 
       const res = await createCoordinatorTeacherSlot(payload)
@@ -413,22 +413,25 @@ export default function Coordinador() {
                 </div>
                 <div className="mt-3 grid md:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1">Hasta</label>
-                    <input
-                      type="date"
-                      className="w-full border border-gray-300 rounded-lg px-4 py-2.5"
-                      value={slotForm.repeat_until}
-                      onChange={e => setSlotForm(f => ({ ...f, repeat_until: e.target.value }))}
-                    />
-                  </div>
-                  <div>
                     <label className="block text-xs font-semibold text-gray-600 mb-1">Cada N semanas</label>
                     <input
                       type="number"
                       min={1}
+                      required
                       className="w-full border border-gray-300 rounded-lg px-4 py-2.5"
                       value={slotForm.repeat_weeks}
                       onChange={e => setSlotForm(f => ({ ...f, repeat_weeks: Number(e.target.value) || 1 }))}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">Durante X semanas</label>
+                    <input
+                      type="number"
+                      min={1}
+                      required
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2.5"
+                      value={slotForm.repeat_for_weeks}
+                      onChange={e => setSlotForm(f => ({ ...f, repeat_for_weeks: Number(e.target.value) || 1 }))}
                     />
                   </div>
                 </div>
@@ -441,8 +444,6 @@ export default function Coordinador() {
                 </select>
                 <select className="border border-gray-300 rounded-lg px-4 py-2.5" value={slotForm.modalidad} onChange={e => setSlotForm(f => ({ ...f, modalidad: e.target.value }))}>
                   <option value="virtual">Virtual</option>
-                  <option value="presencial">Presencial</option>
-                  <option value="hibrido">Híbrido</option>
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-3">

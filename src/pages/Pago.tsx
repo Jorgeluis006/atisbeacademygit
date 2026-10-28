@@ -120,7 +120,7 @@ export default function Pago() {
                   <h4 className="font-bold text-lg text-gray-900 mb-1 flex items-center gap-2">
                     Recibe tus credenciales de acceso
                   </h4>
-                  <p className="text-gray-600">Una vez confirmado el pago, te enviaremos tu <span className="font-semibold text-brand-purple">usuario y contraseña</span> para acceder a la Zona de Estudiantes</p>
+                  <p className="text-gray-600">Una vez confirmado el pago, te enviaremos tu <span className="font-semibold text-brand-purple">usuario y contraseña</span> para ingresar como estudiante</p>
                 </div>
               </div>
             </div>
@@ -145,7 +145,7 @@ export default function Pago() {
                 </svg>
               </div>
               <h3 className="text-2xl font-bold text-purple-900 mb-3">
-                Acceso a la Zona de Estudiantes
+                Acceso para estudiantes
               </h3>
               <p className="text-purple-800 text-lg mb-4 max-w-2xl mx-auto">
                 Una vez que tu pago sea recibido y confirmado, te enviaremos por WhatsApp tus credenciales personales:

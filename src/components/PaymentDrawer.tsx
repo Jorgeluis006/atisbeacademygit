@@ -79,7 +79,7 @@ export default function PaymentDrawer({ open, onClose, productName, price, phone
                 { n: 2, t: 'Proporciona información', d: 'Nombre del producto y tus datos de contacto' },
                 { n: 3, t: 'Recibe tu QR', d: 'Te enviaremos el código QR personalizado' },
                 { n: 4, t: 'Realiza el pago', d: 'Escanéalo desde tu app bancaria' },
-                { n: 5, t: 'Recibe credenciales de acceso', d: 'Una vez confirmado el pago, te enviaremos tu usuario y contraseña para acceder a la Zona de Estudiantes' }
+                { n: 5, t: 'Recibe credenciales de acceso', d: 'Una vez confirmado el pago, te enviaremos tu usuario y contraseña para ingresar como estudiante' }
               ].map(step => (
                 <div key={step.n} className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-10 h-10 bg-brand-purple text-white rounded-full flex items-center justify-center font-bold">{step.n}</div>
@@ -109,7 +109,7 @@ export default function PaymentDrawer({ open, onClose, productName, price, phone
                 </svg>
               </div>
               <h3 className="text-lg font-bold text-purple-900 mb-2">
-                Acceso a la Zona de Estudiantes
+                Acceso para estudiantes
               </h3>
               <p className="text-purple-800 text-sm mb-3 max-w-md mx-auto">
                 Una vez confirmado el pago, recibirás tus credenciales personales:

@@ -16,16 +16,16 @@ const faqs: FAQItem[] = [
     answer: 'Aceptamos pago por QR. Escríbenos por WhatsApp indicando el curso o producto y te enviamos el código para pagar desde tu app bancaria.',
   },
   {
-    question: '¿Cómo accedo a la Zona de Estudiantes?',
-    answer: 'Una vez confirmado tu pago, te enviamos por WhatsApp tu usuario y contraseña para ingresar a la Zona de Estudiantes y agendar tus clases.',
+    question: '¿Cómo ingreso como estudiante?',
+    answer: 'Una vez confirmado tu pago, te enviamos por WhatsApp tu usuario y contraseña. Usa el botón «Soy estudiante» para ingresar y agendar tus clases.',
   },
   {
     question: '¿Puedo cambiar mi horario de clase?',
-    answer: 'Sí. Puedes cancelar una reserva desde la Zona de Estudiantes y agendar un nuevo horario disponible, sujeto a la disponibilidad del profesor.',
+    answer: 'Sí. Puedes cancelar una reserva desde tu espacio de estudiante y agendar un nuevo horario disponible, sujeto a la disponibilidad del profesor.',
   },
   {
-    question: '¿Ofrecen clases virtuales y presenciales?',
-    answer: 'Sí, contamos con ambas modalidades. Puedes elegir la que prefieras al momento de agendar tu clase.',
+    question: '¿Qué modalidad de clases ofrecen?',
+    answer: 'Ofrecemos clases virtuales. Puedes consultar los horarios disponibles al ingresar como estudiante.',
   },
   {
     question: '¿Qué exámenes de certificación preparan?',

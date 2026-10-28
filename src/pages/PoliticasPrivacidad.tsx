@@ -38,7 +38,7 @@ export default function PoliticasPrivacidad() {
         <h3 className="font-semibold mb-1">• 4.1. Prohibición de Contratación Directa</h3>
         <p className="mb-4">EL USUARIO y sus acudientes se comprometen formalmente a no contactar, ofrecer empleo o contratar los servicios profesionales de los docentes vinculados a LA ACADEMIA de forma externa, privada o independiente.</p>
         <h3 className="font-semibold mb-1">• 4.2. Ámbito de Aplicación</h3>
-        <p className="mb-4">Esta prohibición incluye clases particulares, asesorías o cualquier servicio educativo similar, sea presencial o virtual, mientras el docente esté vinculado a LA ACADEMIA y hasta por doce (12) meses posteriores a la desvinculación de cualquiera de las partes.</p>
+        <p className="mb-4">Esta prohibición incluye clases particulares, asesorías o cualquier servicio educativo similar, independientemente de su formato, mientras el docente esté vinculado a LA ACADEMIA y hasta por doce (12) meses posteriores a la desvinculación de cualquiera de las partes.</p>
         <h3 className="font-semibold mb-1">• 4.3. Sanción Económica</h3>
         <p className="mb-4">El incumplimiento de esta cláusula obliga a EL USUARIO al pago de una multa penal equivalente a un (1) Salario Mínimo Legal Mensual Vigente (SMLMV) a favor de LA ACADEMIA, por concepto de perjuicios comerciales, sin perjuicio de las acciones legales adicionales que correspondan.</p>
 
@@ -68,7 +68,7 @@ export default function PoliticasPrivacidad() {
         <h3 className="font-semibold mb-1">• 8.3. Vigencia</h3>
         <p className="mb-4">Los presentes términos entran en vigor a partir de la fecha de su publicación o envío al estudiante/acudiente.</p>
 
-        <h2 className="font-bold mb-2">TÉRMINOS Y CONDICIONES: EXPERIENCIAS DE INMERSIÓN "CONVERSARTE" –ATISBE ACADEMIA DE IDIOMAS</h2>
+        <h2 className="font-bold mb-2">TÉRMINOS Y CONDICIONES: EXPERIENCIAS DE INMERSIÓN – ATISBE ACADEMIA DE IDIOMAS</h2>
         <p className="mb-4">El presente documento regula la participación en todas las actividades de inmersión cultural y lingüística de ATISBE ACADEMIA DE IDIOMAS (en adelante, "LA ACADEMIA"), tales como: Tardes de Café, Chocolenguas, Catas de Café, Tarde Culinarea, y cualquier otra actividad de inmersión organizada por la institución.</p>
 
         <h2 className="font-bold mb-2">ARTÍCULO 1. ACEPTACIÓN Y NATURALEZA DEL EVENTO</h2>
@@ -112,7 +112,7 @@ export default function PoliticasPrivacidad() {
         <p className="mb-4">La información suministrada por los participantes será utilizada únicamente con fines:<br />• administrativos<br />• logísticos<br />• promocionales<br />LA ACADEMIA se compromete a no comercializar ni transferir datos personales a terceros sin autorización.</p>
 
         <h2 className="font-bold mb-2">ARTÍCULO 8. NATURALEZA DEL EVENTO</h2>
-        <p className="mb-4">ConversArte es un evento académico-social guiado por docentes, cuyo propósito es la práctica de idiomas en un entorno cultural. No constituye:<br />• asesoría profesional individual<br />• terapia<br />• consultoría personalizada<br />• certificación académica formal</p>
+        <p className="mb-4">Las experiencias de inmersión son actividades académico-sociales guiadas por docentes, cuyo propósito es la práctica de idiomas en un entorno cultural. No constituyen:<br />• asesoría profesional individual<br />• terapia<br />• consultoría personalizada<br />• certificación académica formal</p>
 
         <h2 className="font-bold mb-2">ARTÍCULO 9. PARTICIPACIÓN DE MENORES DE EDAD</h2>
         <p className="mb-4">9.1 Los menores de edad solo podrán participar bajo la supervisión directa de su padre, madre o acudiente legal.<br />9.2 El adulto responsable asumirá la totalidad de la responsabilidad civil del menor durante el evento.</p>

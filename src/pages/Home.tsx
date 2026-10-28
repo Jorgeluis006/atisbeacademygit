@@ -75,7 +75,7 @@ export default function Home() {
         <div className="container-padded">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
-              Nuestros Cursos
+              Cursos
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Encuentra el curso perfecto para ti

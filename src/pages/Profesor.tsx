@@ -632,7 +632,6 @@ export default function Profesor() {
               </label>
               <select className="w-full px-4 py-3 border-2 border-green-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-200 focus:border-green-500 transition-all shadow-sm hover:border-green-400 font-semibold" value={newSlot.modalidad} onChange={e => setNewSlot({ ...newSlot, modalidad: e.target.value })}>
                 <option value="virtual">Virtual</option>
-                <option value="presencial">Presencial</option>
               </select>
             </div>
             <div>
@@ -1090,10 +1089,9 @@ export default function Profesor() {
                                   </div>
                                   <div className={`text-xs font-semibold px-2 py-1 rounded-full inline-block ${
                                     res.modalidad === 'virtual' ? 'bg-purple-500 text-white' :
-                                    res.modalidad === 'presencial' ? 'bg-green-500 text-white' :
                                     'bg-gray-500 text-white'
                                   }`}>
-                                    {res.modalidad}
+                                    {res.modalidad === 'virtual' ? 'Virtual' : 'No disponible'}
                                   </div>
                                   {res.notas && (
                                     <div className="text-gray-700 text-xs mt-2 p-2 bg-white/60 rounded backdrop-blur-sm flex items-start gap-1">

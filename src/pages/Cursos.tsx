@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
-import { getCourses, type Course } from '../services/api'
+import { getCourses, getCourseDisplayTitle, type Course } from '../services/api'
 
 export default function Cursos() {
   const [searchParams] = useSearchParams()
@@ -25,7 +25,7 @@ export default function Cursos() {
   const courseTypes = [
     { value: 'cursos-idiomas', label: 'Cursos de idiomas' },
     { value: 'refuerzos', label: 'Refuerzos escolares' },
-    { value: 'conversarte', label: 'ConversArte' }
+    { value: 'conversarte', label: 'Experiencias' }
   ]
 
   const getCourseTypeLabel = (type: string) => {
@@ -44,7 +44,7 @@ export default function Cursos() {
       <div className="bg-gradient-to-r from-brand-purple to-purple-600 text-white py-20">
         <div className="container-padded text-center">
           <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-4">
-            Nuestros cursos
+            Cursos
           </h1>
           <p className="text-lg md:text-xl text-white/90">
             Atendemos 24/7 • Cupos limitados por curso
@@ -108,11 +108,11 @@ export default function Cursos() {
                   key={c.id}
                   onClick={() => navigate(`/cursos/${c.id}/modalidades`)}
                   className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 cursor-pointer"
-                  aria-label={`Ver modalidades de ${c.title}`}
+                  aria-label={`Ver modalidades de ${getCourseDisplayTitle(c.title)}`}
                 >
                   {c.image_url && (
                     <div className="w-full aspect-[16/9] bg-gray-50 overflow-hidden">
-                      <img src={c.image_url} alt={c.title} className="w-full h-full object-cover" />
+                      <img src={c.image_url} alt={getCourseDisplayTitle(c.title)} className="w-full h-full object-cover" />
                     </div>
                   )}
                   <div className="p-6">
@@ -126,7 +126,7 @@ export default function Cursos() {
                         </span>
                       )}
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-brand-purple transition-colors">{c.title}</h3>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-brand-purple transition-colors">{getCourseDisplayTitle(c.title)}</h3>
                     <p className="text-gray-600 mb-4 leading-relaxed">{c.description}</p>
                     <div className="flex flex-wrap gap-3 text-sm text-gray-600 mb-4">
                       {c.duration && (
@@ -137,8 +137,8 @@ export default function Cursos() {
                       )}
                       {c.modality && (
                         <div className="flex items-center gap-1">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                          <span>{c.modality}</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" strokeWidth={2} /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20" /></svg>
+                          <span>Virtual</span>
                         </div>
                       )}
                     </div>

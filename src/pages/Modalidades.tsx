@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { getCourses, getCourseModalities, type Course, type CourseModality } from '../services/api'
+import { getCourses, getCourseDisplayTitle, getCourseModalities, type Course, type CourseModality } from '../services/api'
 import ContactForm from '../components/ContactForm'
 
 export default function Modalidades() {
@@ -22,7 +22,7 @@ export default function Modalidades() {
         const found = courses.find(c => c.id === courseId) || null
         setCourse(found)
         const mods = await getCourseModalities(courseId)
-        setItems(mods)
+        setItems(mods.filter(mod => !/(presencial|h[ií]brido)/i.test(mod.title)))
       } catch (err) {
         console.error('Error loading modalities:', err)
       } finally {
@@ -32,7 +32,7 @@ export default function Modalidades() {
   }, [courseId])
 
   useEffect(() => {
-    setPrefill(p => ({ ...p, curso: course?.title || '' }))
+    setPrefill(p => ({ ...p, curso: course ? getCourseDisplayTitle(course.title) : '' }))
   }, [course?.title])
 
   function goContact(mod: CourseModality) {
@@ -41,7 +41,7 @@ export default function Modalidades() {
   }
 
   function goWhatsApp(mod: CourseModality) {
-    const curso = course?.title || ''
+    const curso = course ? getCourseDisplayTitle(course.title) : ''
     const modalidad = mod.title
     const mensaje = `Hola, me interesa el curso ${curso} en la modalidad ${modalidad}`
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensaje)}`, '_blank')
@@ -52,7 +52,7 @@ export default function Modalidades() {
       <div className="bg-gradient-to-r from-brand-purple to-purple-600 text-white py-16">
         <div className="container-padded text-center">
           <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-4 uppercase">
-            {course ? course.title : 'Curso'}
+            {course ? getCourseDisplayTitle(course.title) : 'Curso'}
           </h1>
           {course?.description && (
             <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto">

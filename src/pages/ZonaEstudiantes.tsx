@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { login as apiLogin, logout as apiLogout, me as apiMe, getStudentProgress, type StudentProgress, getScheduleSlots, createReservation, getMyReservations, cancelReservation, type ScheduleSlot, type Reservation, forgotPassword, changePassword } from '../services/api'
+import { login as apiLogin, logout as apiLogout, me as apiMe, getStudentProgress, getCourseDisplayTitle, type StudentProgress, getScheduleSlots, createReservation, getMyReservations, cancelReservation, type ScheduleSlot, type Reservation, forgotPassword, changePassword } from '../services/api'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 
@@ -440,7 +440,7 @@ export default function ZonaEstudiantes() {
         if (reservation) {
           // Formato: Tipo (Modalidad) - Hora
           const tipo = reservation.tipo === 'clase' ? 'Clase' : 'Examen'
-          const modalidad = reservation.modalidad === 'virtual' ? 'Virtual' : 'Presencial'
+          const modalidad = reservation.modalidad === 'virtual' ? 'Virtual' : 'No disponible'
           const hora = parseLocalDateTime(reservation.datetime).toLocaleTimeString('es-ES', { 
             hour: '2-digit', 
             minute: '2-digit',
@@ -537,7 +537,7 @@ export default function ZonaEstudiantes() {
       <div className="bg-brand-purple py-12">
         <div className="container-padded">
           <h1 className="text-4xl md:text-5xl font-extrabold text-white text-center">
-            Zona de estudiantes
+            Soy estudiante
           </h1>
           <p className="text-brand-cream text-center mt-3 text-lg">
             Tu espacio personalizado de aprendizaje
@@ -637,7 +637,7 @@ export default function ZonaEstudiantes() {
                         </svg>
                         <span className="font-bold text-gray-800">Tipo de Curso</span>
                       </div>
-                      <div className="text-2xl font-extrabold text-brand-purple">{progress.curso}</div>
+                      <div className="text-2xl font-extrabold text-brand-purple">{getCourseDisplayTitle(progress.curso)}</div>
                     </div>
                   )}
 
@@ -1025,7 +1025,7 @@ export default function ZonaEstudiantes() {
                                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                                       r.modalidad === 'virtual' ? 'bg-purple-600 text-white' : 'bg-blue-600 text-white'
                                     }`}>
-                                      {r.modalidad === 'virtual' ? 'Virtual' : 'Presencial'}
+                                      {r.modalidad === 'virtual' ? 'Virtual' : 'No disponible'}
                                     </span>
                                   </div>
                                   {r.curso && (
@@ -1211,7 +1211,7 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [ok, setOk] = useState('')
-  const [modalidadFilter, setModalidadFilter] = useState<'todas' | 'virtual' | 'presencial'>('todas')
+  const [modalidadFilter, setModalidadFilter] = useState<'virtual'>('virtual')
   const [cursoFilter, setCursoFilter] = useState<string>('todos')
 
   // Filtrar slots por modalidad, curso y eliminar los que ya pasaron
@@ -1219,7 +1219,7 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
   const graceWindowMinutes = 30
   const graceThreshold = new Date(now.getTime() - graceWindowMinutes * 60 * 1000)
   const filteredSlots = slots.filter(s => {
-    const matchModalidad = modalidadFilter === 'todas' || s.modalidad === modalidadFilter
+    const matchModalidad = s.modalidad === modalidadFilter
     const matchCurso = cursoFilter === 'todos' || s.curso === cursoFilter
     // Filtrar slots que ya han pasado
     const slotDateTime = parseLocalDateTime(s.datetime)
@@ -1265,7 +1265,7 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
 
   return (
     <div className="mt-3">
-      {/* Filtros de modalidad y curso */}
+      {/* Filtros para horarios virtuales */}
       <div className="mb-4 space-y-4">
         {/* Filtro de Modalidad */}
         <div>
@@ -1276,19 +1276,6 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
             <span className="text-sm font-bold text-gray-800">Modalidad:</span>
           </div>
           <div className="flex gap-2 flex-wrap">
-            <button
-              onClick={() => setModalidadFilter('todas')}
-              className={`px-4 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${
-                modalidadFilter === 'todas'
-                  ? 'bg-gradient-to-r from-brand-purple to-purple-600 text-white shadow-lg scale-105'
-                  : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-purple-400 hover:shadow-md'
-              }`}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-              </svg>
-              Todas ({slots.length})
-            </button>
             <button
               onClick={() => setModalidadFilter('virtual')}
               className={`px-4 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${
@@ -1301,19 +1288,6 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
               </svg>
               Virtual ({slots.filter(s => s.modalidad === 'virtual').length})
-            </button>
-            <button
-              onClick={() => setModalidadFilter('presencial')}
-              className={`px-4 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${
-                modalidadFilter === 'presencial'
-                  ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg scale-105'
-                  : 'bg-white text-gray-700 border-2 border-green-300 hover:border-green-500 hover:shadow-md'
-              }`}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-              </svg>
-              Presencial ({slots.filter(s => s.modalidad === 'presencial').length})
             </button>
           </div>
         </div>
@@ -1336,7 +1310,7 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
             <option value="Francés">Francés</option>
             <option value="Español para extranjeros">Español para extranjeros</option>
             <option value="Club Conversacional">Club Conversacional</option>
-            <option value="ConversArte">ConversArte</option>
+            <option value="ConversArte">Experiencias</option>
             <option value="Tour Cafetero">Tour Cafetero</option>
             <option value="Cursos para niños">Cursos para niños</option>
             <option value="Clases personalizadas">Clases personalizadas</option>
@@ -1458,7 +1432,7 @@ function ScheduleSection({ slots, reservas, onBooked, onCancel }: { slots: Sched
                       <span className={`px-3 py-1 rounded-full text-xs font-bold ${
                         r.modalidad === 'virtual' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
                       }`}>
-                        {r.modalidad === 'virtual' ? 'Virtual' : 'Presencial'}
+                        {r.modalidad === 'virtual' ? 'Virtual' : 'No disponible'}
                       </span>
                     </div>
                     <div className="text-sm font-bold text-gray-800 flex items-center gap-2">
