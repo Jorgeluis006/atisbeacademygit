@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="mt-24 bg-brand-yellow text-brand-electric">
+    <footer className="bg-brand-yellow text-brand-electric">
   <div className="container-padded py-12">
         {/* Logo centrado arriba */}
         <div className="text-center mb-10">
