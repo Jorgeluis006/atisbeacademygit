@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-labelledby="title">
+  <title id="title">Ilustración de muestra para artículos del blog</title>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#f1dfbf"/><stop offset="1" stop-color="#c99776"/></linearGradient>
+  </defs>
+  <rect width="900" height="560" fill="url(#bg)"/>
+  <circle cx="150" cy="140" r="105" fill="#fff5df" opacity=".45"/>
+  <rect x="280" y="85" width="340" height="390" rx="24" fill="#fffaf0" transform="rotate(-5 450 280)"/>
+  <rect x="328" y="138" width="110" height="16" rx="8" fill="#9d6c95"/>
+  <rect x="328" y="181" width="238" height="12" rx="6" fill="#d9c8b3"/>
+  <rect x="328" y="209" width="223" height="12" rx="6" fill="#d9c8b3"/>
+  <rect x="328" y="237" width="242" height="12" rx="6" fill="#d9c8b3"/>
+  <rect x="328" y="280" width="244" height="115" rx="16" fill="#4b294f"/>
+  <path d="M355 363l55-51 43 34 44-48 54 65z" fill="#eacb89"/>
+  <circle cx="482" cy="325" r="16" fill="#fffaf0"/>
+  <rect x="314" y="422" width="272" height="49" rx="24" fill="#4b294f"/>
+  <text x="450" y="454" text-anchor="middle" fill="#fffaf0" font-family="Arial,sans-serif" font-size="20" font-weight="700" letter-spacing="3">MUESTRA</text>
+</svg>

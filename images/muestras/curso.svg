@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-labelledby="title">
+  <title id="title">Ilustración de muestra para cursos</title>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#4b294f"/><stop offset="1" stop-color="#9d6c95"/></linearGradient>
+    <linearGradient id="book" x2="1"><stop stop-color="#f8e6bf"/><stop offset="1" stop-color="#e8bd73"/></linearGradient>
+  </defs>
+  <rect width="900" height="560" fill="url(#bg)"/>
+  <circle cx="735" cy="106" r="115" fill="#edc86f" opacity=".28"/>
+  <path d="M0 430c170-88 294-4 452-65s267-38 448 38v157H0z" fill="#38243f" opacity=".38"/>
+  <rect x="250" y="130" width="370" height="265" rx="26" fill="#fffaf0"/>
+  <path d="M275 162h160v195H275a12 12 0 0 1-12-12V174a12 12 0 0 1 12-12zm176 0h160a12 12 0 0 1 12 12v171a12 12 0 0 1-12 12H451z" fill="url(#book)"/>
+  <path d="M450 163v194M305 205h95m-95 34h95m-95 34h73m91-68h96m-96 34h96m-96 34h75" fill="none" stroke="#69456b" stroke-width="9" stroke-linecap="round" opacity=".7"/>
+  <circle cx="450" cy="277" r="23" fill="#4b294f"/>
+  <rect x="290" y="425" width="320" height="54" rx="27" fill="#fffaf0"/>
+  <text x="450" y="460" text-anchor="middle" fill="#4b294f" font-family="Arial,sans-serif" font-size="21" font-weight="700" letter-spacing="3">MUESTRA</text>
+</svg>

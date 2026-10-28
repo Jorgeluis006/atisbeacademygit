@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-labelledby="title">
+  <title id="title">Ilustración de muestra para preparación de exámenes</title>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#f5ebd7"/><stop offset="1" stop-color="#dec49c"/></linearGradient>
+  </defs>
+  <rect width="900" height="560" fill="url(#bg)"/>
+  <circle cx="730" cy="105" r="94" fill="#d8ae5a" opacity=".35"/>
+  <rect x="278" y="72" width="345" height="410" rx="28" fill="#fffaf0"/>
+  <rect x="365" y="105" width="171" height="22" rx="11" fill="#4b294f"/>
+  <g fill="none" stroke="#a88698" stroke-width="8" stroke-linecap="round">
+    <rect x="327" y="164" width="26" height="26" rx="6"/><path d="M378 177h185"/>
+    <rect x="327" y="221" width="26" height="26" rx="6"/><path d="M378 234h185"/>
+    <rect x="327" y="278" width="26" height="26" rx="6"/><path d="M378 291h185"/>
+  </g>
+  <path d="M333 232l9 9 17-21M333 289l9 9 17-21" fill="none" stroke="#73927d" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="327" y="350" width="246" height="72" rx="16" fill="#f1dfbf"/>
+  <path d="M355 390l40-30 36 24 48-47 60 59" fill="none" stroke="#9d6c95" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="450" y="459" text-anchor="middle" fill="#4b294f" font-family="Arial,sans-serif" font-size="20" font-weight="700" letter-spacing="3">MUESTRA</text>
+</svg>
