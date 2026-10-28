@@ -104,14 +104,14 @@ try {
         <head>
             <meta charset="UTF-8">
             <style>
-                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #382a1d; }
                 .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                .header { background: linear-gradient(135deg, #791eba 0%, #bfa6a4 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-                .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-                .info-box { background: white; padding: 20px; margin: 20px 0; border-left: 4px solid #791eba; border-radius: 5px; }
-                .contact-info { background: #fffef1; padding: 20px; margin: 20px 0; border-radius: 8px; border: 2px solid #fcb500; }
-                .whatsapp-button { display: inline-block; background: #25D366; color: white; padding: 15px 30px; text-decoration: none; border-radius: 25px; margin: 20px 0; font-weight: bold; }
-                .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+                .header { background: linear-gradient(135deg, #791eba 0%, #b789a3 100%); color: #fefaf6; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+                .content { background: #fefaf6; padding: 30px; border-radius: 0 0 10px 10px; }
+                .info-box { background: #fefaf6; padding: 20px; margin: 20px 0; border-left: 4px solid #791eba; border-radius: 5px; }
+                .contact-info { background: #fefaf6; padding: 20px; margin: 20px 0; border-radius: 8px; border: 2px solid #f2c02a; }
+                .whatsapp-button { display: inline-block; background: #77a42f; color: #fefaf6; padding: 15px 30px; text-decoration: none; border-radius: 25px; margin: 20px 0; font-weight: bold; }
+                .footer { text-align: center; margin-top: 30px; color: #54473c; font-size: 12px; }
             </style>
         </head>
         <body>
