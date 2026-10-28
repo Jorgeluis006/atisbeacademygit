@@ -69,7 +69,7 @@ function sendWindowReminders(PDO $pdo, int $minutes, string $column): array {
         $fechaFormateada = $dt->format('d/m/Y \a \l\a\s H:i');
         $minLabel = ($minutes === 1) ? '1 minuto' : ($minutes . ' minutos');
         $subject = 'Recordatorio: tu clase empieza en ' . $minLabel;
-        $logoUrl = htmlspecialchars($baseUrl . '/images/logos-01.png');
+        $logoUrl = htmlspecialchars($baseUrl . '/images/logos-12.png');
         $body = '
         <!DOCTYPE html>
         <html>
@@ -78,7 +78,7 @@ function sendWindowReminders(PDO $pdo, int $minutes, string $column): array {
           <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #382a1d; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #791eba 0%, #f9c555 100%); color: #fefaf6; padding: 24px; text-align: center; border-radius: 10px 10px 0 0; }
+            .header { background: linear-gradient(135deg, #4c1050 0%, #361938 100%); color: #fefaf6; padding: 24px; text-align: center; border-radius: 10px 10px 0 0; }
             .content { background: #f6eee3; padding: 24px; border-radius: 0 0 10px 10px; }
             .info-box { background: #fefaf6; border-left: 4px solid #791eba; padding: 12px; margin: 16px 0; border-radius: 6px; }
             .button { display: inline-block; background: #791eba; color: #fefaf6 !important; padding: 12px 22px; text-decoration: none; border-radius: 8px; margin: 16px 0; font-weight: bold; }
@@ -123,7 +123,7 @@ function sendWindowReminders(PDO $pdo, int $minutes, string $column): array {
               <style>
                 body { font-family: Arial, sans-serif; line-height: 1.6; color: #382a1d; }
                 .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                .header { background: linear-gradient(135deg, #791eba 0%, #f9c555 100%); color: #fefaf6; padding: 20px; text-align: center; border-radius: 10px; }
+                .header { background: linear-gradient(135deg, #4c1050 0%, #361938 100%); color: #fefaf6; padding: 20px; text-align: center; border-radius: 10px; }
                 .content { background: #f6eee3; padding: 20px; border-radius: 8px; }
                 .info-box { background: #fefaf6; border-left: 4px solid #791eba; padding: 12px; margin: 16px 0; border-radius: 6px; }
                 .footer { text-align: center; margin-top: 20px; color: #54473c; font-size: 12px; }

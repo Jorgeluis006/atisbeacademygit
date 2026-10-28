@@ -223,7 +223,7 @@ export function Navbar() {
   <header className="sticky top-0 z-50 bg-brand-surface border-b border-brand-pink/20">
       <div className="container-padded flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-2">
-          <img src="/images/logos-01.png" alt="Atisbe Logo" className="h-16 w-auto" />
+          <img src="/images/logos-09.png" alt="Atisbe Academy" className="h-10 w-auto max-w-[220px] object-contain" />
         </Link>
         {/* Desktop nav */}
         <nav className="hidden lg:flex items-center gap-6">

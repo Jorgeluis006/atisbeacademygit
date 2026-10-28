@@ -24,6 +24,9 @@ public/uploads/docs/*
 
 # Keep logos
 !public/images/logos-01.png
+!public/images/logos-09.png
+!public/images/logos-11.png
+!public/images/logos-12.png
 !public/images/logoheader.jpeg
 !public/images/logofooter.jpeg
 

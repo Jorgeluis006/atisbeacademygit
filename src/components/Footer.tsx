@@ -5,7 +5,7 @@ export default function Footer() {
         {/* Logo centrado arriba */}
         <div className="text-center mb-10">
           <div className="flex items-center justify-center mb-3">
-            <img src="/images/logos-01.png" alt="Atisbe Academy Logo" className="h-48 w-auto" />
+            <img src="/images/logos-11.png" alt="Atisbe Academy" className="h-12 w-auto max-w-[280px] object-contain" />
           </div>
         </div>
 
